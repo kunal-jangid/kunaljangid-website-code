@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress...</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* A simple CSS reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* The main theme and layout */
+        body {
+            font-family: 'Montserrat', sans-serif; /* A clean, modern font for body text */
+            background-color: #dac996; /* A gentle, off-white background */
+            color: #464237; /* A soft, dark gray for text, easier on the eyes than pure black */
+            
+            /* This is modern CSS to perfectly center the content vertically and horizontally */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif; /* An elegant, high-contrast font for the main heading */
+            font-size: 3.5rem; /* A large, impactful size */
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #464237;
+        }
+
+        p {
+            font-size: 1.15rem; /* A comfortable reading size */
+            line-height: 1.7; /* Generous spacing between lines for readability */
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+        
+        /* A subtle animation for the "working..." dots */
+        .working-dots span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #473928;
+            border-radius: 50%;
+            margin: 0 4px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .working-dots .dot1 {
+            animation-delay: -0.32s;
+        }
+        
+        .working-dots .dot2 {
+            animation-delay: -0.16s;
+        }
+
+        /* Keyframe animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            } 40% {
+                transform: scale(1.0);
+            }
+        }
+
+        /* Making it look good on smaller screens */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kunal is here</h1>
+        <p>
+            ...and he is working on the website right now. <br>
+            Check back later and hope he is done with it.
+        </p>
+        <div class="working-dots">
+            <span class="dot1"></span>
+            <span class="dot2"></span>
+            <span class="dot3"></span>
+        </div>
+    </div>
+
+</body>
+</html>
