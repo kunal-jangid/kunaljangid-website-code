@@ -304,9 +304,12 @@
                             <span class="opacity-50">• Currently Offline</span><br>Idle // Rotation List Enabled
                         </div>
                     </div>
-                    <a href="https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R" target="_blank"
+                    <a id="spotify-link"
+                        href="https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R"
+                        target="_blank"
                         class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-4 text-center font-bold text-sm tracking-tight no-underline">
-                        In the meantime, I got one of my favourite playlists for you <br><br> Click here
+                        <span id="spotify-hover-text">In the meantime, I got one of my favourite playlists for you
+                            <br><br> Click here</span>
                     </a>
                 </div>
 
@@ -501,14 +504,21 @@
         // Live Telemetry Spotify API Fetch Router
         async function streamLivePlayback() {
             const statusContainer = document.getElementById('spotify-status');
-            const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev/';
+            const linkElement = document.getElementById('spotify-link');
+            const hoverTextElement = document.getElementById('spotify-hover-text');
+            const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
 
             try {
                 const res = await fetch(workerEndpoint);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
 
+                if (data.songUrl) {
+                    linkElement.href = data.songUrl;
+                }
+
                 if (data.isPlaying) {
+                    hoverTextElement.innerHTML = `Wanna listen along on Spotify?<br><br>Click here to open track`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden">
                             ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
@@ -521,6 +531,7 @@
                         </div>
                     `;
                 } else {
+                    hoverTextElement.innerHTML = `Track paused. Open this song directly on Spotify?<br><br>Click here`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden opacity-60">
                             ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
@@ -534,6 +545,9 @@
                     `;
                 }
             } catch (err) {
+                // current favourite playlist to recommend to everyone I guess?
+                linkElement.href = "https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R";
+                hoverTextElement.innerHTML = `In the meantime, I got one of my favourite playlists for you <br><br> Click here`;
                 statusContainer.innerHTML = `
                     <span class="opacity-50">• Currently Offline</span><br><span class="text-xs font-mono">Idle // Rotation List Enabled</span>
                 `;
