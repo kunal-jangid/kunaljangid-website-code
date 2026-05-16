@@ -1,0 +1,1 @@
+window.photoAssets = ['photography/shot1.jpg', 'photography/shot2.jpg', 'photography/shot3.jpg', 'photography/shot4.jpg', 'photography/shot5.jpg', 'photography/shot6.jpg', 'photography/shot7.jpg'];
