@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Kunal Jangid - Software Engineer based in Gurugram, IN. Building robust financial software systems and quantitative web tools.">
+    <meta name="keywords" content="Kunal Jangid, Software Engineer, Gurugram, Fintech, OSTTRA, Web Developer">
     <title>kunaljangid.com</title>
     <link rel="icon" type="image/png" href="title-selfie.png">
 
@@ -12,15 +15,35 @@
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <script>
+        console.warn = (function (oldWarn) {
+            return function (msg) {
+                if (typeof msg === 'string' && msg.includes('cdn.tailwindcss.com')) return;
+                oldWarn.apply(console, arguments);
+            };
+        })(console.warn);
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
+                    // THEME MATRIX CONFIGURATION 
+                    // To add a new theme: simply drop a new object inside this array.
+                    themes: [
+                        { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#C2441C' },
+                        { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
+                        { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
+                        { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
+                    ],
                     colors: {
-                        cream: { bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#C2441C' },
-                        tactile: { bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' }
+                        // Tailwind dynamically maps these utility tokens to the active CSS variables
+                        brand: {
+                            bg: 'var(--bg-color)',
+                            text: 'var(--text-color)',
+                            border: 'var(--border-color)',
+                            accent: 'var(--accent-color)'
+                        }
                     },
                     fontFamily: {
                         sans: ['"Lexend"', 'sans-serif'],
@@ -30,15 +53,101 @@
             }
         }
     </script>
-    <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
     <script src="photography/photos.js"></script>
     <style>
+        /* Global Dynamic Theme Variable Mapper Overrides */
+        :root,
+        body,
+        .bg-cream-bg,
+        .dark\:bg-tactile-bg {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+        }
+
+        /* Enforce text color on passive elements while allowing interactive bypasses */
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        span,
+        label,
+        strong {
+            color: var(--text-color) !important;
+        }
+
+        /* Target Company Accent Highlight */
+        .theme-accent-highlight {
+            color: var(--accent-color) !important;
+            font-weight: 600 !important;
+        }
+
+        /* Re-dim subtext details dynamically to preserve design hierarchy */
+        .opacity-50,
+        .opacity-60,
+        label,
+        p.text-xs {
+            opacity: 0.65 !important;
+        }
+
+        /* Prevent form input placeholders from copying the heavy text color variable */
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-color) !important;
+            opacity: 0.4 !important;
+        }
+
+        /* Dynamically re-route structural borders and list dividers */
+        .border-cream-border,
+        .dark\:border-tactile-border,
+        .border-t,
+        .border-b,
+        .border,
+        .divide-y>* {
+            border-color: var(--border-color) !important;
+        }
+
+        /* Dynamic focus states for form fields */
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent-color) !important;
+        }
+
+        /* Map dynamic interactive highlight accents */
+        .hover\:text-cream-accent:hover,
+        .dark\:hover\:text-tactile-accent:hover,
+        #theme-toggle:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* Native Theme Inversion Engine for Buttons and Hover Cards */
+        button,
+        .group>div[class*="absolute"],
+        .group>a[class*="absolute"] {
+            color: var(--text-color) !important;
+            background-color: transparent !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        button:hover,
+        .group:hover>div[class*="absolute"],
+        .group:hover>a[class*="absolute"],
+        .group:hover>a[class*="absolute"] span {
+            background-color: var(--text-color) !important;
+            color: var(--bg-color) !important;
+        }
+
+        /* Handle code-tag translucent badge variations & Dynamic Tech Pill Tag Optimization Engine */
+        .bg-cream-border\/10,
+        .dark\:bg-tactile-border\/40,
+        .flex-wrap span {
+            background-color: var(--text-color) !important;
+            color: var(--bg-color) !important;
+            opacity: 1 !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.025em;
+        }
+
         body {
             font-family: "Lexend", sans-serif;
             -webkit-font-smoothing: antialiased;
@@ -47,228 +156,273 @@
         .no-scroll {
             overflow: hidden;
         }
+
+        /* Dynamic Theme-Aware Frame Overlays */
+        #desk-modal,
+        #gallery-modal {
+            background-color: var(--bg-color) !important;
+            backdrop-filter: blur(4px);
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Enforce high-contrast borders around the active layout asset */
+        #zoom-desk-img,
+        #zoom-gallery-img {
+            border: 1px solid var(--border-color) !important;
+            background-color: var(--bg-color) !important;
+        }
+
+        /* Invert modal system control strings nicely */
+        #close-desk,
+        #close-gallery,
+        #prev-photo,
+        #next-photo,
+        #gallery-counter {
+            color: var(--text-color) !important;
+            border-color: var(--border-color) !important;
+            opacity: 0.8 !important;
+        }
     </style>
 </head>
 
-<body
-    class="bg-cream-bg text-cream-text dark:bg-tactile-bg dark:text-tactile-text transition-colors duration-300 min-h-screen flex flex-col justify-between">
+<body class="transition-colors duration-300 min-h-screen flex flex-col justify-between">
 
-    <main class="max-w-5xl mx-auto px-4 py-20 w-full grow">
+    <main class="max-w-5xl mx-auto px-4 py-28 md:py-20 w-full grow">
 
         <header class="border-b border-cream-border dark:border-tactile-border pb-8 mb-12">
             <h1 id="theme-toggle"
-                class="text-6xl md:text-7xl font-black tracking-tighter cursor-pointer select-none hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200">
+                class="text-6xl md:text-7xl font-black tracking-tighter cursor-pointer select-none hover:text-cream-accent dark:hover:text-tactile-accent active:scale-[0.99] transition-all duration-200">
                 KUNAL JANGID
             </h1>
-            <p class="text-xs uppercase tracking-widest mt-3 opacity-60 font-mono">Software Engineer // Gurugram, IN
+            <p
+                class="text-xs uppercase tracking-widest mt-3 opacity-60 font-mono flex flex-col sm:flex-row sm:justify-between gap-2">
+                <span>Software Engineer // Gurugram, IN</span>
+                <span class="opacity-50 text-[10px] lowercase tracking-normal normal-case">
+                    <span class="hidden md:inline">[ click my name to toggle theme! ]</span>
+                    <span class="md:hidden">[ tap my name to toggle theme ]</span>
+                </span>
             </p>
         </header>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end mb-20">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end mb-28 md:mb-20">
             <div
                 class="text-xl md:text-2xl font-medium tracking-tight max-w-2xl leading-relaxed md:col-span-2 pb-0 md:pb-6">
-                I write code, modernize legacy fintech systems, and occasionally bash my head against an architecture
-                until it works perfectly in production.
-                Currently keeping high-volume distributed systems stabilized as an Associate Software Engineer at
-                OSTTRA.
+                I engineer high-performance platforms, modernize legacy enterprise architectures, and bridge the gap
+                between complex frontend dynamics and distributed microservices.
+                Currently shipping core features and system overhauls as an <span
+                    class="theme-accent-highlight">Associate Software Engineer at OSTTRA</span>.
             </div>
 
-            <div class="flex justify-start md:justify-end overflow-visible h-72 md:h-[21rem] relative -mb-12 md:-mb-20">
+            <div class="hidden md:flex justify-end overflow-visible h-[21rem] relative -mb-20">
                 <img src="title-selfie.png" alt="Kunal Jangid : coolest person alive rn"
                     class="h-full w-auto object-contain select-none filter grayscale contrast-115 mix-blend-multiply dark:mix-blend-normal dark:grayscale-0 dark:brightness-105 dark:contrast-100 transition-all duration-500 ease-out transform origin-bottom hover:scale-150 relative hover:z-30 cursor-zoom-in">
             </div>
         </section>
 
-        <section class="border-t border-cream-border dark:border-tactile-border pt-12 mb-20">
+        <section class="border-t border-cream-border dark:border-tactile-border pt-12 mb-28 md:mb-20">
             <h2 class="text-xs uppercase tracking-widest opacity-100 mb-6 font-mono">Featured Work & Systems</h2>
-            <div class="divide-y divide-cream-border dark:divide-tactile-border">
 
-                <div class="group py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
-                    <div class="max-w-xl">
-                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">01 // Corporate
-                            // OSTTRA</span>
-                        <h3 class="text-lg font-bold tracking-tight mb-2">Enterprise Infrastructure Modernization</h3>
-                        <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Friction:</strong>
-                            High-scale fintech software slowing down under decades of legacy system bloat.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Fix:</strong>
-                            Modernized core application architectures, orchestrated massive 10-generation Angular UI
-                            framework migrations, and automated deep PL/SQL purges to wipe out half a billion rows of
-                            historical data with zero user downtime.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Payoff:</strong> Keeps
-                            critical global financial services stabilized and performing under heavy volume instead of
-                            blacking out when infrastructure load spikes.
-                        </p>
-                    </div>
-                    <div
-                        class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:text-right md:justify-end max-w-xs pt-5">
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Java</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Spring
-                            Boot</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">React</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Angular
-                            21</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">PL/SQL</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Agentic
-                            Workflows</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Grafana</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Absolute
-                            Corporate Swag</span>
-                    </div>
+
+
+            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="max-w-xl">
+                    <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">01 // Enterprise
+                        System // Core Architecture</span>
+                    <h3 class="text-lg font-bold tracking-tight mb-2">Metadata-Driven Configuration Platform</h3>
+                    <p class="text-sm md:text-base opacity-80 leading-relaxed">
+                        <strong class="font-bold">The Friction:</strong> Adding new financial business requirements
+                        required slow, hardcoded frontend adjustments and repeated full core deployment
+                        lifecycles.<br>
+                        <strong class="font-bold">The Fix:</strong> Co-architected a dynamic rendering layout using
+                        React 19 that dynamically compiles modular UI configurations from structured JSON/Metadata
+                        schemas provided by backend endpoints.<br>
+                        <strong class="font-bold">The Payoff:</strong> Eliminated frontend code duplication and
+                        empowered cross-functional engineers to instantly instantiate target domain logic with zero
+                        client-side deployment overhead.
+                    </p>
                 </div>
+                <div
+                    class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">React 19</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">TypeScript</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Dynamic Schema
+                        Layouts</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Frontend
+                        Architecture</span>
+                </div>
+            </div>
 
-                <div class="group py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="max-w-xl">
+                    <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">02 // Enterprise
+                        System // UI Modernization</span>
+                    <h3 class="text-lg font-bold tracking-tight mb-2">Distributed Platform Framework Modernization
+                    </h3>
+                    <p class="text-sm md:text-base opacity-80 leading-relaxed">
+                        <strong class="font-bold">The Friction:</strong> Core decoupled services were bogged down by
+                        legacy framework architectures (AngularJS/Angular 11), driving high technical debt and slow
+                        client build times.<br>
+                        <strong class="font-bold">The Fix:</strong> Led end-to-end framework modernization sprints
+                        to upgrade legacy frontend instances up to Angular 21, abstracting UI components and
+                        enforcing strict system-wide architectural consistency.<br>
+                        <strong class="font-bold">The Payoff:</strong> Cleared deep-seated framework performance
+                        debt, improved codebase maintainability, and significantly reduced continuous integration
+                        build overhead and initial page-load speed.
+                    </p>
+                </div>
+                <div
+                    class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Angular (v11–v21)</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">AngularJS</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Architecture
+                        Refactoring</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">AI Driven Development</span>
+                </div>
+            </div>
+
+            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="max-w-xl">
+                    <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">03 // Enterprise
+                        System // Data Infrastructure</span>
+                    <h3 class="text-lg font-bold tracking-tight mb-2">High-Throughput Archival Processing Engine
+                    </h3>
+                    <p class="text-sm md:text-base opacity-80 leading-relaxed">
+                        <strong class="font-bold">The Friction:</strong> Production relational databases were
+                        carrying massive operational overhead from hundreds of millions of legacy transactional
+                        lines, causing critical search query latencies.<br>
+                        <strong class="font-bold">The Fix:</strong> Engineered a performant asynchronous database
+                        archival pipeline to cleanly process, extract, and offload 500M+ inactive historical table
+                        records with zero system downtime.<br>
+                        <strong class="font-bold">The Payoff:</strong> Optimized operational data footprints and
+                        delivered an immediate 85% drop in operational query search latency for production users.
+                    </p>
+                </div>
+                <div
+                    class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Java</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Spring Boot</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">PL/SQL Optimization</span>
+                    <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Data Architecture</span>
+                </div>
+            </div>
+
+            <div id="expanded-work" class="hidden divide-y divide-cream-border dark:divide-tactile-border">
+
+                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
-                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">02 // Personal
-                            Project</span>
+                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">04 //
+                            Personal Project // Systems & Automation</span>
                         <h3 class="text-lg font-bold tracking-tight mb-2">Autonomous Quantitative Analysis Dashboard
                         </h3>
                         <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Friction:</strong>
-                            Sifting through endless global news headers and prediction market fluctuations to spot an
-                            actionable trading edge takes too long.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Fix:</strong>
-                            Programmed a data pipeline that captures live Polymarket macroeconomic betting odds, maps
-                            sentiments to highly responsive Indian mid-cap equities, and runs multi-source indicators
-                            through a local LLM infrastructure.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Payoff:</strong>
-                            Instantly synthesizes a cold, critical investment thesis with an objective risk rating
-                            before you execute a trade based on pure emotion.
+                            <strong class="font-bold">The Friction:</strong> Processing highly fragmented
+                            geopolitical event markets and news streams in real-time to uncover an actionable
+                            trading alpha vector.<br>
+                            <strong class="font-bold">The Fix:</strong> Engineered a modular quantitative Python
+                            data pipeline cross-referencing real-time prediction odds with news API data, executing
+                            sentiment analysis using localized LLM nodes and TradingView indicator streams.<br>
+                            <strong class="font-bold">The Payoff:</strong> Builds a completely automated,
+                            asynchronous analysis engine providing objective sentiment ratings and technical signals
+                            before trade orchestration.
                         </p>
                     </div>
                     <div
-                        class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:text-right md:justify-end max-w-xs pt-5">
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Python</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Ollama</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Gemma
-                            3 : 270M Parameters</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">TradingView
-                            API</span>
+                        class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Python</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Ollama</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Gemma 3</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">TradingView API</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Not very extensive YET but
+                            it is a work in progress</span>
                     </div>
                 </div>
 
-                <div class="group py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
-                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">03 // Personal
-                            Project</span>
+                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">05 //
+                            Personal Project</span>
                         <h3 class="text-lg font-bold tracking-tight mb-2">Second Guesser // Intention Dissector</h3>
                         <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Friction:</strong>
-                            Getting an ambiguous, passive-aggressive digital message on text or Slack and immediately
-                            overthinking what they actually meant.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Fix:</strong> Built a
-                            lightweight desktop utility that grabs a swift screen region capture, holds pixel data
-                            strictly in-memory for total security protection, and loops it directly into Gemini models
-                            for conversational evaluation.<br>
-                            <strong class="font-bold text-cream-text dark:text-tactile-text">The Payoff:</strong>
-                            Delivers a completely blunt, unbiased second opinion on conversational tone so you don't
-                            misread the room or fire back a terrible response.
+                            <strong class="font-bold">The Friction:</strong> Getting an ambiguous,
+                            passive-aggressive digital message on text or Slack and immediately overthinking what
+                            they actually meant.<br>
+                            <strong class="font-bold">The Fix:</strong> Built a lightweight desktop utility that
+                            grabs a swift screen region capture, holds pixel data strictly in-memory for total
+                            security protection, and loops it directly into Gemini models for conversational
+                            evaluation.<br>
+                            <strong class="font-bold">The Payoff:</strong> Delivers a completely blunt, unbiased
+                            second opinion on conversational tone so you don't misread the room or fire back a
+                            terrible response.
                         </p>
                     </div>
                     <div
-                        class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:text-right md:justify-end max-w-xs pt-5">
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Python</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Gemini
-                            API</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Region
-                            Capture</span>
-                        <span
-                            class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Confusing
-                            texts that give you anxiety</span>
+                        class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Python</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Gemini API</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Region Capture</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">People who make you
+                            panic</span>
                     </div>
                 </div>
 
-                <div id="expanded-work" class="hidden divide-y divide-cream-border dark:divide-tactile-border">
-
-                    <div class="group py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
-                        <div class="max-w-xl">
-                            <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">04 //
-                                Personal Project</span>
-                            <h3 class="text-lg font-bold tracking-tight mb-2">Live Option Chain Pipeline (LOCA)</h3>
-                            <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Friction:</strong>
-                                Manually processing multi-strike options data matrices on high-volatility trading days
-                                is chaotic and messy.<br>
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Fix:</strong>
-                                Assembled an internal real-time data parser to scrape structural index arrays straight
-                                from NSE India feeds and pipe them through Pandas dataframes.<br>
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Payoff:</strong>
-                                Condenses scattered volume open interest variables into a single, clean visual dashboard
-                                so options traders can track volume trends on a clear line.
-                            </p>
-                        </div>
-                        <div
-                            class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:text-right md:justify-end max-w-xs pt-5">
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Flask</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Pandas</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Matplotlib</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Option
-                                Chain Analaysis</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">NSE
-                                India API</span>
-                        </div>
+                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div class="max-w-xl">
+                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">06 //
+                            Academic Research Manuscript</span>
+                        <h3 class="text-lg font-bold tracking-tight mb-2">3D Geospatial Remote Sensing Computing
+                            Study</h3>
+                        <p class="text-sm md:text-base opacity-80 leading-relaxed">
+                            <strong class="font-bold">The Friction:</strong> Measuring environmental biomass density
+                            distributions accurately over vast, complex physical forest terrains is practically
+                            impossible by hand.<br>
+                            <strong class="font-bold">The Fix:</strong> Co-authored an analytical research paper
+                            linking Copernicus digital elevation models with multi-spectral Sentinel-2 satellite
+                            data streams to compute localized vegetation patterns.<br>
+                            <strong class="font-bold">The Payoff:</strong> Converts raw planetary light captures
+                            into geometric 3D mapping models, giving researchers automated macro signals on forest
+                            distribution changes from orbit.
+                        </p>
                     </div>
-
-                    <div class="group py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
-                        <div class="max-w-xl">
-                            <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">05 //
-                                Academic Research Manuscript</span>
-                            <h3 class="text-lg font-bold tracking-tight mb-2">3D Geospatial Remote Sensing Computing
-                                Study</h3>
-                            <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Friction:</strong>
-                                Measuring environmental biomass density distributions accurately over vast, complex
-                                physical forest terrains is practically impossible by hand.<br>
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Fix:</strong>
-                                Co-authored an analytical research paper linking Copernicus digital elevation models
-                                with multi-spectral Sentinel-2 satellite data streams to compute localized vegetation
-                                patterns.<br>
-                                <strong class="font-bold text-cream-text dark:text-tactile-text">The Payoff:</strong>
-                                Converts raw planetary light captures into geometric 3D mapping models, giving
-                                researchers automated macro signals on forest distribution changes from orbit.
-                            </p>
-                        </div>
-                        <div
-                            class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:text-right md:justify-end max-w-xs pt-5">
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Geographic
-                                Information System (GiS)</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">QGiS</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Copernicus
-                                Datasource</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Linear
-                                and exponential function modelling</span>
-                            <span
-                                class="px-2 py-1 text-xs font-mono bg-cream-border/10 dark:bg-tactile-border/40 rounded">Whole
-                                lotta patience</span>
-                        </div>
+                    <div
+                        class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Geographic Information
+                            System (GiS)</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">QGiS</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Copernicus
+                            Datasource</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Whole lotta patience</span>
                     </div>
-
                 </div>
+
+                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div class="max-w-xl">
+                        <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">07 //
+                            Personal Project</span>
+                        <h3 class="text-lg font-bold tracking-tight mb-2">Live Option Chain Pipeline (LOCA)</h3>
+                        <p class="text-sm md:text-base opacity-80 leading-relaxed">
+                            <strong class="font-bold">The Friction:</strong> Manually processing multi-strike
+                            options data matrices on high-volatility trading days is chaotic and messy.<br>
+                            <strong class="font-bold">The Fix:</strong> Assembled an internal real-time data parser
+                            to scrape structural index arrays straight from NSE India feeds and pipe them through
+                            Pandas dataframes.<br>
+                            <strong class="font-bold">The Payoff:</strong> Condenses scattered volume open interest
+                            variables into a single, clean visual dashboard so options traders can track volume
+                            trends on a clear line.
+                        </p>
+                    </div>
+                    <div
+                        class="flex flex-wrap gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-2 md:mt-0 max-w-sm md:justify-end">
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Flask</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Pandas</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Matplotlib</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">NSE India API</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-cream-border/10 rounded">Go easy on this one it was
+                            one of my first open source project</span>
+                    </div>
+                </div>
+
             </div>
+
 
             <div class="text-center mt-8">
                 <button id="load-more-btn"
@@ -278,27 +432,30 @@
             </div>
         </section>
 
-        <section class="border-t border-cream-border dark:border-tactile-border pt-12">
+        <section class="border-t border-cream-border dark:border-tactile-border pt-12 mb-28 md:mb-20">
             <h2 class="text-xs uppercase tracking-widest opacity-100 mb-8 font-mono">Out of Office</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <div id="trigger-desk"
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-end transition-all duration-200">
+                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
+                    <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to view ]</div>
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Gadgets</h3>
                         <p class="text-xs opacity-70 leading-relaxed">
-                            A certified gear enthusiast. Seeking clean custom configurations, deep linear mechanical
-                            keyboard acoustic frequencies, uniform workspace tools, and performance layout devices.
+                            Pretty much a certified gear enthusiast. Love having a clean custom configurations, lover of
+                            deep linear mechanical
+                            keyboard acoustics, great books, and some might say, too many diecast models.
                         </p>
                     </div>
                     <div
-                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
+                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg hidden md:flex opacity-0 group-hover:opacity-100 transition-all duration-300 items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
                         Wanna see my desk setup right now? <br><br> Click here
                     </div>
                 </div>
 
                 <div
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded h-52 flex flex-col justify-end transition-all duration-200">
+                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded h-52 flex flex-col justify-between transition-all duration-200">
+                    <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to open ]</div>
                     <div class="w-full">
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Sounds</h3>
                         <div id="spotify-status" class="font-mono text-xs opacity-70 leading-relaxed w-full">
@@ -308,65 +465,119 @@
                     <a id="spotify-link"
                         href="https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R"
                         target="_blank"
-                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-4 text-center font-bold text-sm tracking-tight no-underline">
+                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg opacity-0 group-hover:opacity-100 transition-all duration-300 hidden md:flex items-center justify-center p-4 text-center font-bold text-sm tracking-tight no-underline">
                         <span id="spotify-hover-text">In the meantime, I got one of my favourite playlists for you
                             <br><br> Click here</span>
                     </a>
                 </div>
 
                 <div id="trigger-gallery"
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-end transition-all duration-200">
+                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
+                    <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to view ]</div>
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Frames</h3>
                         <p class="text-xs opacity-70 leading-relaxed">
                             Capturing industrial lines, geographic balances, and raw environmental illumination profiles
-                            found during transit using simple standard field lenses or analog film development.
+                            found during transit using my phone, which is more often than not a Samsung lol.
                         </p>
                     </div>
                     <div
-                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
+                        class="absolute inset-0 bg-cream-text text-cream-bg dark:bg-tactile-text dark:text-tactile-bg hidden md:flex opacity-0 group-hover:opacity-100 transition-all duration-300 items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
                         Wanna see the pictures I took recently? <br><br> Click here
                     </div>
                 </div>
 
             </div>
         </section>
+
+        <!-- Collapsible Terminal Message Drop Section -->
+        <section class="border-t border-cream-border dark:border-tactile-border pt-12">
+            <div class="text-center">
+                <button id="contact-trigger-btn"
+                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-6 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
+                    [ Want to contact me? Click here ]
+                </button>
+            </div>
+
+            <div id="contact-drawer"
+                class="hidden mt-8 max-w-xl mx-auto border border-cream-border dark:border-tactile-border p-6 rounded transition-all duration-300">
+                <form id="terminal-form" class="space-y-4 font-mono text-sm">
+                    <!-- Honeypot anti-spam capture mesh (Do not remove) -->
+                    <div class="hidden" aria-hidden="true">
+                        <label>Do not fill this text field if you are human:</label>
+                        <input type="text" name="system_integrity_hash" autocomplete="off" tabindex="-1">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest opacity-60 mb-1">01 // Name</label>
+                        <input type="text" name="name" required placeholder="Your identity"
+                            class="w-full bg-transparent border-b border-cream-border/40 dark:border-tactile-border/30 focus:border-cream-accent dark:focus:border-tactile-accent py-1 outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest opacity-60 mb-1">02 // Email
+                            Address or Phone Number</label>
+                        <input type="text" name="contact" required placeholder="Your routing endpoint"
+                            class="w-full bg-transparent border-b border-cream-border/40 dark:border-tactile-border/30 focus:border-cream-accent dark:focus:border-tactile-accent py-1 outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest opacity-60 mb-1">03 // Content</label>
+                        <textarea name="message" rows="3" required placeholder="Type payload details here..."
+                            class="w-full bg-transparent border-b border-cream-border/40 dark:border-tactile-border/30 focus:border-cream-accent dark:focus:border-tactile-accent py-1 outline-none resize-none transition-colors"></textarea>
+                    </div>
+                    <div class="pt-2 flex justify-center">
+                        <button type="submit" id="form-submit-btn"
+                            class="text-xs uppercase tracking-wider border border-cream-border dark:border-tactile-border px-8 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-150 w-full sm:w-auto">
+                            Transmit Message
+                        </button>
+                    </div>
+                </form>
+                <div id="form-status"
+                    class="hidden text-center text-xs font-mono py-4 text-cream-accent dark:text-tactile-accent animate-pulse">
+                    <!-- Status message injected here dynamically -->
+                </div>
+            </div>
+        </section>
     </main>
 
-    <div id="desk-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-center items-center p-4">
+    <div id="desk-modal"
+        class="fixed inset-0 z-50 hidden flex flex-col justify-center items-center p-4 select-none touch-none">
         <button id="close-desk"
             class="absolute top-6 right-6 text-white font-mono text-xs uppercase tracking-widest border border-white/20 px-4 py-2 rounded hover:bg-white hover:text-black transition-all">×
             Close (ESC)</button>
-        <div class="max-w-3xl max-h-[80vh] w-full flex items-center justify-center overflow-hidden rounded relative">
+        <div class="max-w-3xl max-h-[70vh] w-full flex items-center justify-center overflow-hidden rounded relative">
             <img id="zoom-desk-img" src="desk-setup.png" alt="Desk Setup Asset Frame"
-                class="max-w-full max-h-[75vh] object-contain select-none shadow-2xl transition-transform duration-75 ease-out">
+                class="max-w-full max-h-[65vh] object-contain shadow-2xl transition-transform duration-200 ease-out origin-center">
         </div>
-        <div class="text-white/40 text-xs font-mono mt-4 select-none">[ Use your scroll wheel / trackpad swipe to zoom ]
+        <div class="text-white/40 text-center text-[11px] font-mono mt-6 max-w-xs px-4">
+            <span class="md:hidden">[ Pinch to zoom / Drag image to pan setup layout ]</span>
+            <span class="hidden md:inline">[ Use scroll wheel / trackpad to zoom view ]</span>
         </div>
     </div>
 
-    <div id="gallery-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-center items-center p-4">
+    <div id="gallery-modal"
+        class="fixed inset-0 z-50 hidden flex flex-col justify-center items-center p-4 select-none touch-none">
         <button id="close-gallery"
             class="absolute top-6 right-6 text-white font-mono text-xs uppercase tracking-widest border border-white/20 px-4 py-2 rounded hover:bg-white hover:text-black transition-all">×
             Close (ESC)</button>
 
-        <div class="max-w-4xl max-h-[75vh] w-full flex items-center justify-between gap-6 relative">
+        <div class="max-w-4xl max-h-[70vh] w-full flex items-center justify-between gap-2 md:gap-6 relative">
             <button id="prev-photo"
-                class="text-white/40 hover:text-white font-mono text-xs uppercase tracking-widest p-2 transition-colors select-none">[
+                class="hidden md:block text-white/40 hover:text-white font-mono text-xs uppercase tracking-widest p-2 transition-colors">[
                 Prev ]</button>
 
-            <div class="overflow-hidden rounded flex items-center justify-center grow max-h-[70vh]">
+            <div class="overflow-hidden rounded flex items-center justify-center grow max-h-[65vh] w-full">
                 <img id="zoom-gallery-img" src="" alt="Recent Film Frame"
-                    class="max-w-full max-h-[70vh] object-contain select-none shadow-2xl transition-transform duration-75 ease-out">
+                    class="max-w-full max-h-[65vh] object-contain shadow-2xl transition-transform duration-200 ease-out origin-center">
             </div>
 
             <button id="next-photo"
-                class="text-white/40 hover:text-white font-mono text-xs uppercase tracking-widest p-2 transition-colors select-none">[
+                class="hidden md:block text-white/40 hover:text-white font-mono text-xs uppercase tracking-widest p-2 transition-colors">[
                 Next ]</button>
         </div>
 
-        <div id="gallery-counter" class="text-white/40 text-xs font-mono mt-4 select-none">00 / 00 // Use scroll wheel
-            to zoom</div>
+        <div id="gallery-counter" class="text-white/40 text-[11px] font-mono mt-6 text-center">00 / 00</div>
+        <div class="text-white/20 text-[10px] font-mono mt-1 md:hidden text-center">[ Swipe horizontally to browse //
+            Pinch to zoom ]</div>
     </div>
 
     <footer
@@ -374,69 +585,185 @@
         <div>© 2026 KUNAL JANGID.</div>
         <div class="flex gap-4">
             <a href="https://www.linkedin.com/in/jangidkunal" target="_blank"
-                class="hover:underline">LinkedIn</a><span>//</span>
-            <a href="https://github.com/kunal-jangid" target="_blank" class="hover:underline">GitHub</a><span>//</span>
-            <a href="mailto:kunaljangid2k3@gmail.com" class="hover:underline">Email</a>
+                class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">LinkedIn</a><span>//</span>
+            <a href="https://github.com/kunal-jangid/" target="_blank"
+                class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">GitHub</a><span>//</span>
+            <a href="mailto:thekunaljangid@gmail.com"
+                class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">Email</a>
         </div>
     </footer>
 
     <script>
-        // State-Persistent Light/Dark Theme Switch Engine
+        // Dynamic Autonomous Theme Engine Matrix
+        const themeConfig = tailwind.config.theme.extend.themes;
+        let activeThemeIndex = localStorage.getItem('portfolio-theme-state')
+            ? parseInt(localStorage.getItem('portfolio-theme-state'))
+            : 0;
+
+        // Fallback constraint check in case configuration arrays shrink
+        if (activeThemeIndex >= themeConfig.length) activeThemeIndex = 0;
+
+        function renderThemePipeline(index) {
+            const activeTheme = themeConfig[index];
+            const root = document.documentElement;
+
+            // Inject hex parameters straight into CSS Variable tokens
+            root.style.setProperty('--bg-color', activeTheme.bg);
+            root.style.setProperty('--text-color', activeTheme.text);
+            root.style.setProperty('--border-color', activeTheme.border);
+            root.style.setProperty('--accent-color', activeTheme.accent);
+
+            // Save index state mapping
+            localStorage.setItem('portfolio-theme-state', index);
+        }
+
+        // Initial Paint Execution
+        renderThemePipeline(activeThemeIndex);
+
         document.getElementById('theme-toggle').addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
+            activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
+            renderThemePipeline(activeThemeIndex);
         });
 
-        // Experience Portfolio Drawer
+        // Upgraded Layout Drawer Click Module
         const loadMoreBtn = document.getElementById('load-more-btn');
         const expandedWork = document.getElementById('expanded-work');
         loadMoreBtn.addEventListener('click', () => {
             expandedWork.classList.toggle('hidden');
-            loadMoreBtn.innerText = expandedWork.classList.contains('hidden') ? 'Expand Projects & Research' : 'Collapse Drawer';
+            const isHidden = expandedWork.classList.contains('hidden');
+            loadMoreBtn.innerText = isHidden ? 'Expand Projects & Research' : 'Collapse Drawer';
+
+            if (isHidden) {
+                // Smoothly pull layout frame back to top profile anchor when collapsing items
+                expandedWork.parentNode.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
 
-        // Native Scroll Zoom Processing Engine
-        function initializeScrollZoom(targetElementId) {
+        // Advanced Dual-Engine Mobile Touch & Desktop Boundary-Locked Pan Module
+        function initializeFlexibleZoomEngine(targetElementId) {
             const target = document.getElementById(targetElementId);
-            let scale = 1;
+            let scale = 1, currentScale = 1;
+            let startX = 0, startY = 0, posX = 0, posY = 0;
+            let initialPinchDist = 0;
+            let isDragging = false;
 
-            const zoomEngine = (e) => {
+            // --- DESKTOP WHEEL EVENT ---
+            const wheelZoom = (e) => {
                 e.preventDefault();
-                const factor = e.deltaY < 0 ? 0.15 : -0.15;
+                const factor = e.deltaY < 0 ? 0.2 : -0.2;
                 scale = Math.min(Math.max(1, scale + factor), 4);
-                target.style.transform = `scale(${scale})`;
-                target.style.cursor = scale > 1 ? 'zoom-out' : 'zoom-in';
+                if (scale === 1) { posX = 0; posY = 0; }
+                constrainAndApply();
             };
+
+            const getDistance = (t1, t2) => Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
+            // --- UNIFIED START LOGIC (MOUSE & TOUCH) ---
+            const handleStart = (e) => {
+                const isTouch = e.type === 'touchstart';
+                const touches = isTouch ? e.touches : null;
+
+                if (!isTouch && e.button !== 0) return; // Ignore non-left click down on desktop
+
+                if (!isTouch && scale > 1) {
+                    isDragging = true;
+                    startX = e.clientX - posX;
+                    startY = e.clientY - posY;
+                    target.style.cursor = 'grabbing';
+                } else if (isTouch) {
+                    if (touches.length === 1 && scale > 1) {
+                        isDragging = true;
+                        startX = touches[0].clientX - posX;
+                        startY = touches[0].clientY - posY;
+                    } else if (touches.length === 2) {
+                        isDragging = false; // Kill drag matrix to prioritize scaling operations
+                        initialPinchDist = getDistance(touches[0], touches[1]);
+                        currentScale = scale;
+                    }
+                }
+            };
+
+            // --- UNIFIED MOVE LOGIC (MOUSE & TOUCH) ---
+            const handleMove = (e) => {
+                const isTouch = e.type === 'touchmove';
+                const touches = isTouch ? e.touches : null;
+
+                if (isDragging && scale > 1) {
+                    const clientX = isTouch ? touches[0].clientX : e.clientX;
+                    const clientY = isTouch ? touches[0].clientY : e.clientY;
+                    posX = clientX - startX;
+                    posY = clientY - startY;
+                    constrainAndApply();
+                } else if (isTouch && touches.length === 2) {
+                    const currentDist = getDistance(touches[0], touches[1]);
+                    const factor = currentDist / initialPinchDist;
+                    scale = Math.min(Math.max(1, currentScale * factor), 4);
+                    if (scale === 1) { posX = 0; posY = 0; }
+                    constrainAndApply();
+                }
+            };
+
+            // --- UNIFIED END LOGIC ---
+            const handleEnd = () => {
+                isDragging = false;
+                target.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+            };
+
+            function constrainAndApply() {
+                if (scale > 1) {
+                    const rect = target.getBoundingClientRect();
+                    const maxW = (rect.width - window.innerWidth) / 2;
+                    const maxH = (rect.height - window.innerHeight) / 2;
+
+                    if (maxW > 0) posX = Math.min(Math.max(posX, -maxW), maxW);
+                    if (maxH > 0) posY = Math.min(Math.max(posY, -maxH), maxH);
+                } else {
+                    posX = 0; posY = 0;
+                }
+                target.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            }
 
             return {
                 activate: () => {
-                    scale = 1;
-                    target.style.transform = 'scale(1)';
-                    target.style.transformOrigin = 'center center';
+                    scale = 1; posX = 0; posY = 0;
+                    target.style.transform = 'none';
                     target.style.cursor = 'zoom-in';
-                    target.parentNode.addEventListener('wheel', zoomEngine, { passive: false });
+
+                    target.parentNode.addEventListener('wheel', wheelZoom, { passive: false });
+
+                    // Desktop Listeners
+                    target.addEventListener('mousedown', handleStart);
+                    window.addEventListener('mousemove', handleMove);
+                    window.addEventListener('mouseup', handleEnd);
+
+                    // Mobile Native Touch Multi-mesh Listeners
+                    target.addEventListener('touchstart', handleStart, { passive: true });
+                    target.addEventListener('touchmove', handleMove, { passive: true });
+                    target.addEventListener('touchend', handleEnd, { passive: true });
                 },
                 deactivate: () => {
-                    target.parentNode.removeEventListener('wheel', zoomEngine);
-                    scale = 1;
-                    target.style.transform = 'scale(1)';
+                    target.parentNode.removeEventListener('wheel', wheelZoom);
+
+                    target.removeEventListener('mousedown', handleStart);
+                    window.removeEventListener('mousemove', handleMove);
+                    window.removeEventListener('mouseup', handleEnd);
+
+                    target.removeEventListener('touchstart', handleStart);
+                    target.removeEventListener('touchmove', handleMove);
+                    target.removeEventListener('touchend', handleEnd);
+
+                    scale = 1; posX = 0; posY = 0;
+                    target.style.transform = 'none';
                 }
             };
         }
 
-        // Modal Display Routing Config
         const deskModal = document.getElementById('desk-modal');
         const galleryModal = document.getElementById('gallery-modal');
 
-        const deskZoom = initializeScrollZoom('zoom-desk-img');
-        const galleryZoom = initializeScrollZoom('zoom-gallery-img');
+        const deskZoom = initializeFlexibleZoomEngine('zoom-desk-img');
+        const galleryZoom = initializeFlexibleZoomEngine('zoom-gallery-img');
 
-        // Dynamic Gallery State Pipeline Engine
         const photoAssets = window.photoAssets || ['photography/desk-setup.png'];
         let currentPhotoIndex = 0;
 
@@ -448,11 +775,25 @@
             galleryImg.src = photoAssets[currentPhotoIndex];
             const displayIndex = String(currentPhotoIndex + 1).padStart(2, '0');
             const displayTotal = String(photoAssets.length).padStart(2, '0');
-            galleryCounter.innerText = `${displayIndex} / ${displayTotal} // Use scroll wheel to zoom`;
-            galleryImg.style.transform = 'scale(1)';
+            galleryCounter.innerText = `${displayIndex} / ${displayTotal}`;
+            galleryZoom.activate(); // Reset transformation matrix on image switch
         }
 
-        // Next/Prev Triggers
+        // Horizontal Swipe Interaction Pipeline Engine for Mobile Gallery Navigation
+        let swipeStartX = 0;
+        galleryModal.addEventListener('touchstart', (e) => { swipeStartX = e.touches[0].clientX; }, { passive: true });
+        galleryModal.addEventListener('touchend', (e) => {
+            const diffX = e.changedTouches[0].clientX - swipeStartX;
+            if (Math.abs(diffX) > 60) { // Throttled activation threshold pixel distance
+                if (diffX > 0) {
+                    currentPhotoIndex = (currentPhotoIndex - 1 + photoAssets.length) % photoAssets.length;
+                } else {
+                    currentPhotoIndex = (currentPhotoIndex + 1) % photoAssets.length;
+                }
+                syncGalleryView();
+            }
+        }, { passive: true });
+
         document.getElementById('next-photo').addEventListener('click', (e) => {
             e.stopPropagation();
             currentPhotoIndex = (currentPhotoIndex + 1) % photoAssets.length;
@@ -465,7 +806,6 @@
             syncGalleryView();
         });
 
-        // Desk Activation
         document.getElementById('trigger-desk').addEventListener('click', () => {
             document.body.classList.add('no-scroll');
             deskModal.classList.remove('hidden');
@@ -477,13 +817,17 @@
             deskZoom.deactivate();
         });
 
-        // Gallery Activation
+        // Native Tap Router configuration for non-hover environments
+        const routeCardAction = (targetUrl) => { if (window.innerWidth < 768) window.open(targetUrl, '_blank'); };
+        document.getElementById('spotify-link').parentNode.addEventListener('click', (e) => {
+            if (e.target.id !== 'spotify-link') routeCardAction(document.getElementById('spotify-link').href);
+        });
+
         document.getElementById('trigger-gallery').addEventListener('click', () => {
             document.body.classList.add('no-scroll');
             galleryModal.classList.remove('hidden');
             currentPhotoIndex = 0;
             syncGalleryView();
-            galleryZoom.activate();
         });
         document.getElementById('close-gallery').addEventListener('click', () => {
             document.body.classList.remove('no-scroll');
@@ -491,7 +835,6 @@
             galleryZoom.deactivate();
         });
 
-        // Global ESC Escape Interceptor
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.body.classList.remove('no-scroll');
@@ -502,7 +845,7 @@
             }
         });
 
-        // Live Telemetry Spotify API Fetch Router
+        // Telemetry
         async function streamLivePlayback() {
             const statusContainer = document.getElementById('spotify-status');
             const linkElement = document.getElementById('spotify-link');
@@ -515,40 +858,33 @@
                 const data = await res.json();
 
                 if (data.isPlaying) {
-                    // LIVE STATE: Route straight to the active Spotify stream
                     if (data.songUrl) linkElement.href = data.songUrl;
-
                     hoverTextElement.innerHTML = `Wanna listen along on Spotify?<br><br>Click here to open track`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden">
                             ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
-                            <div class="min-w-0 flex flex-col justify-center">
+                            <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="text-cream-accent dark:text-tactile-accent animate-pulse font-bold text-[10px] uppercase tracking-widest block mb-0.5">• Live Now</span>
                                 <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
                                 <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
-                                <p class="text-[9px] font-mono opacity-40 uppercase tracking-wider truncate">${data.albumName}</p>
                             </div>
                         </div>
                     `;
                 } else {
-                    // IDLE STATE: Fall back to your curated YouTube Music link
                     linkElement.href = "https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R";
-
                     hoverTextElement.innerHTML = `Track paused. Listen to my favorite playlist on YouTube Music?<br><br>Click here`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden opacity-60">
                             ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
-                            <div class="min-w-0 flex flex-col justify-center">
+                            <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="opacity-50 text-[10px] uppercase tracking-widest block mb-0.5">• Last Played</span>
                                 <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
                                 <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
-                                <p class="text-[9px] font-mono opacity-40 uppercase tracking-wider truncate">${data.albumName}</p>
                             </div>
                         </div>
                     `;
                 }
             } catch (err) {
-                // current favourite playlist to recommend to everyone I guess?
                 linkElement.href = "https://music.youtube.com/playlist?list=PLVGnlnIiWk4CPQyq7Z8hlWG2Xqx3dQP0R";
                 hoverTextElement.innerHTML = `In the meantime, I got one of my favourite playlists for you <br><br> Click here`;
                 statusContainer.innerHTML = `
@@ -557,8 +893,60 @@
             }
         }
 
-        // Initialize telemetry processing immediately upon runtime load
         streamLivePlayback();
+
+        // Contact Drawer Toggle Engine
+        const contactTriggerBtn = document.getElementById('contact-trigger-btn');
+        const contactDrawer = document.getElementById('contact-drawer');
+
+        contactTriggerBtn.addEventListener('click', () => {
+            contactDrawer.classList.toggle('hidden');
+            contactTriggerBtn.innerText = contactDrawer.classList.contains('hidden') ? '[ Want to contact me? Click here ]' : '[ Close Terminal Drop Box ]';
+            if (!contactDrawer.classList.contains('hidden')) {
+                contactDrawer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        // Edge-Routed Message Dispatcher with Honeypot Matrix Protection
+        const terminalForm = document.getElementById('terminal-form');
+        const formStatus = document.getElementById('form-status');
+        const formSubmitBtn = document.getElementById('form-submit-btn');
+
+        terminalForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formSubmitBtn.disabled = true;
+            formSubmitBtn.innerText = 'Transmitting...';
+
+            const formData = new FormData(terminalForm);
+
+            // Build simple object payload to dispatch over the pipeline
+            const payload = {
+                name: formData.get('name'),
+                contact: formData.get('contact'),
+                message: formData.get('message'),
+                system_integrity_hash: formData.get('system_integrity_hash') // Evaluated at edge border
+            };
+
+            const WORKER_ENDPOINT = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
+
+            try {
+                const response = await fetch(WORKER_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error();
+
+                terminalForm.classList.add('hidden');
+                formStatus.classList.remove('hidden');
+                formStatus.innerText = '[ System Status: Message transmitted to Kunal successfully ]';
+            } catch (err) {
+                formSubmitBtn.disabled = false;
+                formSubmitBtn.innerText = 'Transmit Message';
+                alert('Transmission failed. Please reach out directly via email.');
+            }
+        });
     </script>
 </body>
 
