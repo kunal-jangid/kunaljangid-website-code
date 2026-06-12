@@ -376,6 +376,30 @@ document.addEventListener('mouseup', () => {
     document.body.style.cursor = 'default';
 });
 
+document.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    document.dispatchEvent(mouseEvent);
+}, { passive: false });
+
+document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    document.dispatchEvent(mouseEvent);
+    e.preventDefault(); // Prevent scrolling
+}, { passive: false });
+
+document.addEventListener('touchend', (e) => {
+    const mouseEvent = new MouseEvent('mouseup', {});
+    document.dispatchEvent(mouseEvent);
+}, { passive: false });
+
 document.addEventListener('wheel', (e) => {
     const delta = e.deltaY * -0.0015;
     const newZoom = Math.min(Math.max(0.1, graphState.zoom + delta), 2.5);
