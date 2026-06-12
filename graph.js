@@ -232,18 +232,41 @@ const themeConfig = [
 ];
 
 function initTheme() {
-    const savedIndex = localStorage.getItem('portfolio-theme-state') || 0;
-    const activeTheme = themeConfig[savedIndex] || themeConfig[0];
-    const root = document.documentElement;
-
-    root.style.setProperty('--bg-color', activeTheme.bg);
-    root.style.setProperty('--text-color', activeTheme.text);
-    root.style.setProperty('--border-color', activeTheme.border);
-    root.style.setProperty('--accent-color', activeTheme.accent);
+    let savedIndex = parseInt(localStorage.getItem('portfolio-theme-state')) || 0;
     
-    graphState.accentColor = activeTheme.accent;
-    CLUSTER_COLORS.project = activeTheme.accent;
-    console.log(`Graph Theme Sync: Initialized (${activeTheme.name})`);
+    function applyTheme(index) {
+        const activeTheme = themeConfig[index] || themeConfig[0];
+        const root = document.documentElement;
+
+        root.style.setProperty('--bg-color', activeTheme.bg);
+        root.style.setProperty('--text-color', activeTheme.text);
+        root.style.setProperty('--border-color', activeTheme.border);
+        root.style.setProperty('--accent-color', activeTheme.accent);
+        
+        graphState.accentColor = activeTheme.accent;
+        CLUSTER_COLORS.project = activeTheme.accent;
+        
+        // Dynamically update the UI button colors
+        const toggleBtn = document.getElementById('theme-toggle');
+        if(toggleBtn) {
+            toggleBtn.style.color = activeTheme.text;
+            toggleBtn.style.borderColor = activeTheme.text;
+        }
+    }
+
+    // Initial application
+    applyTheme(savedIndex);
+    console.log(`Graph Theme Sync: Initialized (${themeConfig[savedIndex].name})`);
+
+    // Setup Toggle Listener
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            savedIndex = (savedIndex + 1) % themeConfig.length;
+            localStorage.setItem('portfolio-theme-state', savedIndex);
+            applyTheme(savedIndex);
+        });
+    }
 }
 
 function initConnections() {
