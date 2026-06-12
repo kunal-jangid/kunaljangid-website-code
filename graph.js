@@ -4,7 +4,8 @@ const graphState = {
     connections: [],
     zoom: 1,
     offset: { x: 0, y: 0 },
-    isDragging: false
+    isDragging: false,
+    accentColor: '#C2441C'
 };
 
 const projects = [
@@ -25,31 +26,54 @@ function spawnNodes() {
             <h3 class="font-bold text-sm">${p.title}</h3>
         `;
         // Random distribution in world space
-        const x = Math.random() * 500 + 100;
-        const y = Math.random() * 500 + 100;
+        const x = Math.random() * 800 + 100;
+        const y = Math.random() * 600 + 100;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
         container.appendChild(node);
-        graphState.nodes.push({ id: p.id, element: node, x, y, vx: 0, vy: 0 });
+        graphState.nodes.push({ 
+            id: p.id, 
+            element: node, 
+            x, y, 
+            vx: 0, vy: 0,
+            lastX: x, lastY: y
+        });
     });
 }
 
+const themeConfig = [
+    { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#C2441C' },
+    { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
+    { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
+    { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
+];
+
 function initTheme() {
-    const savedTheme = localStorage.getItem('portfolio-theme-state') || 0;
-    console.log('Graph Theme Sync: Initialized');
+    const savedIndex = localStorage.getItem('portfolio-theme-state') || 0;
+    const activeTheme = themeConfig[savedIndex] || themeConfig[0];
+    const root = document.documentElement;
+
+    root.style.setProperty('--bg-color', activeTheme.bg);
+    root.style.setProperty('--text-color', activeTheme.text);
+    root.style.setProperty('--border-color', activeTheme.border);
+    root.style.setProperty('--accent-color', activeTheme.accent);
+    
+    graphState.accentColor = activeTheme.accent;
+    console.log(`Graph Theme Sync: Initialized (${activeTheme.name})`);
 }
 
 function initConnections() {
-    // Connect nodes in a ring or random pattern for chaos
     for (let i = 0; i < graphState.nodes.length; i++) {
         const target = (i + 1) % graphState.nodes.length;
         graphState.connections.push({ from: i, to: target });
     }
 }
 
-// Drag Logic
+// Interaction State
 let activeNode = null;
+let isPanning = false;
+let startPan = { x: 0, y: 0 };
 let dragOffset = { x: 0, y: 0 };
 
 document.addEventListener('mousedown', (e) => {
@@ -57,25 +81,38 @@ document.addEventListener('mousedown', (e) => {
     if (card) {
         activeNode = graphState.nodes.find(n => n.element === card);
         const rect = card.getBoundingClientRect();
-        dragOffset.x = e.clientX - rect.left;
-        dragOffset.y = e.clientY - rect.top;
+        dragOffset.x = (e.clientX - rect.left) / graphState.zoom;
+        dragOffset.y = (e.clientY - rect.top) / graphState.zoom;
         card.style.cursor = 'grabbing';
         card.style.zIndex = 1000;
         card.classList.add('dragging');
+    } else {
+        isPanning = true;
+        startPan.x = e.clientX - graphState.offset.x;
+        startPan.y = e.clientY - graphState.offset.y;
+        document.body.style.cursor = 'grabbing';
     }
 });
 
 document.addEventListener('mousemove', (e) => {
     if (activeNode) {
-        // Simple 1:1 screen to world for now (panning added in Task 5)
-        activeNode.x = e.clientX - dragOffset.x;
-        activeNode.y = e.clientY - dragOffset.y;
+        activeNode.x = (e.clientX - graphState.offset.x) / graphState.zoom - dragOffset.x;
+        activeNode.y = (e.clientY - graphState.offset.y) / graphState.zoom - dragOffset.y;
         
         activeNode.element.style.left = `${activeNode.x}px`;
         activeNode.element.style.top = `${activeNode.y}px`;
         
-        // Fluid distortion effect (skew/scale based on velocity)
-        activeNode.element.style.transform = `scale(1.05) skew(${Math.sin(Date.now() / 100) * 2}deg)`;
+        // Velocity-based distortion
+        const vx = activeNode.x - activeNode.lastX;
+        const skew = Math.min(Math.max(vx * 0.5, -15), 15);
+        activeNode.element.style.transform = `scale(1.05) skewX(${skew}deg)`;
+        
+        activeNode.lastX = activeNode.x;
+        activeNode.lastY = activeNode.y;
+    } else if (isPanning) {
+        graphState.offset.x = e.clientX - startPan.x;
+        graphState.offset.y = e.clientY - startPan.y;
+        updateTransform();
     }
 });
 
@@ -87,7 +124,33 @@ document.addEventListener('mouseup', () => {
         activeNode.element.classList.remove('dragging');
         activeNode = null;
     }
+    isPanning = false;
+    document.body.style.cursor = 'default';
 });
+
+document.addEventListener('wheel', (e) => {
+    const delta = e.deltaY * -0.001;
+    const newZoom = Math.min(Math.max(0.2, graphState.zoom + delta), 2);
+    
+    // Zoom toward mouse position
+    const rect = document.getElementById('viewport').getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    const worldX = (mouseX - graphState.offset.x) / graphState.zoom;
+    const worldY = (mouseY - graphState.offset.y) / graphState.zoom;
+    
+    graphState.zoom = newZoom;
+    graphState.offset.x = mouseX - worldX * graphState.zoom;
+    graphState.offset.y = mouseY - worldY * graphState.zoom;
+    
+    updateTransform();
+}, { passive: false });
+
+function updateTransform() {
+    const container = document.getElementById('node-container');
+    container.style.transform = `translate(${graphState.offset.x}px, ${graphState.offset.y}px) scale(${graphState.zoom})`;
+}
 
 function drawThreads() {
     const canvas = document.getElementById('canvas-bg');
@@ -95,24 +158,28 @@ function drawThreads() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Get accent color from CSS variables
-    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#C2441C';
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 1;
-    ctx.globalAlpha = 0.4;
-
+    const time = Date.now() * 0.001;
+    
     graphState.connections.forEach(conn => {
         const nodeA = graphState.nodes[conn.from];
         const nodeB = graphState.nodes[conn.to];
         
-        // Calculate elastic sagging midpoint
-        const cpX = (nodeA.x + nodeB.x) / 2 + 50; // Slight horizontal offset
-        const cpY = (nodeA.y + nodeB.y) / 2 + 100; // Vertical sag
+        // Convert world to screen for canvas
+        const ax = nodeA.x * graphState.zoom + graphState.offset.x + 125 * graphState.zoom;
+        const ay = nodeA.y * graphState.zoom + graphState.offset.y + 50 * graphState.zoom;
+        const bx = nodeB.x * graphState.zoom + graphState.offset.x + 125 * graphState.zoom;
+        const by = nodeB.y * graphState.zoom + graphState.offset.y + 50 * graphState.zoom;
         
+        const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * 50;
+        const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * 50 + 50;
+        
+        // Spectrum shift
+        ctx.strokeStyle = `hsla(${(time * 50 + conn.from * 20) % 360}, 70%, 50%, 0.4)`;
+        ctx.lineWidth = 2 * graphState.zoom;
+
         ctx.beginPath();
-        // Offset by card center (approx 125x50)
-        ctx.moveTo(nodeA.x + 125, nodeA.y + 50);
-        ctx.quadraticCurveTo(cpX + 125, cpY, nodeB.x + 125, nodeB.y + 50);
+        ctx.moveTo(ax, ay);
+        ctx.quadraticCurveTo(cpX, cpY, bx, by);
         ctx.stroke();
     });
     
@@ -124,6 +191,7 @@ window.addEventListener('DOMContentLoaded', () => {
     resizeCanvas();
     spawnNodes();
     initConnections();
+    updateTransform();
     drawThreads();
 });
 
@@ -134,3 +202,4 @@ function resizeCanvas() {
 }
 
 window.addEventListener('resize', resizeCanvas);
+
