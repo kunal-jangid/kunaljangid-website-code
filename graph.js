@@ -147,7 +147,7 @@ async function spawnMusicNodes() {
         }
         
         // Limit to 5 unique tracks to prevent the cluster from becoming too dense
-        tracksToRender = uniqueTracks.slice(0, 5);
+        tracksToRender = uniqueTracks.slice(0, 9);
         
         tracksToRender.forEach((trackData, i) => {
             // Ensure a fallback cover exists
