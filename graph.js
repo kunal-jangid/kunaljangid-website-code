@@ -360,9 +360,9 @@ function drawGrid(ctx, canvas, time) {
 }
 
 const NODE_OFFSETS = {
-    project: { w: 150, h: 75 },
-    music: { w: 160, h: 50 },
-    photo: { w: 100, h: 100 }
+    project: { x: 150, y: 75 },
+    music: { x: 90, y: 90 }, // Updated for 180x180 circle
+    photo: { x: 100, y: 100 }
 };
 
 function drawThreads() {
@@ -407,10 +407,10 @@ function drawThreads() {
         const offsetA = NODE_OFFSETS[nodeA.cluster];
         const offsetB = NODE_OFFSETS[nodeB.cluster];
 
-        const ax = nodeA.x * zoom + offX + offsetA.w * zoom;
-        const ay = nodeA.y * zoom + offY + offsetA.h * zoom;
-        const bx = nodeB.x * zoom + offX + offsetB.w * zoom;
-        const by = nodeB.y * zoom + offY + offsetB.h * zoom;
+        const ax = nodeA.x * zoom + offX + offsetA.x * zoom;
+        const ay = nodeA.y * zoom + offY + offsetA.y * zoom;
+        const bx = nodeB.x * zoom + offX + offsetB.x * zoom;
+        const by = nodeB.y * zoom + offY + offsetB.y * zoom;
 
         // Skip if both ends are off-screen
         const buffer = 200 * zoom;
