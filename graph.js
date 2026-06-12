@@ -71,9 +71,9 @@ function spawnNodes() {
                 ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
             </div>
         `;
-        // Wider distribution in world space
-        const x = Math.random() * 3000 + 1000;
-        const y = Math.random() * 3000 + 1000;
+        // More centered initial distribution in world space
+        const x = Math.random() * 1000 + 2000;
+        const y = Math.random() * 1000 + 2000;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
@@ -87,6 +87,10 @@ function spawnNodes() {
         });
     });
     spawnDecorativeNodes();
+    
+    // Initial center view
+    graphState.offset.x = window.innerWidth / 2 - 2500;
+    graphState.offset.y = window.innerHeight / 2 - 2500;
 }
 
 const themeConfig = [

@@ -9,7 +9,7 @@
         :root { --bg-color: #EEE9DF; --text-color: #2B323F; --border-color: #111111; --accent-color: #C2441C; }
         body { background-color: var(--bg-color); color: var(--text-color); margin: 0; overflow: hidden; font-family: sans-serif; }
         #canvas-bg { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
-        #node-container { position: relative; width: 5000px; height: 5000px; z-index: 10; cursor: grab; }
+        #node-container { position: relative; width: 5000px; height: 5000px; z-index: 10; cursor: grab; transform-origin: 0 0; }
         #node-container:active { cursor: grabbing; }
         
         .node-card { 
@@ -19,11 +19,12 @@
             background: var(--bg-color); 
             width: 300px; 
             user-select: none; 
-            transition: box-shadow 0.3s ease, transform 0.1s ease-out; 
             box-shadow: 4px 4px 0px var(--border-color);
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            /* Removed transition: transform to ensure perfect canvas sync */
+            transition: box-shadow 0.3s ease;
         }
         
         .node-card.dragging { 
