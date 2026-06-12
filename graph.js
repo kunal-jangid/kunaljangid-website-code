@@ -40,10 +40,46 @@ function initTheme() {
     console.log('Graph Theme Sync: Initialized');
 }
 
+function initConnections() {
+    // Connect nodes in a ring or random pattern for chaos
+    for (let i = 0; i < graphState.nodes.length; i++) {
+        const target = (i + 1) % graphState.nodes.length;
+        graphState.connections.push({ from: i, to: target });
+    }
+}
+
+function drawThreads() {
+    const canvas = document.getElementById('canvas-bg');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Get accent color from CSS variables
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#C2441C';
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.4;
+
+    graphState.connections.forEach(conn => {
+        const nodeA = graphState.nodes[conn.from];
+        const nodeB = graphState.nodes[conn.to];
+        
+        ctx.beginPath();
+        // Offset by card center (approx 125x50)
+        ctx.moveTo(nodeA.x + 125, nodeA.y + 50);
+        ctx.lineTo(nodeB.x + 125, nodeB.y + 50);
+        ctx.stroke();
+    });
+    
+    requestAnimationFrame(drawThreads);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     initTheme();
     resizeCanvas();
     spawnNodes();
+    initConnections();
+    drawThreads();
 });
 
 function resizeCanvas() {
