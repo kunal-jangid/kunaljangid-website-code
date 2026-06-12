@@ -53,11 +53,20 @@ const projects = [
 ];
 
 const musicData = [
-    { id: 'm1', title: 'Spotify Vibes', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/6gB4IBcjYGSxnUat8Ue6BT' },
-    { id: 'm2', title: 'YT Music Mix', provider: 'youtube', url: 'https://www.youtube.com/embed/videoseries?list=LRSRcjL6Be-v-jkzKQ1lmQ9ZnKgFEdeQHja8w' },
-    { id: 'm3', title: 'Deep Focus', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKzbUnY3Yy' },
-    { id: 'm4', title: 'Lo-fi Beats', provider: 'youtube', url: 'https://www.youtube.com/embed/jfKfPfyJRdk' },
-    { id: 'm5', title: 'Coding Session', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb9C7V6rN' }
+    { 
+        id: 'm1', 
+        title: 'Top Tracks', 
+        artist: 'Spotify Playlist', 
+        cover: 'https://i.scdn.co/image/ab67616d0000b2734718e2b124f79d100b51c911',
+        link: 'https://open.spotify.com/playlist/6gB4IBcjYGSxnUat8Ue6BT?si=ed98435bb5934a30' 
+    },
+    { 
+        id: 'm2', 
+        title: 'Top Tracks', 
+        artist: 'YT Music', 
+        cover: 'https://i.scdn.co/image/ab67616d0000b273b75b9f71c4c9527ec3a0d5c2',
+        link: 'https://music.youtube.com/playlist?list=LRSRcjL6Be-v-jkzKQ1lmQ9ZnKgFEdeQHja8w&si=BFqwwrLhMQnuy4Od' 
+    }
 ];
 
 const decorativeNodes = [];
@@ -133,34 +142,28 @@ function spawnProjectNodes() {
 
 function spawnMusicNodes() {
     const container = document.getElementById('node-container');
-    musicData.forEach((m, i) => {
+    musicData.forEach(m => {
         const node = document.createElement('div');
-        node.className = 'node-music group';
+        node.className = 'node-music shadow-2xl group';
         node.innerHTML = `
-            <div class="music-handle"><span>Drag to move</span></div>
-            <iframe 
-                src="${m.url}" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy">
-            </iframe>
+            <div class="vinyl-inner" style="background-image: url('${m.cover}')"></div>
+            <div class="music-info-overlay">
+                <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${m.artist}</span>
+                <h4 class="text-xs font-black leading-tight">${m.title}</h4>
+                <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
+            </div>
         `;
         
-        // Cluster around 2000, 4000
-        const x = 2000 + (Math.random() - 0.5) * 1000;
-        const y = 4000 + (Math.random() - 0.5) * 1000;
+        node.addEventListener('click', () => window.open(m.link, '_blank'));
         
+        // Use existing cluster coordinates (2000, 4000)
+        const x = 2000 + Math.random() * 800 - 400;
+        const y = 4000 + Math.random() * 800 - 400;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
         container.appendChild(node);
-        graphState.nodes.push({
-            id: m.id,
-            cluster: 'music',
-            element: node,
-            x, y,
-            vx: 0, vy: 0,
-            lastX: x, lastY: y
-        });
+        graphState.nodes.push({ id: m.id, element: node, x, y, vx: 0, vy: 0, lastX: x, lastY: y, cluster: 'music' });
     });
 }
 
@@ -259,25 +262,12 @@ let dragOffset = { x: 0, y: 0 };
 document.addEventListener('mousedown', (e) => {
     const card = e.target.closest('.node-card, .node-photo, .node-music');
     if (card) {
-        // For music nodes, only allow dragging via the handle
-        if (card.classList.contains('node-music') && !e.target.closest('.music-handle')) {
-            return;
-        }
-
         activeNode = graphState.nodes.find(n => n.element === card);
         const rect = card.getBoundingClientRect();
         dragOffset.x = (e.clientX - rect.left) / graphState.zoom;
         dragOffset.y = (e.clientY - rect.top) / graphState.zoom;
         
-        if (card.classList.contains('node-music')) {
-            const handle = card.querySelector('.music-handle');
-            if (handle) handle.style.cursor = 'grabbing';
-            // Disable iframe pointer events while dragging
-            const iframe = card.querySelector('iframe');
-            if (iframe) iframe.style.pointerEvents = 'none';
-        } else {
-            card.style.cursor = 'grabbing';
-        }
+        card.style.cursor = 'grabbing';
         
         card.style.zIndex = 1000;
         card.classList.add('dragging');
@@ -314,15 +304,7 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
     if (activeNode) {
         const card = activeNode.element;
-        if (card.classList.contains('node-music')) {
-            const handle = card.querySelector('.music-handle');
-            if (handle) handle.style.cursor = 'grab';
-            // Re-enable iframe pointer events
-            const iframe = card.querySelector('iframe');
-            if (iframe) iframe.style.pointerEvents = 'auto';
-        } else {
-            card.style.cursor = 'grab';
-        }
+        card.style.cursor = 'grab';
         
         card.style.zIndex = 10;
         card.style.transform = 'scale(1)';
