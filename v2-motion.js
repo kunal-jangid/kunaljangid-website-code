@@ -1,4 +1,82 @@
 // v2-motion.js
+
+class FluidEngine {
+    constructor(v2Motion) { 
+        this.v2Motion = v2Motion;
+        console.log('Liquid Engine Started'); 
+    }
+    destroy() { console.log('Liquid Engine Destroyed'); }
+}
+
+class MeshEngine {
+    constructor(v2Motion) { 
+        this.v2Motion = v2Motion;
+        console.log('Mesh Engine Started'); 
+    }
+    destroy() { console.log('Mesh Engine Destroyed'); }
+}
+
+const BackgroundController = {
+    mode: 'fluid',
+    activeEngine: null,
+    v2Motion: null,
+
+    init(v2Motion) {
+        this.v2Motion = v2Motion;
+        this.mode = localStorage.getItem('background-mode') || 'fluid';
+        this.startEngine();
+        this.updateToggleUI();
+        this.bindEvents();
+    },
+
+    bindEvents() {
+        const fluidToggle = document.getElementById('bg-toggle-fluid');
+        const meshToggle = document.getElementById('bg-toggle-mesh');
+
+        if (fluidToggle) {
+            fluidToggle.addEventListener('click', () => this.setMode('fluid'));
+        }
+        if (meshToggle) {
+            meshToggle.addEventListener('click', () => this.setMode('mesh'));
+        }
+    },
+
+    setMode(newMode) {
+        if (this.mode === newMode) return;
+        this.mode = newMode;
+        localStorage.setItem('background-mode', this.mode);
+        this.updateToggleUI();
+        this.startEngine();
+    },
+
+    updateToggleUI() {
+        const fluidToggle = document.getElementById('bg-toggle-fluid');
+        const meshToggle = document.getElementById('bg-toggle-mesh');
+
+        if (fluidToggle && meshToggle) {
+            if (this.mode === 'fluid') {
+                fluidToggle.style.opacity = '1';
+                meshToggle.style.opacity = '0.3';
+            } else {
+                fluidToggle.style.opacity = '0.3';
+                meshToggle.style.opacity = '1';
+            }
+        }
+    },
+
+    startEngine() {
+        if (this.activeEngine) {
+            this.activeEngine.destroy();
+        }
+
+        if (this.mode === 'fluid') {
+            this.activeEngine = new FluidEngine(this.v2Motion);
+        } else {
+            this.activeEngine = new MeshEngine(this.v2Motion);
+        }
+    }
+};
+
 const v2Motion = {
     accentColor: '',
 
@@ -7,93 +85,44 @@ const v2Motion = {
         this.initThemeEngine();
         this.initMagneticCursor();
         this.initRevealAnimations();
-        this.initFluidPaths();
-    },
-
-    initFluidPaths() {
-        const canvas = document.getElementById('fluid-paths');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        const paths = [];
-        
-        const resize = () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        };
-        
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Initialize accent color
-        this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
-
-        // Initialize 3 elegant paths with yPercent for resize-stability
-        for (let i = 0; i < 3; i++) {
-            paths.push({
-                yPercent: Math.random(),
-                length: Math.random() * 0.5 + 0.5,
-                amplitude: Math.random() * 50 + 50,
-                speed: Math.random() * 0.01 + 0.005,
-                offset: Math.random() * Math.PI * 2,
-                thickness: Math.random() * 2 + 1
-            });
-        }
-
-        const animate = (time) => {
-            ctx.clearRect(0, 0, width, height);
-            
-            // Use cached accent color and move state setters outside the loop
-            ctx.strokeStyle = this.accentColor;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.globalAlpha = 0.15; // Low opacity for subtle look
-
-            paths.forEach((path, i) => {
-                const t = time * path.speed + path.offset;
-                const pathY = path.yPercent * height;
-                
-                ctx.beginPath();
-                ctx.lineWidth = path.thickness;
-
-                const startY = pathY + Math.sin(t) * path.amplitude;
-                ctx.moveTo(-100, startY);
-
-                // Draw a complex sweeping curve across the screen
-                ctx.bezierCurveTo(
-                    width * 0.3, startY + Math.cos(t * 0.8) * 200,
-                    width * 0.7, startY + Math.sin(t * 1.2) * 200,
-                    width + 100, pathY + Math.sin(t * 0.5) * path.amplitude
-                );
-                
-                ctx.stroke();
-            });
-
-            requestAnimationFrame(animate);
-        };
-        requestAnimationFrame(animate);
+        BackgroundController.init(this);
     },
 
     initThemeEngine() {
-        const themeToggle = document.getElementById('theme-toggle');
-        if (!themeToggle || !document.startViewTransition) return;
+        // Initialize accent color
+        this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
 
-        // Capture click coordinates for ripple origin
-        themeToggle.addEventListener('click', (e) => {
-            document.documentElement.style.setProperty('--click-x', `${e.clientX}px`);
-            document.documentElement.style.setProperty('--click-y', `${e.clientY}px`);
-        }, { capture: true });
+        const themeToggle = document.getElementById('theme-toggle');
+        if (!themeToggle) return;
+
+        // Capture click coordinates for ripple origin if transitions are supported
+        if (document.startViewTransition) {
+            themeToggle.addEventListener('click', (e) => {
+                document.documentElement.style.setProperty('--click-x', `${e.clientX}px`);
+                document.documentElement.style.setProperty('--click-y', `${e.clientY}px`);
+            }, { capture: true });
+        }
 
         // Intercept the global renderThemePipeline
         const originalRender = window.renderThemePipeline;
         if (typeof originalRender === 'function') {
             window.renderThemePipeline = (index) => {
-                document.startViewTransition(() => {
+                const updateTheme = () => {
                     originalRender(index);
                     // Update cached accent color after theme change
                     this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
-                });
+                    
+                    // Notify active engine if it supports theme changes
+                    if (BackgroundController.activeEngine && typeof BackgroundController.activeEngine.onThemeChange === 'function') {
+                        BackgroundController.activeEngine.onThemeChange(this.accentColor);
+                    }
+                };
+
+                if (document.startViewTransition) {
+                    document.startViewTransition(updateTheme);
+                } else {
+                    updateTheme();
+                }
             };
         }
     },
@@ -145,7 +174,7 @@ const v2Motion = {
             });
         }, { threshold: 0.1 });
 
-        const targets = document.querySelectorAll('header, section h2, .group, footer');
+        const targets = document.querySelectorAll('header, section h2, .group, footer, .reveal-target');
         targets.forEach(el => {
             el.classList.add('reveal-init');
             observer.observe(el);
