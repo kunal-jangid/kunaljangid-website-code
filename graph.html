@@ -184,6 +184,10 @@
                 width: 140px;
                 height: 140px;
             }
+            #mobile-nav button {
+                color: var(--text-color);
+                background: transparent;
+            }
         }
     </style>
 </head>
@@ -199,6 +203,12 @@
         <button id="theme-toggle" class="px-4 py-2 text-xs font-mono uppercase tracking-widest border border-current rounded shadow-sm bg-transparent transition-all duration-300 hover:scale-105 active:scale-95" style="color: var(--text-color); border-color: var(--text-color);">
             Toggle Theme
         </button>
+    </div>
+
+    <div id="mobile-nav" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex gap-2 p-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-color)]/80 backdrop-blur-md shadow-2xl">
+        <button onclick="smoothNavigate(2500, 2500, 0.8)" class="px-4 py-2 text-[10px] font-bold uppercase tracking-tighter border border-[var(--border-color)] rounded-full hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] transition-all">Projects</button>
+        <button onclick="smoothNavigate(2000, 4000, 0.8)" class="px-4 py-2 text-[10px] font-bold uppercase tracking-tighter border border-[var(--border-color)] rounded-full hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] transition-all">Music</button>
+        <button onclick="smoothNavigate(4000, 2000, 0.8)" class="px-4 py-2 text-[10px] font-bold uppercase tracking-tighter border border-[var(--border-color)] rounded-full hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] transition-all">Photos</button>
     </div>
 
     <!-- SVG Filter for Fluid Distortion -->
