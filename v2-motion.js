@@ -449,6 +449,7 @@ const v2Motion = {
     },
 
     initMagneticCursor() {
+        if (window.innerWidth < 768) return; // Disable on mobile
         const cursor = document.createElement('div');
         cursor.className = 'custom-cursor';
         document.body.appendChild(cursor);
