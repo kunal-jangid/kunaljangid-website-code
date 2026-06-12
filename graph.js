@@ -8,6 +8,12 @@ const graphState = {
     accentColor: '#C2441C'
 };
 
+const CLUSTER_COLORS = {
+    project: '#C2441C',
+    music: '#1DB954',
+    photo: '#ffffff'
+};
+
 const projects = [
     { 
         id: 'p1', 
@@ -73,8 +79,25 @@ function spawnNodes() {
     spawnDecorativeNodes();
     
     // Initial center view
-    graphState.offset.x = window.innerWidth / 2 - 2500;
-    graphState.offset.y = window.innerHeight / 2 - 2500;
+    centerViewport();
+}
+
+function centerViewport() {
+    // Focus on the area encompassing all three clusters
+    // Clusters: (2500, 2500), (2000, 4000), (4000, 2000)
+    // Roughly centered at (2833, 2833)
+    const worldCenterX = 2833;
+    const worldCenterY = 2833;
+    
+    // Calculate zoom to fit all clusters (roughly 4000x4000 space)
+    const padding = 600;
+    const availableWidth = window.innerWidth - padding;
+    const availableHeight = window.innerHeight - padding;
+    const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, 0.8);
+    
+    graphState.zoom = Math.max(0.15, desiredZoom);
+    graphState.offset.x = window.innerWidth / 2 - worldCenterX * graphState.zoom;
+    graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
 }
 
 function spawnProjectNodes() {
@@ -187,6 +210,7 @@ function initTheme() {
     root.style.setProperty('--accent-color', activeTheme.accent);
     
     graphState.accentColor = activeTheme.accent;
+    CLUSTER_COLORS.project = activeTheme.accent;
     console.log(`Graph Theme Sync: Initialized (${activeTheme.name})`);
 }
 
@@ -353,6 +377,12 @@ function drawGrid(ctx, canvas, time) {
     ctx.stroke();
 }
 
+const NODE_OFFSETS = {
+    project: { w: 150, h: 75 },
+    music: { w: 160, h: 50 },
+    photo: { w: 100, h: 100 }
+};
+
 function drawThreads() {
     const canvas = document.getElementById('canvas-bg');
     if (!canvas) return;
@@ -360,22 +390,27 @@ function drawThreads() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     const time = Date.now() * 0.001;
+    const zoom = graphState.zoom;
+    const offX = graphState.offset.x;
+    const offY = graphState.offset.y;
+    const vw = canvas.width;
+    const vh = canvas.height;
     
     drawGrid(ctx, canvas, time);
 
     // Render Decorative Nodes
     decorativeNodes.forEach(dn => {
-        const dx = dn.x * graphState.zoom + graphState.offset.x;
-        const dy = dn.y * graphState.zoom + graphState.offset.y;
+        const dx = dn.x * zoom + offX;
+        const dy = dn.y * zoom + offY;
         
         // Skip if off-screen
-        if (dx < -50 || dx > canvas.width + 50 || dy < -50 || dy > canvas.height + 50) return;
+        if (dx < -50 || dx > vw + 50 || dy < -50 || dy > vh + 50) return;
 
         const pulse = Math.sin(time + dn.phase) * 0.5 + 0.5;
         ctx.fillStyle = graphState.accentColor;
         ctx.globalAlpha = 0.1 + pulse * 0.2;
         ctx.beginPath();
-        ctx.arc(dx, dy, dn.size * graphState.zoom, 0, Math.PI * 2);
+        ctx.arc(dx, dy, dn.size * zoom, 0, Math.PI * 2);
         ctx.fill();
     });
     ctx.globalAlpha = 1.0;
@@ -386,51 +421,47 @@ function drawThreads() {
         
         if (!nodeA || !nodeB) return;
 
-        // Cluster-specific colors
-        let threadColor = graphState.accentColor;
-        if (nodeA.cluster === 'music') threadColor = '#1DB954';
-        if (nodeA.cluster === 'photo') threadColor = '#ffffff';
+        // Visibility Culling
+        const offsetA = NODE_OFFSETS[nodeA.cluster];
+        const offsetB = NODE_OFFSETS[nodeB.cluster];
 
-        // Cluster-specific offsets (center of the nodes)
-        const getOffset = (node) => {
-            if (node.cluster === 'photo') return { w: 100, h: 100 };
-            if (node.cluster === 'music') return { w: 160, h: 50 };
-            return { w: 150, h: 75 }; // Default for project cards
-        };
+        const ax = nodeA.x * zoom + offX + offsetA.w * zoom;
+        const ay = nodeA.y * zoom + offY + offsetA.h * zoom;
+        const bx = nodeB.x * zoom + offX + offsetB.w * zoom;
+        const by = nodeB.y * zoom + offY + offsetB.h * zoom;
 
-        const offsetA = getOffset(nodeA);
-        const offsetB = getOffset(nodeB);
+        // Skip if both ends are off-screen
+        const buffer = 200 * zoom;
+        if ((ax < -buffer && bx < -buffer) || 
+            (ax > vw + buffer && bx > vw + buffer) || 
+            (ay < -buffer && by < -buffer) || 
+            (ay > vh + buffer && by > vh + buffer)) {
+            return;
+        }
 
-        const ax = nodeA.x * graphState.zoom + graphState.offset.x + offsetA.w * graphState.zoom;
-        const ay = nodeA.y * graphState.zoom + graphState.offset.y + offsetA.h * graphState.zoom;
-        const bx = nodeB.x * graphState.zoom + graphState.offset.x + offsetB.w * graphState.zoom;
-        const by = nodeB.y * graphState.zoom + graphState.offset.y + offsetB.h * graphState.zoom;
+        const threadColor = CLUSTER_COLORS[nodeA.cluster];
         
         const dist = Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
         const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * (dist * 0.1);
-        const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * (dist * 0.1) + 50 * graphState.zoom;
+        const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * (dist * 0.1) + 50 * zoom;
         
         // Aura Glow
-        ctx.shadowBlur = 15 * graphState.zoom;
+        ctx.shadowBlur = 15 * zoom;
         ctx.shadowColor = threadColor;
         
         // Spectrum shift thread
         if (conn.type === 'bridge') {
-            ctx.setLineDash([10 * graphState.zoom, 5 * graphState.zoom]);
+            ctx.setLineDash([10 * zoom, 5 * zoom]);
             const gradient = ctx.createLinearGradient(ax, ay, bx, by);
             gradient.addColorStop(0, threadColor);
-            
-            let colorB = graphState.accentColor;
-            if (nodeB.cluster === 'music') colorB = '#1DB954';
-            if (nodeB.cluster === 'photo') colorB = '#ffffff';
-            gradient.addColorStop(1, colorB);
+            gradient.addColorStop(1, CLUSTER_COLORS[nodeB.cluster]);
             
             ctx.strokeStyle = gradient;
-            ctx.lineWidth = 2 * graphState.zoom;
+            ctx.lineWidth = 2 * zoom;
         } else {
             ctx.setLineDash([]);
             ctx.strokeStyle = threadColor;
-            ctx.lineWidth = 3 * graphState.zoom;
+            ctx.lineWidth = 3 * zoom;
         }
         ctx.lineCap = 'round';
 
@@ -444,7 +475,7 @@ function drawThreads() {
         ctx.shadowBlur = 0;
         ctx.strokeStyle = 'white';
         ctx.globalAlpha = 0.2;
-        ctx.lineWidth = 1 * graphState.zoom;
+        ctx.lineWidth = 1 * zoom;
         ctx.stroke();
         ctx.globalAlpha = 1.0;
     });
