@@ -380,24 +380,28 @@ document.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
         clientX: touch.clientX,
-        clientY: touch.clientY
+        clientY: touch.clientY,
+        bubbles: true
     });
-    document.dispatchEvent(mouseEvent);
+    e.target.dispatchEvent(mouseEvent);
 }, { passive: false });
 
 document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
         clientX: touch.clientX,
-        clientY: touch.clientY
+        clientY: touch.clientY,
+        bubbles: true
     });
-    document.dispatchEvent(mouseEvent);
-    e.preventDefault(); // Prevent scrolling
+    e.target.dispatchEvent(mouseEvent);
+    e.preventDefault();
 }, { passive: false });
 
 document.addEventListener('touchend', (e) => {
-    const mouseEvent = new MouseEvent('mouseup', {});
-    document.dispatchEvent(mouseEvent);
+    const mouseEvent = new MouseEvent('mouseup', {
+        bubbles: true
+    });
+    e.target.dispatchEvent(mouseEvent);
 }, { passive: false });
 
 document.addEventListener('wheel', (e) => {
