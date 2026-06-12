@@ -77,12 +77,36 @@
             transition: filter 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             transform: scale(1.1);
             pointer-events: none;
+            will-change: filter, transform;
         }
         .node-photo:hover img, .node-photo.dragging img {
             filter: blur(0) saturate(100%);
             transform: scale(1);
         }
         .node-photo.dragging {
+            box-shadow: 12px 12px 30px rgba(0,0,0,0.2);
+            z-index: 1000 !important;
+        }
+
+        /* Music Cluster - Mini Players */
+        .node-music {
+            position: absolute;
+            width: 320px;
+            height: 80px;
+            background: #000;
+            overflow: hidden;
+            border: 1px solid #1DB954;
+            transition: box-shadow 0.3s ease;
+        }
+        .node-music iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            pointer-events: auto;
+        }
+        /* The following prevents the iframe from intercepting mouse moves while dragging */
+        .node-music.dragging {
+            pointer-events: none;
             box-shadow: 12px 12px 30px rgba(0,0,0,0.2);
             z-index: 1000 !important;
         }

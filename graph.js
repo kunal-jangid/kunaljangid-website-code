@@ -109,7 +109,35 @@ function spawnProjectNodes() {
 }
 
 function spawnMusicNodes() {
-    // To be implemented in Task 3
+    const container = document.getElementById('node-container');
+    musicData.forEach((m, i) => {
+        const node = document.createElement('div');
+        node.className = 'node-music group';
+        node.innerHTML = `
+            <iframe 
+                src="${m.url}" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+            </iframe>
+        `;
+        
+        // Cluster around 2000, 4000
+        const x = 2000 + (Math.random() - 0.5) * 1000;
+        const y = 4000 + (Math.random() - 0.5) * 1000;
+        
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        
+        container.appendChild(node);
+        graphState.nodes.push({
+            id: m.id,
+            cluster: 'music',
+            element: node,
+            x, y,
+            vx: 0, vy: 0,
+            lastX: x, lastY: y
+        });
+    });
 }
 
 function spawnPhotoNodes() {
@@ -167,6 +195,7 @@ function initConnections() {
 
     const projectNodes = graphState.nodes.filter(n => n.cluster === 'project');
     const photoNodes = graphState.nodes.filter(n => n.cluster === 'photo');
+    const musicNodes = graphState.nodes.filter(n => n.cluster === 'music');
 
     // Internal Project Connections (Ring)
     projectNodes.forEach((node, i) => {
@@ -182,11 +211,27 @@ function initConnections() {
         }
     });
 
-    // Cross-cluster bridge
+    // Internal Music Connections (Chain)
+    musicNodes.forEach((node, i) => {
+        if (i < musicNodes.length - 1) {
+            const nextIdx = graphState.nodes.indexOf(musicNodes[i + 1]);
+            graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
+        }
+    });
+
+    // Cross-cluster bridge: Project to Photo
     if (projectNodes.length > 0 && photoNodes.length > 0) {
         graphState.connections.push({
             from: graphState.nodes.indexOf(projectNodes[0]),
             to: graphState.nodes.indexOf(photoNodes[0])
+        });
+    }
+
+    // Cross-cluster bridge: Project to Music
+    if (projectNodes.length > 0 && musicNodes.length > 0) {
+        graphState.connections.push({
+            from: graphState.nodes.indexOf(projectNodes[projectNodes.length - 1]),
+            to: graphState.nodes.indexOf(musicNodes[0])
         });
     }
 }
@@ -198,7 +243,7 @@ let startPan = { x: 0, y: 0 };
 let dragOffset = { x: 0, y: 0 };
 
 document.addEventListener('mousedown', (e) => {
-    const card = e.target.closest('.node-card, .node-photo');
+    const card = e.target.closest('.node-card, .node-photo, .node-music');
     if (card) {
         activeNode = graphState.nodes.find(n => n.element === card);
         const rect = card.getBoundingClientRect();
@@ -331,9 +376,15 @@ function drawThreads() {
         if (nodeA.cluster === 'music') threadColor = '#1DB954';
         if (nodeA.cluster === 'photo') threadColor = '#ffffff';
 
-        // Cluster-specific offsets
-        const offsetA = nodeA.cluster === 'photo' ? { w: 100, h: 100 } : { w: 150, h: 75 };
-        const offsetB = nodeB.cluster === 'photo' ? { w: 100, h: 100 } : { w: 150, h: 75 };
+        // Cluster-specific offsets (center of the nodes)
+        const getOffset = (node) => {
+            if (node.cluster === 'photo') return { w: 100, h: 100 };
+            if (node.cluster === 'music') return { w: 160, h: 40 };
+            return { w: 150, h: 75 }; // Default for project cards
+        };
+
+        const offsetA = getOffset(nodeA);
+        const offsetB = getOffset(nodeB);
 
         const ax = nodeA.x * graphState.zoom + graphState.offset.x + offsetA.w * graphState.zoom;
         const ay = nodeA.y * graphState.zoom + graphState.offset.y + offsetA.h * graphState.zoom;
