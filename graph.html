@@ -164,12 +164,33 @@
             z-index: 1000 !important;
             cursor: grabbing;
         }
+
+        @media (max-width: 768px) {
+            .node-card {
+                width: 240px;
+                padding: 1rem;
+            }
+            .node-card h3 {
+                font-size: 0.875rem;
+            }
+            .node-card p {
+                font-size: 0.625rem;
+            }
+            .node-photo {
+                width: 160px;
+                height: 160px;
+            }
+            .node-music {
+                width: 140px;
+                height: 140px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="noise"></div>
     <canvas id="canvas-bg"></canvas>
-    <div id="viewport" style="width: 100vw; height: 100vh; overflow: hidden; position: relative;">
+    <div id="viewport" style="width: 100vw; height: 100vh; overflow: hidden; position: relative; touch-action: none;">
         <div id="node-container"></div>
     </div>
 
