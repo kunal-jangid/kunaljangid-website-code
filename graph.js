@@ -311,8 +311,13 @@ let isPanning = false;
 let startPan = { x: 0, y: 0 };
 let dragOffset = { x: 0, y: 0 };
 let hasDragged = false;
+let navAnimationId = null;
 
 document.addEventListener('mousedown', (e) => {
+    if (navAnimationId) {
+        cancelAnimationFrame(navAnimationId);
+        navAnimationId = null;
+    }
     const card = e.target.closest('.node-card, .node-photo, .node-music');
     if (card) {
         activeNode = graphState.nodes.find(n => n.element === card);
@@ -417,6 +422,10 @@ document.addEventListener('touchend', handleTouchEnd, { passive: false });
 document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 
 document.addEventListener('wheel', (e) => {
+    if (navAnimationId) {
+        cancelAnimationFrame(navAnimationId);
+        navAnimationId = null;
+    }
     const delta = e.deltaY * -0.0015;
     const newZoom = Math.min(Math.max(0.1, graphState.zoom + delta), 2.5);
     
@@ -433,8 +442,6 @@ document.addEventListener('wheel', (e) => {
     
     updateTransform();
 }, { passive: false });
-
-let navAnimationId = null;
 
 function smoothNavigate(targetX, targetY, targetZoom) {
     if (navAnimationId) cancelAnimationFrame(navAnimationId);
