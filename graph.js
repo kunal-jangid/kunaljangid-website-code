@@ -9,25 +9,71 @@ const graphState = {
 };
 
 const projects = [
-    { id: 1, title: 'Metadata-Driven Platform', category: 'Enterprise' },
-    { id: 2, title: 'Framework Modernization', category: 'Modernization' },
-    { id: 3, title: 'Archival Engine', category: 'Data' },
-    { id: 4, title: 'Quant Dashboard', category: 'Python' },
-    { id: 5, title: 'Second Guesser', category: 'LLM Utility' }
+    { 
+        id: 1, 
+        title: 'Metadata-Driven Configuration Platform', 
+        category: 'Enterprise System // Core Architecture',
+        desc: 'Co-architected a dynamic rendering layout using React 19 that dynamically compiles modular UI configurations from structured JSON/Metadata schemas.',
+        tags: ['React 19', 'TypeScript', 'Dynamic Schema Layouts']
+    },
+    { 
+        id: 2, 
+        title: 'Distributed Platform Modernization', 
+        category: 'Enterprise System // UI Modernization',
+        desc: 'Led end-to-end framework modernization sprints to upgrade legacy frontend instances up to Angular 21, abstracting UI components.',
+        tags: ['Angular 21', 'Architecture Refactoring', 'AI Driven Development']
+    },
+    { 
+        id: 3, 
+        title: 'High-Throughput Archival Processing Engine', 
+        category: 'Enterprise System // Data Infrastructure',
+        desc: 'Engineered a performant asynchronous database archival pipeline to process and offload 500M+ inactive historical table records.',
+        tags: ['Java', 'Spring Boot', 'PL/SQL Optimization']
+    },
+    { 
+        id: 4, 
+        title: 'Autonomous Quantitative Analysis Dashboard', 
+        category: 'Personal Project // Systems & Automation',
+        desc: 'Modular quantitative Python data pipeline cross-referencing real-time prediction odds with news API data using localized LLM nodes.',
+        tags: ['Python', 'Ollama', 'Gemma 3', 'TradingView API']
+    },
+    { 
+        id: 5, 
+        title: 'Second Guesser // Intention Dissector', 
+        category: 'Personal Project',
+        desc: 'Lightweight desktop utility that grabs a swift screen region capture and loops it directly into Gemini models for conversational evaluation.',
+        tags: ['Python', 'Gemini API', 'Region Capture']
+    }
 ];
+
+const decorativeNodes = [];
+function spawnDecorativeNodes() {
+    for (let i = 0; i < 40; i++) {
+        decorativeNodes.push({
+            x: Math.random() * 4000 + 500,
+            y: Math.random() * 4000 + 500,
+            size: Math.random() * 3 + 1,
+            phase: Math.random() * Math.PI * 2
+        });
+    }
+}
 
 function spawnNodes() {
     const container = document.getElementById('node-container');
     projects.forEach((p, i) => {
         const node = document.createElement('div');
-        node.className = 'node-card shadow-lg cursor-grab';
+        node.className = 'node-card shadow-lg cursor-grab group';
         node.innerHTML = `
-            <span class="text-[10px] uppercase tracking-widest opacity-50 font-mono">${p.category}</span>
-            <h3 class="font-bold text-sm">${p.title}</h3>
+            <span class="text-[9px] uppercase tracking-widest opacity-40 font-mono">${p.category}</span>
+            <h3 class="font-bold text-base leading-tight">${p.title}</h3>
+            <p class="text-[11px] opacity-70 leading-relaxed mt-1 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">${p.desc}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+                ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
         `;
-        // Random distribution in world space
-        const x = Math.random() * 800 + 100;
-        const y = Math.random() * 600 + 100;
+        // Wider distribution in world space
+        const x = Math.random() * 3000 + 1000;
+        const y = Math.random() * 3000 + 1000;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
@@ -40,6 +86,7 @@ function spawnNodes() {
             lastX: x, lastY: y
         });
     });
+    spawnDecorativeNodes();
 }
 
 const themeConfig = [
@@ -104,7 +151,7 @@ document.addEventListener('mousemove', (e) => {
         
         // Velocity-based distortion
         const vx = activeNode.x - activeNode.lastX;
-        const skew = Math.min(Math.max(vx * 0.5, -15), 15);
+        const skew = Math.min(Math.max(vx * 0.8, -25), 25);
         activeNode.element.style.transform = `scale(1.05) skewX(${skew}deg)`;
         
         activeNode.lastX = activeNode.x;
@@ -129,10 +176,9 @@ document.addEventListener('mouseup', () => {
 });
 
 document.addEventListener('wheel', (e) => {
-    const delta = e.deltaY * -0.001;
-    const newZoom = Math.min(Math.max(0.2, graphState.zoom + delta), 2);
+    const delta = e.deltaY * -0.0015;
+    const newZoom = Math.min(Math.max(0.1, graphState.zoom + delta), 2.5);
     
-    // Zoom toward mouse position
     const rect = document.getElementById('viewport').getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -152,6 +198,27 @@ function updateTransform() {
     container.style.transform = `translate(${graphState.offset.x}px, ${graphState.offset.y}px) scale(${graphState.zoom})`;
 }
 
+function drawGrid(ctx, canvas, time) {
+    const gridSize = 100 * graphState.zoom;
+    const offsetX = graphState.offset.x % gridSize;
+    const offsetY = graphState.offset.y % gridSize;
+
+    ctx.beginPath();
+    ctx.strokeStyle = graphState.accentColor;
+    ctx.globalAlpha = 0.03;
+    ctx.lineWidth = 1;
+
+    for (let x = offsetX; x <= canvas.width; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+    }
+    for (let y = offsetY; y <= canvas.height; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+    }
+    ctx.stroke();
+}
+
 function drawThreads() {
     const canvas = document.getElementById('canvas-bg');
     if (!canvas) return;
@@ -160,27 +227,60 @@ function drawThreads() {
     
     const time = Date.now() * 0.001;
     
+    drawGrid(ctx, canvas, time);
+
+    // Render Decorative Nodes
+    decorativeNodes.forEach(dn => {
+        const dx = dn.x * graphState.zoom + graphState.offset.x;
+        const dy = dn.y * graphState.zoom + graphState.offset.y;
+        
+        // Skip if off-screen
+        if (dx < -50 || dx > canvas.width + 50 || dy < -50 || dy > canvas.height + 50) return;
+
+        const pulse = Math.sin(time + dn.phase) * 0.5 + 0.5;
+        ctx.fillStyle = graphState.accentColor;
+        ctx.globalAlpha = 0.1 + pulse * 0.2;
+        ctx.beginPath();
+        ctx.arc(dx, dy, dn.size * graphState.zoom, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1.0;
+
     graphState.connections.forEach(conn => {
         const nodeA = graphState.nodes[conn.from];
         const nodeB = graphState.nodes[conn.to];
         
-        // Convert world to screen for canvas
-        const ax = nodeA.x * graphState.zoom + graphState.offset.x + 125 * graphState.zoom;
-        const ay = nodeA.y * graphState.zoom + graphState.offset.y + 50 * graphState.zoom;
-        const bx = nodeB.x * graphState.zoom + graphState.offset.x + 125 * graphState.zoom;
-        const by = nodeB.y * graphState.zoom + graphState.offset.y + 50 * graphState.zoom;
+        // Cards are 300px wide, 150px approx height
+        const ax = nodeA.x * graphState.zoom + graphState.offset.x + 150 * graphState.zoom;
+        const ay = nodeA.y * graphState.zoom + graphState.offset.y + 75 * graphState.zoom;
+        const bx = nodeB.x * graphState.zoom + graphState.offset.x + 150 * graphState.zoom;
+        const by = nodeB.y * graphState.zoom + graphState.offset.y + 75 * graphState.zoom;
         
-        const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * 50;
-        const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * 50 + 50;
+        const dist = Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
+        const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * (dist * 0.1);
+        const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * (dist * 0.1) + 50 * graphState.zoom;
         
-        // Spectrum shift
-        ctx.strokeStyle = `hsla(${(time * 50 + conn.from * 20) % 360}, 70%, 50%, 0.4)`;
-        ctx.lineWidth = 2 * graphState.zoom;
+        // Aura Glow
+        ctx.shadowBlur = 15 * graphState.zoom;
+        ctx.shadowColor = `hsla(${(time * 40 + conn.from * 20) % 360}, 80%, 60%, 0.3)`;
+        
+        // Spectrum shift thread
+        ctx.strokeStyle = `hsla(${(time * 60 + conn.from * 30) % 360}, 70%, 50%, 0.5)`;
+        ctx.lineWidth = 3 * graphState.zoom;
+        ctx.lineCap = 'round';
 
         ctx.beginPath();
         ctx.moveTo(ax, ay);
         ctx.quadraticCurveTo(cpX, cpY, bx, by);
         ctx.stroke();
+        
+        // Secondary thin core line
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'white';
+        ctx.globalAlpha = 0.2;
+        ctx.lineWidth = 1 * graphState.zoom;
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
     });
     
     requestAnimationFrame(drawThreads);
