@@ -381,7 +381,9 @@ document.addEventListener('touchstart', (e) => {
     const mouseEvent = new MouseEvent('mousedown', {
         clientX: touch.clientX,
         clientY: touch.clientY,
-        bubbles: true
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
     e.target.dispatchEvent(mouseEvent);
 }, { passive: false });
@@ -391,18 +393,28 @@ document.addEventListener('touchmove', (e) => {
     const mouseEvent = new MouseEvent('mousemove', {
         clientX: touch.clientX,
         clientY: touch.clientY,
-        bubbles: true
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
     e.target.dispatchEvent(mouseEvent);
     e.preventDefault();
 }, { passive: false });
 
-document.addEventListener('touchend', (e) => {
+const handleTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
     const mouseEvent = new MouseEvent('mouseup', {
-        bubbles: true
+        clientX: touch ? touch.clientX : 0,
+        clientY: touch ? touch.clientY : 0,
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
     e.target.dispatchEvent(mouseEvent);
-}, { passive: false });
+};
+
+document.addEventListener('touchend', handleTouchEnd, { passive: false });
+document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 
 document.addEventListener('wheel', (e) => {
     const delta = e.deltaY * -0.0015;
@@ -421,6 +433,48 @@ document.addEventListener('wheel', (e) => {
     
     updateTransform();
 }, { passive: false });
+
+let navAnimationId = null;
+
+function smoothNavigate(targetX, targetY, targetZoom) {
+    if (navAnimationId) cancelAnimationFrame(navAnimationId);
+    
+    const startX = graphState.offset.x;
+    const startY = graphState.offset.y;
+    const startZoom = graphState.zoom;
+    
+    // Target offset needs to center the world coordinate (targetX, targetY)
+    const finalOffsetX = window.innerWidth / 2 - targetX * targetZoom;
+    const finalOffsetY = window.innerHeight / 2 - targetY * targetZoom;
+    
+    const duration = 800;
+    const startTime = performance.now();
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Cubic-out easing
+        const ease = 1 - Math.pow(1 - progress, 3);
+        
+        graphState.offset.x = startX + (finalOffsetX - startX) * ease;
+        graphState.offset.y = startY + (finalOffsetY - startY) * ease;
+        graphState.zoom = startZoom + (targetZoom - startZoom) * ease;
+        
+        updateTransform();
+        
+        if (progress < 1) {
+            navAnimationId = requestAnimationFrame(animate);
+        } else {
+            navAnimationId = null;
+        }
+    }
+    
+    navAnimationId = requestAnimationFrame(animate);
+}
+
+// Export or make available globally if needed for HTML buttons
+window.smoothNavigate = smoothNavigate;
 
 function updateTransform() {
     const container = document.getElementById('node-container');
