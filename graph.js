@@ -52,6 +52,79 @@ const projects = [
     }
 ];
 
+const decorativeNodes = [];
+function spawnDecorativeNodes() {
+    for (let i = 0; i < 40; i++) {
+        decorativeNodes.push({
+            x: Math.random() * 4000 + 500,
+            y: Math.random() * 4000 + 500,
+            size: Math.random() * 3 + 1,
+            phase: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+async function spawnNodes() {
+    spawnProjectNodes();
+    spawnPhotoNodes();
+    spawnDecorativeNodes();
+    
+    // Initial center view
+    centerViewport();
+
+    // Spawn music nodes asynchronously
+    await spawnMusicNodes();
+}
+
+function centerViewport() {
+    // Focus on the area encompassing all three clusters
+    // Clusters: (2500, 2500), (2000, 4000), (4000, 2000)
+    // Roughly centered at (2833, 2833)
+    const worldCenterX = 2833;
+    const worldCenterY = 2833;
+    
+    // Calculate zoom to fit all clusters (roughly 4000x4000 space)
+    const padding = 600;
+    const availableWidth = window.innerWidth - padding;
+    const availableHeight = window.innerHeight - padding;
+    const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, 0.8);
+    
+    graphState.zoom = Math.max(0.15, desiredZoom);
+    graphState.offset.x = window.innerWidth / 2 - worldCenterX * graphState.zoom;
+    graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
+}
+
+function spawnProjectNodes() {
+    const container = document.getElementById('node-container');
+    projects.forEach((p, i) => {
+        const node = document.createElement('div');
+        node.className = 'node-card shadow-lg cursor-grab group';
+        node.innerHTML = `
+            <span class="text-[9px] uppercase tracking-widest opacity-40 font-mono">${p.category}</span>
+            <h3 class="font-bold text-base leading-tight">${p.title}</h3>
+            <p class="text-[11px] opacity-70 leading-relaxed mt-1 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">${p.desc}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+                ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
+        `;
+        // Centered around 2500, 2500
+        const x = 2500 + (Math.random() - 0.5) * 800;
+        const y = 2500 + (Math.random() - 0.5) * 800;
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        
+        container.appendChild(node);
+        graphState.nodes.push({ 
+            id: p.id, 
+            cluster: 'project',
+            element: node, 
+            x, y, 
+            vx: 0, vy: 0,
+            lastX: x, lastY: y
+        });
+    });
+}
+
 async function spawnMusicNodes() {
     const container = document.getElementById('node-container');
     const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
