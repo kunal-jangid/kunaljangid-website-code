@@ -5,6 +5,68 @@ const v2Motion = {
         this.initThemeEngine();
         this.initMagneticCursor();
         this.initRevealAnimations();
+        this.initFluidPaths();
+    },
+
+    initFluidPaths() {
+        const canvas = document.getElementById('fluid-paths');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        const paths = [];
+        
+        const resize = () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        };
+        
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Initialize 3 elegant paths
+        for (let i = 0; i < 3; i++) {
+            paths.push({
+                y: Math.random() * height,
+                length: Math.random() * 0.5 + 0.5,
+                amplitude: Math.random() * 50 + 50,
+                speed: Math.random() * 0.01 + 0.005,
+                offset: Math.random() * Math.PI * 2,
+                thickness: Math.random() * 2 + 1
+            });
+        }
+
+        const animate = (time) => {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Dynamically fetch accent color for theme sync
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+            ctx.strokeStyle = accentColor;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            paths.forEach((path, i) => {
+                const t = time * path.speed + path.offset;
+                ctx.beginPath();
+                ctx.lineWidth = path.thickness;
+                ctx.globalAlpha = 0.15; // Low opacity for subtle look
+
+                const startY = path.y + Math.sin(t) * path.amplitude;
+                ctx.moveTo(-100, startY);
+
+                // Draw a complex sweeping curve across the screen
+                ctx.bezierCurveTo(
+                    width * 0.3, startY + Math.cos(t * 0.8) * 200,
+                    width * 0.7, startY + Math.sin(t * 1.2) * 200,
+                    width + 100, path.y + Math.sin(t * 0.5) * path.amplitude
+                );
+                
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
     },
 
     initThemeEngine() {
