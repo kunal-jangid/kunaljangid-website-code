@@ -18,11 +18,11 @@ class FluidEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
+                this.canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
             },
             mousemove: (e) => {
                 this.mouse.x = e.clientX;
-                this.mouse.y = e.clientY;
+                this.mouse.y = e.clientY + window.scrollY;
             },
             mousedown: () => { this.mouse.active = true; },
             mouseup: () => { this.mouse.active = false; },
@@ -30,13 +30,13 @@ class FluidEngine {
                 this.mouse.active = true;
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY;
+                    this.mouse.y = e.touches[0].clientY + window.scrollY;
                 }
             },
             touchmove: (e) => {
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY;
+                    this.mouse.y = e.touches[0].clientY + window.scrollY;
                 }
             },
             touchend: () => { this.mouse.active = false; }
@@ -150,12 +150,12 @@ class MeshEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
+                this.canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
                 this.initGrid();
             },
             mousemove: (e) => {
                 this.mouse.x = e.clientX;
-                this.mouse.y = e.clientY;
+                this.mouse.y = e.clientY + window.scrollY;
             },
             mousedown: () => { this.mouse.active = true; },
             mouseup: () => { this.mouse.active = false; },
@@ -163,13 +163,13 @@ class MeshEngine {
                 this.mouse.active = true;
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY;
+                    this.mouse.y = e.touches[0].clientY + window.scrollY;
                 }
             },
             touchmove: (e) => {
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY;
+                    this.mouse.y = e.touches[0].clientY + window.scrollY;
                 }
             },
             touchend: () => { this.mouse.active = false; }
@@ -222,6 +222,9 @@ class MeshEngine {
         this.ctx.lineWidth = 1;
 
         // Update physics
+        const maxVelocity = 15;
+        const maxDisplacement = this.influenceRadius * 0.8;
+
         this.points.forEach(p => {
             // Spring back to base position
             const dxBase = p.baseX - p.x;
@@ -246,10 +249,28 @@ class MeshEngine {
                 }
             }
 
+            // Clamp velocity for stability
+            const speedSq = p.vx * p.vx + p.vy * p.vy;
+            if (speedSq > maxVelocity * maxVelocity) {
+                const speed = Math.sqrt(speedSq);
+                p.vx = (p.vx / speed) * maxVelocity;
+                p.vy = (p.vy / speed) * maxVelocity;
+            }
+
             p.vx *= this.damping;
             p.vy *= this.damping;
             p.x += p.vx;
             p.y += p.vy;
+
+            // Clamp displacement to prevent mesh "explosion"
+            const dxDisp = p.x - p.baseX;
+            const dyDisp = p.y - p.baseY;
+            const dispSq = dxDisp * dxDisp + dyDisp * dyDisp;
+            if (dispSq > maxDisplacement * maxDisplacement) {
+                const disp = Math.sqrt(dispSq);
+                p.x = p.baseX + (dxDisp / disp) * maxDisplacement;
+                p.y = p.baseY + (dyDisp / disp) * maxDisplacement;
+            }
         });
 
         // Draw lines
@@ -277,13 +298,14 @@ class MeshEngine {
         }
         this.ctx.stroke();
 
-        // Draw points
+        // Draw points (Batched for efficiency)
         this.ctx.globalAlpha = 0.3;
+        this.ctx.beginPath();
         this.points.forEach(p => {
-            this.ctx.beginPath();
+            this.ctx.moveTo(p.x + 1, p.y);
             this.ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
-            this.ctx.fill();
         });
+        this.ctx.fill();
 
         this.ctx.globalAlpha = 1.0;
         this.animationId = requestAnimationFrame(() => this.animate());
@@ -318,6 +340,14 @@ const BackgroundController = {
         this.startEngine();
         this.updateToggleUI();
         this.bindEvents();
+
+        // Watch for content height changes to resize canvas
+        const resizeObserver = new ResizeObserver(() => {
+            if (this.activeEngine && this.activeEngine.handlers && this.activeEngine.handlers.resize) {
+                this.activeEngine.handlers.resize();
+            }
+        });
+        resizeObserver.observe(document.body);
     },
 
     bindEvents() {
