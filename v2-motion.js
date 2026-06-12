@@ -1,5 +1,7 @@
 // v2-motion.js
 const v2Motion = {
+    accentColor: '',
+
     init() {
         console.log('✨ v2-motion.js: Initializing Premium Motion Engine');
         this.initThemeEngine();
@@ -24,10 +26,13 @@ const v2Motion = {
         window.addEventListener('resize', resize);
         resize();
 
-        // Initialize 3 elegant paths
+        // Initialize accent color
+        this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+
+        // Initialize 3 elegant paths with yPercent for resize-stability
         for (let i = 0; i < 3; i++) {
             paths.push({
-                y: Math.random() * height,
+                yPercent: Math.random(),
                 length: Math.random() * 0.5 + 0.5,
                 amplitude: Math.random() * 50 + 50,
                 speed: Math.random() * 0.01 + 0.005,
@@ -39,26 +44,27 @@ const v2Motion = {
         const animate = (time) => {
             ctx.clearRect(0, 0, width, height);
             
-            // Dynamically fetch accent color for theme sync
-            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
-            ctx.strokeStyle = accentColor;
+            // Use cached accent color and move state setters outside the loop
+            ctx.strokeStyle = this.accentColor;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.15; // Low opacity for subtle look
 
             paths.forEach((path, i) => {
                 const t = time * path.speed + path.offset;
+                const pathY = path.yPercent * height;
+                
                 ctx.beginPath();
                 ctx.lineWidth = path.thickness;
-                ctx.globalAlpha = 0.15; // Low opacity for subtle look
 
-                const startY = path.y + Math.sin(t) * path.amplitude;
+                const startY = pathY + Math.sin(t) * path.amplitude;
                 ctx.moveTo(-100, startY);
 
                 // Draw a complex sweeping curve across the screen
                 ctx.bezierCurveTo(
                     width * 0.3, startY + Math.cos(t * 0.8) * 200,
                     width * 0.7, startY + Math.sin(t * 1.2) * 200,
-                    width + 100, path.y + Math.sin(t * 0.5) * path.amplitude
+                    width + 100, pathY + Math.sin(t * 0.5) * path.amplitude
                 );
                 
                 ctx.stroke();
@@ -85,6 +91,8 @@ const v2Motion = {
             window.renderThemePipeline = (index) => {
                 document.startViewTransition(() => {
                     originalRender(index);
+                    // Update cached accent color after theme change
+                    this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
                 });
             };
         }
