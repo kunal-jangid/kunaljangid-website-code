@@ -209,6 +209,27 @@
                 clip-path: circle(150% at var(--click-x, 50%) var(--click-y, 50%));
             }
         }
+
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+        }
+
+        .custom-cursor.active {
+            width: 80px;
+            height: 80px;
+            opacity: 0.15;
+            background: var(--accent-color);
+        }
     </style>
 </head>
 
