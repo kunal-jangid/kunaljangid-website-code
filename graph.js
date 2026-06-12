@@ -52,120 +52,54 @@ const projects = [
     }
 ];
 
-const musicData = [
-    { 
-        id: 'm1', 
-        title: 'Top Tracks', 
-        artist: 'Spotify Playlist', 
-        cover: 'https://i.scdn.co/image/ab67616d0000b2734718e2b124f79d100b51c911',
-        link: 'https://open.spotify.com/playlist/6gB4IBcjYGSxnUat8Ue6BT?si=ed98435bb5934a30' 
-    },
-    { 
-        id: 'm2', 
-        title: 'Top Tracks', 
-        artist: 'YT Music', 
-        cover: 'https://i.scdn.co/image/ab67616d0000b273b75b9f71c4c9527ec3a0d5c2',
-        link: 'https://music.youtube.com/playlist?list=LRSRcjL6Be-v-jkzKQ1lmQ9ZnKgFEdeQHja8w&si=BFqwwrLhMQnuy4Od' 
-    }
-];
-
-const decorativeNodes = [];
-function spawnDecorativeNodes() {
-    for (let i = 0; i < 40; i++) {
-        decorativeNodes.push({
-            x: Math.random() * 4000 + 500,
-            y: Math.random() * 4000 + 500,
-            size: Math.random() * 3 + 1,
-            phase: Math.random() * Math.PI * 2
-        });
-    }
-}
-
-function spawnNodes() {
-    spawnProjectNodes();
-    spawnMusicNodes();
-    spawnPhotoNodes();
-    spawnDecorativeNodes();
-    
-    // Initial center view
-    centerViewport();
-}
-
-function centerViewport() {
-    // Focus on the area encompassing all three clusters
-    // Clusters: (2500, 2500), (2000, 4000), (4000, 2000)
-    // Roughly centered at (2833, 2833)
-    const worldCenterX = 2833;
-    const worldCenterY = 2833;
-    
-    // Calculate zoom to fit all clusters (roughly 4000x4000 space)
-    const padding = 600;
-    const availableWidth = window.innerWidth - padding;
-    const availableHeight = window.innerHeight - padding;
-    const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, 0.8);
-    
-    graphState.zoom = Math.max(0.15, desiredZoom);
-    graphState.offset.x = window.innerWidth / 2 - worldCenterX * graphState.zoom;
-    graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
-}
-
-function spawnProjectNodes() {
+async function spawnMusicNodes() {
     const container = document.getElementById('node-container');
-    projects.forEach((p, i) => {
-        const node = document.createElement('div');
-        node.className = 'node-card shadow-lg cursor-grab group';
-        node.innerHTML = `
-            <span class="text-[9px] uppercase tracking-widest opacity-40 font-mono">${p.category}</span>
-            <h3 class="font-bold text-base leading-tight">${p.title}</h3>
-            <p class="text-[11px] opacity-70 leading-relaxed mt-1 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">${p.desc}</p>
-            <div class="flex flex-wrap gap-1 mt-2">
-                ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-            </div>
-        `;
-        // Centered around 2500, 2500
-        const x = 2500 + (Math.random() - 0.5) * 800;
-        const y = 2500 + (Math.random() - 0.5) * 800;
-        node.style.left = `${x}px`;
-        node.style.top = `${y}px`;
+    const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
+    
+    try {
+        const response = await fetch(workerEndpoint);
+        if (!response.ok) throw new Error();
+        const data = await response.json();
         
-        container.appendChild(node);
-        graphState.nodes.push({ 
-            id: p.id, 
-            cluster: 'project',
-            element: node, 
-            x, y, 
-            vx: 0, vy: 0,
-            lastX: x, lastY: y
-        });
-    });
-}
+        // Use the returned track (could be live or historical)
+        // Ensure a fallback cover exists
+        const cover = data.coverUrl || 'https://images.unsplash.com/photo-1619983081563-430f53602796?w=400';
+        const title = data.songName || 'Unknown Track';
+        const artist = data.artistName || 'Unknown Artist';
+        const link = data.songUrl || '#';
 
-function spawnMusicNodes() {
-    const container = document.getElementById('node-container');
-    musicData.forEach(m => {
         const node = document.createElement('div');
         node.className = 'node-music shadow-2xl group';
+        // Use dataset to store link for mouseup handler
+        node.dataset.link = link;
+        
         node.innerHTML = `
-            <div class="vinyl-inner" style="background-image: url('${m.cover}')"></div>
+            <div class="vinyl-inner" style="background-image: url('${cover}')"></div>
             <div class="music-info-overlay">
-                <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${m.artist}</span>
-                <h4 class="text-xs font-black leading-tight">${m.title}</h4>
+                <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${artist}</span>
+                <h4 class="text-xs font-black leading-tight">${title}</h4>
                 <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
             </div>
         `;
         
-        node.addEventListener('click', () => window.open(m.link, '_blank'));
+        // Remove the inline click listener since it's handled in mouseup now
         
         // Use existing cluster coordinates (2000, 4000)
-        const x = 2000 + Math.random() * 800 - 400;
-        const y = 4000 + Math.random() * 800 - 400;
+        const x = 2000 + Math.random() * 400 - 200;
+        const y = 4000 + Math.random() * 400 - 200;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
         container.appendChild(node);
-        graphState.nodes.push({ id: m.id, element: node, x, y, vx: 0, vy: 0, lastX: x, lastY: y, cluster: 'music' });
-    });
+        graphState.nodes.push({ id: 'live-music', element: node, x, y, vx: 0, vy: 0, lastX: x, lastY: y, cluster: 'music' });
+        
+        // Re-initialize connections to include the newly fetched node
+        initConnections();
+    } catch (e) {
+        console.warn("Could not fetch live music data", e);
+    }
 }
+
 
 function spawnPhotoNodes() {
     const container = document.getElementById('node-container');
@@ -258,6 +192,7 @@ let activeNode = null;
 let isPanning = false;
 let startPan = { x: 0, y: 0 };
 let dragOffset = { x: 0, y: 0 };
+let hasDragged = false;
 
 document.addEventListener('mousedown', (e) => {
     const card = e.target.closest('.node-card, .node-photo, .node-music');
@@ -268,9 +203,9 @@ document.addEventListener('mousedown', (e) => {
         dragOffset.y = (e.clientY - rect.top) / graphState.zoom;
         
         card.style.cursor = 'grabbing';
-        
         card.style.zIndex = 1000;
         card.classList.add('dragging');
+        hasDragged = false;
     } else {
         isPanning = true;
         startPan.x = e.clientX - graphState.offset.x;
@@ -281,6 +216,7 @@ document.addEventListener('mousedown', (e) => {
 
 document.addEventListener('mousemove', (e) => {
     if (activeNode) {
+        hasDragged = true;
         activeNode.x = (e.clientX - graphState.offset.x) / graphState.zoom - dragOffset.x;
         activeNode.y = (e.clientY - graphState.offset.y) / graphState.zoom - dragOffset.y;
         
@@ -309,6 +245,13 @@ document.addEventListener('mouseup', () => {
         card.style.zIndex = 10;
         card.style.transform = 'scale(1)';
         card.classList.remove('dragging');
+        
+        // Custom click handler for vinyl nodes to prevent firing on drag
+        if (!hasDragged && card.classList.contains('node-music')) {
+            const link = card.dataset.link;
+            if (link) window.open(link, '_blank');
+        }
+        
         activeNode = null;
     }
     isPanning = false;
