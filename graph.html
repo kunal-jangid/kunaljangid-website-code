@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kunal Jangid // Chaotic Graph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --bg-color: #EEE9DF; --text-color: #2B323F; --border-color: #111111; --accent-color: #C2441C; }
+        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; overflow: hidden; font-family: sans-serif; }
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
+        #node-container { position: relative; width: 5000px; height: 5000px; z-index: 10; cursor: grab; }
+        #node-container:active { cursor: grabbing; }
+        .node-card { position: absolute; padding: 1rem; border: 1px solid var(--border-color); background: var(--bg-color); width: 250px; user-select: none; transition: transform 0.1s ease-out; box-shadow: 4px 4px 0px var(--border-color); }
+        .node-card.dragging { box-shadow: 8px 8px 0px var(--border-color); opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div id="viewport" style="width: 100vw; height: 100vh; overflow: hidden; position: relative;">
+        <div id="node-container"></div>
+    </div>
+    <script src="graph.js"></script>
+</body>
+</html>
