@@ -134,39 +134,61 @@ async function spawnMusicNodes() {
         if (!response.ok) throw new Error();
         const data = await response.json();
         
-        // Use the returned track (could be live or historical)
-        // Ensure a fallback cover exists
-        const cover = data.coverUrl || 'https://images.unsplash.com/photo-1619983081563-430f53602796?w=400';
-        const title = data.songName || 'Unknown Track';
-        const artist = data.artistName || 'Unknown Artist';
-        const link = data.songUrl || '#';
+        let tracksToRender = data.tracks && data.tracks.length > 0 ? data.tracks : [data];
+        
+        // Deduplicate tracks by songUrl to prevent identical vinyls
+        const uniqueTracks = [];
+        const seenUrls = new Set();
+        for (const track of tracksToRender) {
+            if (track.songUrl && !seenUrls.has(track.songUrl)) {
+                seenUrls.add(track.songUrl);
+                uniqueTracks.push(track);
+            }
+        }
+        
+        // Limit to 5 unique tracks to prevent the cluster from becoming too dense
+        tracksToRender = uniqueTracks.slice(0, 5);
+        
+        tracksToRender.forEach((trackData, i) => {
+            // Ensure a fallback cover exists
+            const cover = trackData.coverUrl || 'https://images.unsplash.com/photo-1619983081563-430f53602796?w=400';
+            const title = trackData.songName || 'Unknown Track';
+            const artist = trackData.artistName || 'Unknown Artist';
+            const link = trackData.songUrl || '#';
 
-        const node = document.createElement('div');
-        node.className = 'node-music shadow-2xl group';
-        // Use dataset to store link for mouseup handler
-        node.dataset.link = link;
+            const node = document.createElement('div');
+            node.className = 'node-music shadow-2xl group';
+            // Use dataset to store link for mouseup handler
+            node.dataset.link = link;
+            
+            node.innerHTML = `
+                <div class="vinyl-inner" style="background-image: url('${cover}')"></div>
+                <div class="music-info-overlay">
+                    <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${artist}</span>
+                    <h4 class="text-xs font-black leading-tight">${title}</h4>
+                    <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
+                </div>
+            `;
+            
+            // Use existing cluster coordinates (2000, 4000) with wider spread for multiple
+            const spread = tracksToRender.length > 1 ? 800 : 400;
+            const x = 2000 + Math.random() * spread - (spread/2);
+            const y = 4000 + Math.random() * spread - (spread/2);
+            node.style.left = `${x}px`;
+            node.style.top = `${y}px`;
+            
+            container.appendChild(node);
+            graphState.nodes.push({ 
+                id: `live-music-${i}`, 
+                element: node, 
+                x, y, 
+                vx: 0, vy: 0, 
+                lastX: x, lastY: y, 
+                cluster: 'music' 
+            });
+        });
         
-        node.innerHTML = `
-            <div class="vinyl-inner" style="background-image: url('${cover}')"></div>
-            <div class="music-info-overlay">
-                <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${artist}</span>
-                <h4 class="text-xs font-black leading-tight">${title}</h4>
-                <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
-            </div>
-        `;
-        
-        // Remove the inline click listener since it's handled in mouseup now
-        
-        // Use existing cluster coordinates (2000, 4000)
-        const x = 2000 + Math.random() * 400 - 200;
-        const y = 4000 + Math.random() * 400 - 200;
-        node.style.left = `${x}px`;
-        node.style.top = `${y}px`;
-        
-        container.appendChild(node);
-        graphState.nodes.push({ id: 'live-music', element: node, x, y, vx: 0, vy: 0, lastX: x, lastY: y, cluster: 'music' });
-        
-        // Re-initialize connections to include the newly fetched node
+        // Re-initialize connections to include the newly fetched nodes
         initConnections();
     } catch (e) {
         console.warn("Could not fetch live music data", e);
