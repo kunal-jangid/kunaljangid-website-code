@@ -925,6 +925,10 @@
             const hoverTextElement = document.getElementById('spotify-hover-text');
             const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
 
+            const escapeHTML = (str) => String(str).replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+
             try {
                 const res = await fetch(workerEndpoint);
                 if (!res.ok) throw new Error();
@@ -935,11 +939,11 @@
                     hoverTextElement.innerHTML = `Wanna listen along on Spotify?<br><br>Click here to open track`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden">
-                            ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
+                            ${data.coverUrl ? `<img src="${escapeHTML(data.coverUrl)}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
                             <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="text-cream-accent dark:text-tactile-accent animate-pulse font-bold text-[10px] uppercase tracking-widest block mb-0.5">• Live Now</span>
-                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
-                                <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
+                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${escapeHTML(data.songName)}</h4>
+                                <p class="text-xs opacity-80 truncate mb-1">by ${escapeHTML(data.artistName)}</p>
                             </div>
                         </div>
                     `;
@@ -948,11 +952,11 @@
                     hoverTextElement.innerHTML = `Track paused. Listen to my favorite playlist on YouTube Music?<br><br>Click here`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden opacity-60">
-                            ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
+                            ${data.coverUrl ? `<img src="${escapeHTML(data.coverUrl)}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
                             <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="opacity-50 text-[10px] uppercase tracking-widest block mb-0.5">• Last Played</span>
-                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
-                                <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
+                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${escapeHTML(data.songName)}</h4>
+                                <p class="text-xs opacity-80 truncate mb-1">by ${escapeHTML(data.artistName)}</p>
                             </div>
                         </div>
                     `;

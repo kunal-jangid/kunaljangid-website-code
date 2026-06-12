@@ -93,17 +93,22 @@ function centerViewport() {
     graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
 }
 
+// Sanitization helper to prevent XSS
+const escapeHTML = (str) => String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+})[m]);
+
 function spawnProjectNodes() {
     const container = document.getElementById('node-container');
     projects.forEach((p, i) => {
         const node = document.createElement('div');
         node.className = 'node-card shadow-lg cursor-grab group';
         node.innerHTML = `
-            <span class="text-[9px] uppercase tracking-widest opacity-40 font-mono">${p.category}</span>
-            <h3 class="font-bold text-base leading-tight">${p.title}</h3>
-            <p class="text-[11px] opacity-70 leading-relaxed mt-1 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">${p.desc}</p>
+            <span class="text-[9px] uppercase tracking-widest opacity-40 font-mono">${escapeHTML(p.category)}</span>
+            <h3 class="font-bold text-base leading-tight">${escapeHTML(p.title)}</h3>
+            <p class="text-[11px] opacity-70 leading-relaxed mt-1 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">${escapeHTML(p.desc)}</p>
             <div class="flex flex-wrap gap-1 mt-2">
-                ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                ${p.tags.map(t => `<span class="tag">${escapeHTML(t)}</span>`).join('')}
             </div>
         `;
         // Centered around 2500, 2500
@@ -161,10 +166,10 @@ async function spawnMusicNodes() {
             node.dataset.link = link;
             
             node.innerHTML = `
-                <div class="vinyl-inner" style="background-image: url('${cover}')"></div>
+                <div class="vinyl-inner" style="background-image: url('${escapeHTML(cover)}')"></div>
                 <div class="music-info-overlay">
-                    <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${artist}</span>
-                    <h4 class="text-xs font-black leading-tight">${title}</h4>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter mb-1">${escapeHTML(artist)}</span>
+                    <h4 class="text-xs font-black leading-tight">${escapeHTML(title)}</h4>
                     <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
                 </div>
             `;
@@ -202,7 +207,7 @@ function spawnPhotoNodes() {
     window.photoAssets.forEach((src, i) => {
         const node = document.createElement('div');
         node.className = 'node-photo group';
-        node.innerHTML = `<img src="${src}" loading="lazy" alt="Photography ${i}">`;
+        node.innerHTML = `<img src="${escapeHTML(src)}" loading="lazy" alt="Photography ${escapeHTML(i)}">`;
         
         // Cluster around 4000, 2000
         const x = 4000 + (Math.random() - 0.5) * 1200;
