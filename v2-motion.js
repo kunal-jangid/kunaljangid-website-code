@@ -63,7 +63,23 @@ const v2Motion = {
     },
 
     initRevealAnimations() {
-        // To be implemented in Task 4
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Apply slight stagger based on index if multiple visible at once
+                    setTimeout(() => {
+                        entry.target.classList.add('reveal-in');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const targets = document.querySelectorAll('header, section h2, .group, footer');
+        targets.forEach(el => {
+            el.classList.add('reveal-init');
+            observer.observe(el);
+        });
     }
 };
 
