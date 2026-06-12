@@ -182,12 +182,80 @@
             border-color: var(--border-color) !important;
             opacity: 0.8 !important;
         }
+
+        /* View Transitions Ripple Effect */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+
+        ::view-transition-old(root) {
+            z-index: 1;
+        }
+
+        ::view-transition-new(root) {
+            z-index: 9999;
+            animation: ripple-in 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            clip-path: circle(0% at var(--click-x, 50%) var(--click-y, 50%));
+        }
+
+        @keyframes ripple-in {
+            from {
+                clip-path: circle(0% at var(--click-x, 50%) var(--click-y, 50%));
+            }
+
+            to {
+                clip-path: circle(150% at var(--click-x, 50%) var(--click-y, 50%));
+            }
+        }
+
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+        }
+
+        .custom-cursor.active {
+            width: 80px;
+            height: 80px;
+            opacity: 0.15;
+            background: var(--accent-color);
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background-color: color-mix(in srgb, var(--text-color) 5%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border-color) 15%, transparent);
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-init {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
-<body class="transition-colors duration-300 min-h-screen flex flex-col justify-between">
+<body class="relative transition-colors duration-300 min-h-screen flex flex-col justify-between">
+    <canvas id="fluid-paths" class="absolute inset-0 z-0 pointer-events-none opacity-40"></canvas>
 
-    <main class="max-w-5xl mx-auto px-4 py-28 md:py-20 w-full grow">
+    <main class="relative z-10 max-w-5xl mx-auto px-4 py-28 md:py-20 w-full grow">
 
         <header class="border-b border-cream-border dark:border-tactile-border pb-8 mb-12">
             <h1 id="theme-toggle"
@@ -197,23 +265,26 @@
             <p
                 class="text-xs uppercase tracking-widest mt-3 opacity-60 font-mono flex flex-col sm:flex-row sm:justify-between gap-2">
                 <span>Software Engineer // Gurugram, IN</span>
-                <span class="opacity-50 text-[10px] lowercase tracking-normal normal-case">
+                <span class="opacity-50 text-[10px] lowercase tracking-normal normal-case flex items-center gap-2">
                     <span class="hidden md:inline">[ click my name to toggle theme! ]</span>
                     <span class="md:hidden">[ tap my name to toggle theme ]</span>
+                    <span class="mx-2 opacity-20">|</span>
+                    <span id="bg-toggle-fluid" class="cursor-pointer hover:text-brand-accent transition-colors">[ FLUID ]</span>
+                    <span id="bg-toggle-mesh" class="cursor-pointer hover:text-brand-accent transition-colors">[ MESH ]</span>
                 </span>
             </p>
         </header>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end mb-28 md:mb-20">
             <div
-                class="text-xl md:text-2xl font-medium tracking-tight max-w-2xl leading-relaxed md:col-span-2 pb-0 md:pb-6">
+                class="reveal-target text-xl md:text-2xl font-medium tracking-tight max-w-2xl leading-relaxed md:col-span-2 pb-0 md:pb-6">
                 I engineer high-performance platforms, modernize legacy enterprise architectures, and bridge the gap
                 between complex frontend dynamics and distributed microservices.
                 Currently shipping core features and system overhauls as an <span
                     class="theme-accent-highlight">Associate Software Engineer at OSTTRA</span>.
             </div>
 
-            <div class="hidden md:flex justify-end overflow-visible h-[21rem] relative -mb-20">
+            <div class="reveal-target hidden md:flex justify-end overflow-visible h-[21rem] relative -mb-20">
                 <img src="title-selfie.png" alt="Kunal Jangid : coolest person alive rn"
                     class="h-full w-auto object-contain select-none filter grayscale contrast-115 mix-blend-multiply dark:mix-blend-normal dark:grayscale-0 dark:brightness-105 dark:contrast-100 transition-all duration-500 ease-out transform origin-bottom hover:scale-150 relative hover:z-30 cursor-zoom-in">
             </div>
@@ -224,7 +295,7 @@
 
 
 
-            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div class="max-w-xl">
                     <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">01 // Enterprise
                         System // Core Architecture</span>
@@ -252,7 +323,7 @@
                 </div>
             </div>
 
-            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div class="max-w-xl">
                     <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">02 // Enterprise
                         System // UI Modernization</span>
@@ -280,7 +351,7 @@
                 </div>
             </div>
 
-            <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div class="max-w-xl">
                     <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">03 // Enterprise
                         System // Data Infrastructure</span>
@@ -306,9 +377,9 @@
                 </div>
             </div>
 
-            <div id="expanded-work" class="hidden divide-y divide-cream-border dark:divide-tactile-border">
+            <div id="expanded-work" class="hidden">
 
-                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
                         <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">04 //
                             Personal Project // Systems & Automation</span>
@@ -337,7 +408,7 @@
                     </div>
                 </div>
 
-                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
                         <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">05 //
                             Personal Project</span>
@@ -365,7 +436,7 @@
                     </div>
                 </div>
 
-                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
                         <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">06 //
                             Academic Research Manuscript</span>
@@ -394,7 +465,7 @@
                     </div>
                 </div>
 
-                <div class="group py-14 md:py-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
                         <span class="text-xs font-mono uppercase tracking-widest opacity-50 block mb-1">07 //
                             Personal Project</span>
@@ -424,9 +495,9 @@
             </div>
 
 
-            <div class="text-center mt-8">
+            <div class="reveal-target text-center mt-8">
                 <button id="load-more-btn"
-                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-6 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
+                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-8 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
                     Expand Projects & Research
                 </button>
             </div>
@@ -437,7 +508,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <div id="trigger-desk"
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
+                    class="relative overflow-hidden group glass-panel p-6 rounded-2xl cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
                     <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to view ]</div>
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Gadgets</h3>
@@ -454,7 +525,7 @@
                 </div>
 
                 <div
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded h-52 flex flex-col justify-between transition-all duration-200">
+                    class="relative overflow-hidden group glass-panel p-6 rounded-2xl h-52 flex flex-col justify-between transition-all duration-200">
                     <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to open ]</div>
                     <div class="w-full">
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Sounds</h3>
@@ -472,7 +543,7 @@
                 </div>
 
                 <div id="trigger-gallery"
-                    class="relative overflow-hidden group border border-cream-border dark:border-tactile-border p-6 rounded cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
+                    class="relative overflow-hidden group glass-panel p-6 rounded-2xl cursor-pointer h-52 flex flex-col justify-between transition-all duration-200">
                     <div class="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to view ]</div>
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Frames</h3>
@@ -492,15 +563,15 @@
 
         <!-- Collapsible Terminal Message Drop Section -->
         <section class="border-t border-cream-border dark:border-tactile-border pt-12">
-            <div class="text-center">
+            <div class="reveal-target text-center">
                 <button id="contact-trigger-btn"
-                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-6 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
+                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-8 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
                     [ Want to contact me? Click here ]
                 </button>
             </div>
 
             <div id="contact-drawer"
-                class="hidden mt-8 max-w-xl mx-auto border border-cream-border dark:border-tactile-border p-6 rounded transition-all duration-300">
+                class="hidden mt-8 max-w-xl mx-auto glass-panel p-8 rounded-2xl transition-all duration-300">
                 <form id="terminal-form" class="space-y-4 font-mono text-sm">
                     <!-- Honeypot anti-spam capture mesh (Do not remove) -->
                     <div class="hidden" aria-hidden="true">
@@ -581,11 +652,13 @@
     </div>
 
     <footer
-        class="max-w-4xl mx-auto px-6 pb-12 w-full text-xs font-mono opacity-50 flex flex-col sm:flex-row justify-between gap-4 border-t border-cream-border/60 dark:border-tactile-border/40 pt-6">
+        class="relative z-10 max-w-4xl mx-auto px-6 pb-12 w-full text-xs font-mono opacity-50 flex flex-col sm:flex-row justify-between gap-4 border-t border-cream-border/60 dark:border-tactile-border/40 pt-6">
         <div>© 2026 KUNAL JANGID.</div>
         <div class="flex gap-4">
             <a href="https://www.linkedin.com/in/jangidkunal" target="_blank"
                 class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">LinkedIn</a><span>//</span>
+            <a href="graph.html"
+                class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">Chaotic Graph</a><span>//</span>
             <a href="https://github.com/kunal-jangid/" target="_blank"
                 class="hover:text-cream-accent dark:hover:text-tactile-accent transition-colors duration-200 hover:underline">GitHub</a><span>//</span>
             <a href="mailto:thekunaljangid@gmail.com"
@@ -852,6 +925,10 @@
             const hoverTextElement = document.getElementById('spotify-hover-text');
             const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
 
+            const escapeHTML = (str) => String(str).replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+
             try {
                 const res = await fetch(workerEndpoint);
                 if (!res.ok) throw new Error();
@@ -862,11 +939,11 @@
                     hoverTextElement.innerHTML = `Wanna listen along on Spotify?<br><br>Click here to open track`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden">
-                            ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
+                            ${data.coverUrl ? `<img src="${escapeHTML(data.coverUrl)}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded-sm shadow-md">` : ''}
                             <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="text-cream-accent dark:text-tactile-accent animate-pulse font-bold text-[10px] uppercase tracking-widest block mb-0.5">• Live Now</span>
-                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
-                                <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
+                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${escapeHTML(data.songName)}</h4>
+                                <p class="text-xs opacity-80 truncate mb-1">by ${escapeHTML(data.artistName)}</p>
                             </div>
                         </div>
                     `;
@@ -875,11 +952,11 @@
                     hoverTextElement.innerHTML = `Track paused. Listen to my favorite playlist on YouTube Music?<br><br>Click here`;
                     statusContainer.innerHTML = `
                         <div class="flex items-center gap-4 mt-1 overflow-hidden opacity-60">
-                            ${data.coverUrl ? `<img src="${data.coverUrl}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
+                            ${data.coverUrl ? `<img src="${escapeHTML(data.coverUrl)}" alt="Album Artwork" class="w-20 h-20 object-cover flex-shrink-0 border border-cream-border dark:border-tactile-border filter grayscale contrast-100 rounded-sm">` : ''}
                             <div class="min-w-0 flex flex-col justify-center text-left">
                                 <span class="opacity-50 text-[10px] uppercase tracking-widest block mb-0.5">• Last Played</span>
-                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${data.songName}</h4>
-                                <p class="text-xs opacity-80 truncate mb-1">by ${data.artistName}</p>
+                                <h4 class="font-bold text-sm tracking-tight truncate text-cream-text dark:text-tactile-text mb-0.5">${escapeHTML(data.songName)}</h4>
+                                <p class="text-xs opacity-80 truncate mb-1">by ${escapeHTML(data.artistName)}</p>
                             </div>
                         </div>
                     `;
@@ -948,6 +1025,8 @@
             }
         });
     </script>
+    <!-- Premium Motion Engine -->
+    <script src="v2-motion.js"></script>
 </body>
 
 </html>
