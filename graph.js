@@ -77,19 +77,18 @@ async function spawnNodes() {
 }
 
 function centerViewport() {
-    // Focus on the area encompassing all three clusters
-    // Clusters: (2500, 2500), (2000, 4000), (4000, 2000)
-    // Roughly centered at (2833, 2833)
     const worldCenterX = 2833;
     const worldCenterY = 2833;
     
-    // Calculate zoom to fit all clusters (roughly 4000x4000 space)
-    const padding = 600;
+    const padding = window.innerWidth < 768 ? 100 : 600;
     const availableWidth = window.innerWidth - padding;
     const availableHeight = window.innerHeight - padding;
-    const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, 0.8);
     
-    graphState.zoom = Math.max(0.15, desiredZoom);
+    // More zoomed out on mobile initially to show scale
+    const baseZoom = window.innerWidth < 768 ? 0.25 : 0.8;
+    const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, baseZoom);
+    
+    graphState.zoom = Math.max(0.1, desiredZoom);
     graphState.offset.x = window.innerWidth / 2 - worldCenterX * graphState.zoom;
     graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
 }
