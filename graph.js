@@ -198,41 +198,30 @@ function initConnections() {
     const photoNodes = graphState.nodes.filter(n => n.cluster === 'photo');
     const musicNodes = graphState.nodes.filter(n => n.cluster === 'music');
 
-    // Internal Project Connections (Ring)
-    projectNodes.forEach((node, i) => {
-        const nextIdx = graphState.nodes.indexOf(projectNodes[(i + 1) % projectNodes.length]);
-        graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
-    });
-
-    // Internal Photo Connections (Random pairs)
-    photoNodes.forEach((node, i) => {
-        if (i < photoNodes.length - 1) {
-            const nextIdx = graphState.nodes.indexOf(photoNodes[i + 1]);
-            graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
+    // Intra-cluster links (rings)
+    [projectNodes, musicNodes, photoNodes].forEach(cluster => {
+        for (let i = 0; i < cluster.length; i++) {
+            const fromIdx = graphState.nodes.indexOf(cluster[i]);
+            const toIdx = graphState.nodes.indexOf(cluster[(i + 1) % cluster.length]);
+            graphState.connections.push({ from: fromIdx, to: toIdx, type: 'inner' });
         }
     });
 
-    // Internal Music Connections (Chain)
-    musicNodes.forEach((node, i) => {
-        if (i < musicNodes.length - 1) {
-            const nextIdx = graphState.nodes.indexOf(musicNodes[i + 1]);
-            graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
-        }
-    });
+    // Inter-cluster bridges
+    if (projectNodes.length && musicNodes.length) createBridges(projectNodes, musicNodes);
+    if (musicNodes.length && photoNodes.length) createBridges(musicNodes, photoNodes);
+    if (photoNodes.length && projectNodes.length) createBridges(photoNodes, projectNodes);
+}
 
-    // Cross-cluster bridge: Project to Photo
-    if (projectNodes.length > 0 && photoNodes.length > 0) {
+function createBridges(groupA, groupB) {
+    const bridgeCount = Math.floor(Math.random() * 3) + 3; // 3 to 5 bridges
+    for (let i = 0; i < bridgeCount; i++) {
+        const nodeA = groupA[Math.floor(Math.random() * groupA.length)];
+        const nodeB = groupB[Math.floor(Math.random() * groupB.length)];
         graphState.connections.push({
-            from: graphState.nodes.indexOf(projectNodes[0]),
-            to: graphState.nodes.indexOf(photoNodes[0])
-        });
-    }
-
-    // Cross-cluster bridge: Project to Music
-    if (projectNodes.length > 0 && musicNodes.length > 0) {
-        graphState.connections.push({
-            from: graphState.nodes.indexOf(projectNodes[projectNodes.length - 1]),
-            to: graphState.nodes.indexOf(musicNodes[0])
+            from: graphState.nodes.indexOf(nodeA),
+            to: graphState.nodes.indexOf(nodeB),
+            type: 'bridge'
         });
     }
 }
@@ -246,11 +235,26 @@ let dragOffset = { x: 0, y: 0 };
 document.addEventListener('mousedown', (e) => {
     const card = e.target.closest('.node-card, .node-photo, .node-music');
     if (card) {
+        // For music nodes, only allow dragging via the handle
+        if (card.classList.contains('node-music') && !e.target.closest('.music-handle')) {
+            return;
+        }
+
         activeNode = graphState.nodes.find(n => n.element === card);
         const rect = card.getBoundingClientRect();
         dragOffset.x = (e.clientX - rect.left) / graphState.zoom;
         dragOffset.y = (e.clientY - rect.top) / graphState.zoom;
-        card.style.cursor = 'grabbing';
+        
+        if (card.classList.contains('node-music')) {
+            const handle = card.querySelector('.music-handle');
+            if (handle) handle.style.cursor = 'grabbing';
+            // Disable iframe pointer events while dragging
+            const iframe = card.querySelector('iframe');
+            if (iframe) iframe.style.pointerEvents = 'none';
+        } else {
+            card.style.cursor = 'grabbing';
+        }
+        
         card.style.zIndex = 1000;
         card.classList.add('dragging');
     } else {
@@ -285,10 +289,20 @@ document.addEventListener('mousemove', (e) => {
 
 document.addEventListener('mouseup', () => {
     if (activeNode) {
-        activeNode.element.style.cursor = 'grab';
-        activeNode.element.style.zIndex = 10;
-        activeNode.element.style.transform = 'scale(1)';
-        activeNode.element.classList.remove('dragging');
+        const card = activeNode.element;
+        if (card.classList.contains('node-music')) {
+            const handle = card.querySelector('.music-handle');
+            if (handle) handle.style.cursor = 'grab';
+            // Re-enable iframe pointer events
+            const iframe = card.querySelector('iframe');
+            if (iframe) iframe.style.pointerEvents = 'auto';
+        } else {
+            card.style.cursor = 'grab';
+        }
+        
+        card.style.zIndex = 10;
+        card.style.transform = 'scale(1)';
+        card.classList.remove('dragging');
         activeNode = null;
     }
     isPanning = false;
@@ -401,8 +415,23 @@ function drawThreads() {
         ctx.shadowColor = threadColor;
         
         // Spectrum shift thread
-        ctx.strokeStyle = threadColor;
-        ctx.lineWidth = 3 * graphState.zoom;
+        if (conn.type === 'bridge') {
+            ctx.setLineDash([10 * graphState.zoom, 5 * graphState.zoom]);
+            const gradient = ctx.createLinearGradient(ax, ay, bx, by);
+            gradient.addColorStop(0, threadColor);
+            
+            let colorB = graphState.accentColor;
+            if (nodeB.cluster === 'music') colorB = '#1DB954';
+            if (nodeB.cluster === 'photo') colorB = '#ffffff';
+            gradient.addColorStop(1, colorB);
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 2 * graphState.zoom;
+        } else {
+            ctx.setLineDash([]);
+            ctx.strokeStyle = threadColor;
+            ctx.lineWidth = 3 * graphState.zoom;
+        }
         ctx.lineCap = 'round';
 
         ctx.beginPath();
@@ -411,6 +440,7 @@ function drawThreads() {
         ctx.stroke();
         
         // Secondary thin core line
+        ctx.setLineDash([]);
         ctx.shadowBlur = 0;
         ctx.strokeStyle = 'white';
         ctx.globalAlpha = 0.2;
