@@ -253,6 +253,7 @@
 </head>
 
 <body class="transition-colors duration-300 min-h-screen flex flex-col justify-between">
+    <canvas id="fluid-paths" class="fixed inset-0 z-[-1] pointer-events-none opacity-30"></canvas>
 
     <main class="max-w-5xl mx-auto px-4 py-28 md:py-20 w-full grow">
 
@@ -373,7 +374,7 @@
                 </div>
             </div>
 
-            <div id="expanded-work" class="hidden divide-y divide-cream-border dark:divide-tactile-border">
+            <div id="expanded-work" class="hidden">
 
                 <div class="group p-8 glass-panel rounded-2xl mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div class="max-w-xl">
@@ -493,7 +494,7 @@
 
             <div class="text-center mt-8">
                 <button id="load-more-btn"
-                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-6 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
+                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-8 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
                     Expand Projects & Research
                 </button>
             </div>
@@ -561,13 +562,13 @@
         <section class="border-t border-cream-border dark:border-tactile-border pt-12">
             <div class="text-center">
                 <button id="contact-trigger-btn"
-                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-6 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
+                    class="text-xs font-mono uppercase tracking-wider border border-cream-border dark:border-tactile-border px-8 py-3 rounded hover:bg-cream-text hover:text-cream-bg dark:hover:bg-tactile-text dark:hover:text-tactile-bg transition-all duration-200">
                     [ Want to contact me? Click here ]
                 </button>
             </div>
 
             <div id="contact-drawer"
-                class="hidden mt-8 max-w-xl mx-auto border border-cream-border dark:border-tactile-border p-6 rounded transition-all duration-300">
+                class="hidden mt-8 max-w-xl mx-auto glass-panel p-8 rounded-2xl transition-all duration-300">
                 <form id="terminal-form" class="space-y-4 font-mono text-sm">
                     <!-- Honeypot anti-spam capture mesh (Do not remove) -->
                     <div class="hidden" aria-hidden="true">
