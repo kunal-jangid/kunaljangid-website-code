@@ -55,6 +55,37 @@
             z-index: 100;
             background: url('data:image/svg+xml;fragment-svg,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
         }
+
+        /* Photography Cluster - Blur Reveal */
+        .node-photo {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            padding: 6px;
+            background: white;
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: grab;
+            user-select: none;
+            transition: box-shadow 0.3s ease;
+        }
+        .node-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(40px) saturate(400%);
+            transition: filter 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+        .node-photo:hover img, .node-photo.dragging img {
+            filter: blur(0) saturate(100%);
+            transform: scale(1);
+        }
+        .node-photo.dragging {
+            box-shadow: 12px 12px 30px rgba(0,0,0,0.2);
+            z-index: 1000 !important;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +104,7 @@
             </filter>
         </defs>
     </svg>
+    <script src="photography/photos.js"></script>
     <script src="graph.js"></script>
 </body>
 </html>

@@ -113,7 +113,31 @@ function spawnMusicNodes() {
 }
 
 function spawnPhotoNodes() {
-    // To be implemented in Task 2
+    const container = document.getElementById('node-container');
+    if (!window.photoAssets) return;
+
+    window.photoAssets.forEach((src, i) => {
+        const node = document.createElement('div');
+        node.className = 'node-photo group';
+        node.innerHTML = `<img src="${src}" loading="lazy" alt="Photography ${i}">`;
+        
+        // Cluster around 4000, 2000
+        const x = 4000 + (Math.random() - 0.5) * 1200;
+        const y = 2000 + (Math.random() - 0.5) * 1200;
+        
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        
+        container.appendChild(node);
+        graphState.nodes.push({
+            id: `photo-${i}`,
+            cluster: 'photo',
+            element: node,
+            x, y,
+            vx: 0, vy: 0,
+            lastX: x, lastY: y
+        });
+    });
 }
 
 const themeConfig = [
@@ -138,9 +162,32 @@ function initTheme() {
 }
 
 function initConnections() {
-    for (let i = 0; i < graphState.nodes.length; i++) {
-        const target = (i + 1) % graphState.nodes.length;
-        graphState.connections.push({ from: i, to: target });
+    // Clear existing connections
+    graphState.connections = [];
+
+    const projectNodes = graphState.nodes.filter(n => n.cluster === 'project');
+    const photoNodes = graphState.nodes.filter(n => n.cluster === 'photo');
+
+    // Internal Project Connections (Ring)
+    projectNodes.forEach((node, i) => {
+        const nextIdx = graphState.nodes.indexOf(projectNodes[(i + 1) % projectNodes.length]);
+        graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
+    });
+
+    // Internal Photo Connections (Random pairs)
+    photoNodes.forEach((node, i) => {
+        if (i < photoNodes.length - 1) {
+            const nextIdx = graphState.nodes.indexOf(photoNodes[i + 1]);
+            graphState.connections.push({ from: graphState.nodes.indexOf(node), to: nextIdx });
+        }
+    });
+
+    // Cross-cluster bridge
+    if (projectNodes.length > 0 && photoNodes.length > 0) {
+        graphState.connections.push({
+            from: graphState.nodes.indexOf(projectNodes[0]),
+            to: graphState.nodes.indexOf(photoNodes[0])
+        });
     }
 }
 
@@ -151,7 +198,7 @@ let startPan = { x: 0, y: 0 };
 let dragOffset = { x: 0, y: 0 };
 
 document.addEventListener('mousedown', (e) => {
-    const card = e.target.closest('.node-card');
+    const card = e.target.closest('.node-card, .node-photo');
     if (card) {
         activeNode = graphState.nodes.find(n => n.element === card);
         const rect = card.getBoundingClientRect();
@@ -284,11 +331,14 @@ function drawThreads() {
         if (nodeA.cluster === 'music') threadColor = '#1DB954';
         if (nodeA.cluster === 'photo') threadColor = '#ffffff';
 
-        // Cards are 300px wide, 150px approx height
-        const ax = nodeA.x * graphState.zoom + graphState.offset.x + 150 * graphState.zoom;
-        const ay = nodeA.y * graphState.zoom + graphState.offset.y + 75 * graphState.zoom;
-        const bx = nodeB.x * graphState.zoom + graphState.offset.x + 150 * graphState.zoom;
-        const by = nodeB.y * graphState.zoom + graphState.offset.y + 75 * graphState.zoom;
+        // Cluster-specific offsets
+        const offsetA = nodeA.cluster === 'photo' ? { w: 100, h: 100 } : { w: 150, h: 75 };
+        const offsetB = nodeB.cluster === 'photo' ? { w: 100, h: 100 } : { w: 150, h: 75 };
+
+        const ax = nodeA.x * graphState.zoom + graphState.offset.x + offsetA.w * graphState.zoom;
+        const ay = nodeA.y * graphState.zoom + graphState.offset.y + offsetA.h * graphState.zoom;
+        const bx = nodeB.x * graphState.zoom + graphState.offset.x + offsetB.w * graphState.zoom;
+        const by = nodeB.y * graphState.zoom + graphState.offset.y + offsetB.h * graphState.zoom;
         
         const dist = Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
         const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * (dist * 0.1);
