@@ -10,40 +10,48 @@ const graphState = {
 
 const projects = [
     { 
-        id: 1, 
+        id: 'p1', 
         title: 'Metadata-Driven Configuration Platform', 
         category: 'Enterprise System // Core Architecture',
         desc: 'Co-architected a dynamic rendering layout using React 19 that dynamically compiles modular UI configurations from structured JSON/Metadata schemas.',
         tags: ['React 19', 'TypeScript', 'Dynamic Schema Layouts']
     },
     { 
-        id: 2, 
+        id: 'p2', 
         title: 'Distributed Platform Modernization', 
         category: 'Enterprise System // UI Modernization',
         desc: 'Led end-to-end framework modernization sprints to upgrade legacy frontend instances up to Angular 21, abstracting UI components.',
         tags: ['Angular 21', 'Architecture Refactoring', 'AI Driven Development']
     },
     { 
-        id: 3, 
+        id: 'p3', 
         title: 'High-Throughput Archival Processing Engine', 
         category: 'Enterprise System // Data Infrastructure',
         desc: 'Engineered a performant asynchronous database archival pipeline to process and offload 500M+ inactive historical table records.',
         tags: ['Java', 'Spring Boot', 'PL/SQL Optimization']
     },
     { 
-        id: 4, 
+        id: 'p4', 
         title: 'Autonomous Quantitative Analysis Dashboard', 
         category: 'Personal Project // Systems & Automation',
         desc: 'Modular quantitative Python data pipeline cross-referencing real-time prediction odds with news API data using localized LLM nodes.',
         tags: ['Python', 'Ollama', 'Gemma 3', 'TradingView API']
     },
     { 
-        id: 5, 
+        id: 'p5', 
         title: 'Second Guesser // Intention Dissector', 
         category: 'Personal Project',
         desc: 'Lightweight desktop utility that grabs a swift screen region capture and loops it directly into Gemini models for conversational evaluation.',
         tags: ['Python', 'Gemini API', 'Region Capture']
     }
+];
+
+const musicData = [
+    { id: 'm1', title: 'Spotify Vibes', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/6gB4IBcjYGSxnUat8Ue6BT' },
+    { id: 'm2', title: 'YT Music Mix', provider: 'youtube', url: 'https://www.youtube.com/embed/videoseries?list=LRSRcjL6Be-v-jkzKQ1lmQ9ZnKgFEdeQHja8w' },
+    { id: 'm3', title: 'Deep Focus', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKzbUnY3Yy' },
+    { id: 'm4', title: 'Lo-fi Beats', provider: 'youtube', url: 'https://www.youtube.com/embed/jfKfPfyJRdk' },
+    { id: 'm5', title: 'Coding Session', provider: 'spotify', url: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb9C7V6rN' }
 ];
 
 const decorativeNodes = [];
@@ -59,6 +67,17 @@ function spawnDecorativeNodes() {
 }
 
 function spawnNodes() {
+    spawnProjectNodes();
+    spawnMusicNodes();
+    spawnPhotoNodes();
+    spawnDecorativeNodes();
+    
+    // Initial center view
+    graphState.offset.x = window.innerWidth / 2 - 2500;
+    graphState.offset.y = window.innerHeight / 2 - 2500;
+}
+
+function spawnProjectNodes() {
     const container = document.getElementById('node-container');
     projects.forEach((p, i) => {
         const node = document.createElement('div');
@@ -71,26 +90,30 @@ function spawnNodes() {
                 ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
             </div>
         `;
-        // More centered initial distribution in world space
-        const x = Math.random() * 1000 + 2000;
-        const y = Math.random() * 1000 + 2000;
+        // Centered around 2500, 2500
+        const x = 2500 + (Math.random() - 0.5) * 800;
+        const y = 2500 + (Math.random() - 0.5) * 800;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
         
         container.appendChild(node);
         graphState.nodes.push({ 
             id: p.id, 
+            cluster: 'project',
             element: node, 
             x, y, 
             vx: 0, vy: 0,
             lastX: x, lastY: y
         });
     });
-    spawnDecorativeNodes();
-    
-    // Initial center view
-    graphState.offset.x = window.innerWidth / 2 - 2500;
-    graphState.offset.y = window.innerHeight / 2 - 2500;
+}
+
+function spawnMusicNodes() {
+    // To be implemented in Task 3
+}
+
+function spawnPhotoNodes() {
+    // To be implemented in Task 2
 }
 
 const themeConfig = [
@@ -254,6 +277,13 @@ function drawThreads() {
         const nodeA = graphState.nodes[conn.from];
         const nodeB = graphState.nodes[conn.to];
         
+        if (!nodeA || !nodeB) return;
+
+        // Cluster-specific colors
+        let threadColor = graphState.accentColor;
+        if (nodeA.cluster === 'music') threadColor = '#1DB954';
+        if (nodeA.cluster === 'photo') threadColor = '#ffffff';
+
         // Cards are 300px wide, 150px approx height
         const ax = nodeA.x * graphState.zoom + graphState.offset.x + 150 * graphState.zoom;
         const ay = nodeA.y * graphState.zoom + graphState.offset.y + 75 * graphState.zoom;
@@ -266,10 +296,10 @@ function drawThreads() {
         
         // Aura Glow
         ctx.shadowBlur = 15 * graphState.zoom;
-        ctx.shadowColor = `hsla(${(time * 40 + conn.from * 20) % 360}, 80%, 60%, 0.3)`;
+        ctx.shadowColor = threadColor;
         
         // Spectrum shift thread
-        ctx.strokeStyle = `hsla(${(time * 60 + conn.from * 30) % 360}, 70%, 50%, 0.5)`;
+        ctx.strokeStyle = threadColor;
         ctx.lineWidth = 3 * graphState.zoom;
         ctx.lineCap = 'round';
 
