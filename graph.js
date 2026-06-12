@@ -114,6 +114,7 @@ function spawnMusicNodes() {
         const node = document.createElement('div');
         node.className = 'node-music group';
         node.innerHTML = `
+            <div class="music-handle"><span>Drag to move</span></div>
             <iframe 
                 src="${m.url}" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -379,7 +380,7 @@ function drawThreads() {
         // Cluster-specific offsets (center of the nodes)
         const getOffset = (node) => {
             if (node.cluster === 'photo') return { w: 100, h: 100 };
-            if (node.cluster === 'music') return { w: 160, h: 40 };
+            if (node.cluster === 'music') return { w: 160, h: 50 };
             return { w: 150, h: 75 }; // Default for project cards
         };
 
