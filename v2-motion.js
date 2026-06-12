@@ -1,11 +1,125 @@
 // v2-motion.js
 
 class FluidEngine {
-    constructor(v2Motion) { 
+    constructor(v2Motion) {
         this.v2Motion = v2Motion;
-        console.log('Liquid Engine Started'); 
+        this.canvas = document.getElementById('fluid-paths');
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        this.blobs = [];
+        this.animationId = null;
+        this.mouse = { x: 0, y: 0, active: false };
+
+        this.handlers = {
+            resize: () => {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            },
+            mousemove: (e) => {
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+            },
+            mousedown: () => { this.mouse.active = true; },
+            mouseup: () => { this.mouse.active = false; },
+            touchstart: (e) => {
+                this.mouse.active = true;
+                this.mouse.x = e.touches[0].clientX;
+                this.mouse.y = e.touches[0].clientY;
+            },
+            touchmove: (e) => {
+                this.mouse.x = e.touches[0].clientX;
+                this.mouse.y = e.touches[0].clientY;
+            },
+            touchend: () => { this.mouse.active = false; }
+        };
+
+        this.init();
     }
-    destroy() { console.log('Liquid Engine Destroyed'); }
+
+    init() {
+        this.handlers.resize();
+        window.addEventListener('resize', this.handlers.resize);
+        window.addEventListener('mousemove', this.handlers.mousemove);
+        window.addEventListener('mousedown', this.handlers.mousedown);
+        window.addEventListener('mouseup', this.handlers.mouseup);
+        window.addEventListener('touchstart', this.handlers.touchstart, { passive: true });
+        window.addEventListener('touchmove', this.handlers.touchmove, { passive: true });
+        window.addEventListener('touchend', this.handlers.touchend);
+
+        const count = 4;
+        for (let i = 0; i < count; i++) {
+            this.blobs.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                r: 250 + Math.random() * 200,
+                vx: (Math.random() - 0.5) * 1.0,
+                vy: (Math.random() - 0.5) * 1.0,
+                sinOffset: Math.random() * Math.PI * 2
+            });
+        }
+
+        this.animate();
+        console.log('Liquid Engine Started');
+    }
+
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.filter = 'blur(80px)';
+        
+        const accentColor = this.v2Motion.accentColor || '#39FF14';
+
+        this.blobs.forEach(blob => {
+            blob.x += blob.vx + Math.sin(Date.now() * 0.001 + blob.sinOffset) * 0.5;
+            blob.y += blob.vy + Math.cos(Date.now() * 0.001 + blob.sinOffset) * 0.5;
+
+            if (this.mouse.active) {
+                const dx = this.mouse.x - blob.x;
+                const dy = this.mouse.y - blob.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 1000) {
+                    const force = (1000 - dist) / 1000;
+                    blob.x += dx * force * 0.02;
+                    blob.y += dy * force * 0.02;
+                }
+            }
+
+            const margin = blob.r;
+            if (blob.x < -margin) blob.x = this.canvas.width + margin;
+            if (blob.x > this.canvas.width + margin) blob.x = -margin;
+            if (blob.y < -margin) blob.y = this.canvas.height + margin;
+            if (blob.y > this.canvas.height + margin) blob.y = -margin;
+
+            const grad = this.ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
+            grad.addColorStop(0, accentColor);
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+            this.ctx.fillStyle = grad;
+            this.ctx.beginPath();
+            this.ctx.arc(blob.x, blob.y, blob.r, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+
+        this.animationId = requestAnimationFrame(() => this.animate());
+    }
+
+    onThemeChange(color) {
+        // Theme sync is handled by the animate loop pulling from v2Motion.accentColor
+    }
+
+    destroy() {
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        window.removeEventListener('resize', this.handlers.resize);
+        window.removeEventListener('mousemove', this.handlers.mousemove);
+        window.removeEventListener('mousedown', this.handlers.mousedown);
+        window.removeEventListener('mouseup', this.handlers.mouseup);
+        window.removeEventListener('touchstart', this.handlers.touchstart);
+        window.removeEventListener('touchmove', this.handlers.touchmove);
+        window.removeEventListener('touchend', this.handlers.touchend);
+        this.ctx.filter = 'none';
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        console.log('Liquid Engine Destroyed');
+    }
 }
 
 class MeshEngine {
