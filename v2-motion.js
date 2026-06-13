@@ -354,6 +354,7 @@ const BackgroundController = {
         const toggleBtn = document.getElementById('bg-mode-toggle');
         if (toggleBtn) {
             toggleBtn.addEventListener('click', () => {
+                console.log('Background toggle clicked. Current mode:', this.mode);
                 this.setMode(this.mode === 'fluid' ? 'mesh' : 'fluid');
             });
         }
@@ -464,6 +465,9 @@ const v2Motion = {
         const animate = () => {
             cursorX = lerp(cursorX, mouseX, 0.15);
             cursorY = lerp(cursorY, mouseY, 0.15);
+            
+            // Failsafe: Ensure active class is never present
+            if (cursor.classList.contains('active')) cursor.classList.remove('active');
             
             const offset = 15;
             cursor.style.transform = `translate3d(${cursorX - offset}px, ${cursorY - offset}px, 0)`;
