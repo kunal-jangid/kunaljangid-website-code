@@ -165,6 +165,29 @@
             cursor: grabbing;
         }
 
+        @media (min-width: 768px) {
+            body,
+            a,
+            button,
+            .cursor-pointer {
+                cursor: none !important;
+            }
+        }
+
+        .custom-cursor {
+            width: 30px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: width 0.5s, height 0.5s, background-color 0.5s, opacity 1.0s;
+        }
+
         @media (max-width: 768px) {
             .node-card {
                 width: 240px;
@@ -194,7 +217,7 @@
 <body>
     <div class="noise"></div>
     <!-- Navigation Overlay -->
-    <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 110;">
         <a href="index.html" class="px-4 py-2 text-xs font-mono uppercase tracking-widest border border-current rounded shadow-sm bg-transparent transition-all duration-300 hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] flex items-center gap-2" style="color: var(--text-color); border-color: var(--text-color); text-decoration: none;">
             ← Go Back
         </a>
@@ -228,5 +251,6 @@
     </svg>
     <script src="photography/photos.js"></script>
     <script src="graph.js"></script>
+    <script src="v2-motion.js"></script>
 </body>
 </html>

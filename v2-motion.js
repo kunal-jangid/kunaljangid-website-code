@@ -370,10 +370,10 @@ const BackgroundController = {
     updateToggleUI() {
         const indicator = document.getElementById('bg-toggle-indicator');
         if (indicator) {
-            // Fluid = Left (0), Mesh = Right (20px approx)
+            // Fluid = Left (0), Mesh = Right (24px approx)
             indicator.style.transform = this.mode === 'fluid' 
                 ? 'translateX(0)' 
-                : 'translateX(20px)';
+                : 'translateX(24px)';
         }
     },
 
