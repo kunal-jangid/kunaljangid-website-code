@@ -65,7 +65,6 @@
         }
 
         /* Enforce text color on passive elements while allowing interactive bypasses */
-        h1,
         h2,
         h3,
         h4,
@@ -74,6 +73,10 @@
         label,
         strong {
             color: var(--text-color) !important;
+        }
+
+        #theme-toggle {
+            color: var(--accent-color) !important;
         }
 
         /* Target Company Accent Highlight */
@@ -115,8 +118,7 @@
 
         /* Map dynamic interactive highlight accents */
         .hover\:text-cream-accent:hover,
-        .dark\:hover\:text-tactile-accent:hover,
-        #theme-toggle:hover {
+        .dark\:hover\:text-tactile-accent:hover {
             color: var(--accent-color) !important;
         }
 
@@ -196,8 +198,16 @@
 
         ::view-transition-new(root) {
             z-index: 9999;
-            animation: ripple-in 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: ripple-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
             clip-path: circle(0% at var(--click-x, 50%) var(--click-y, 50%));
+        }
+
+        .no-transitions,
+        .no-transitions *,
+        .no-transitions *:before,
+        .no-transitions *:after {
+            transition: none !important;
+            animation: none !important;
         }
 
         @keyframes ripple-in {
@@ -210,32 +220,45 @@
             }
         }
 
+        @media (min-width: 768px) {
+            body,
+            a,
+            button,
+            img,
+            #theme-toggle,
+            .cursor-pointer,
+            .group {
+                cursor: none !important;
+            }
+        }
+
         .custom-cursor {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             background: var(--accent-color);
-            border-radius: 50%;
+            border-radius: 100%;
             position: fixed;
             top: 0;
             left: 0;
             pointer-events: none;
             z-index: 10000;
             mix-blend-mode: difference;
-            transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+            transition: width 0.5s, height 0.5s, background-color 0.5s, opacity 1.0s;
         }
 
         .custom-cursor.active {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             opacity: 0.15;
             background: var(--accent-color);
         }
 
         .glass-panel {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background-color: color-mix(in srgb, var(--text-color) 5%, transparent);
-            border: 1px solid color-mix(in srgb, var(--border-color) 15%, transparent);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: color-mix(in srgb, var(--bg-color) 70%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
             transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -249,17 +272,61 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .sticky-resume {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .sticky-resume:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sticky-resume:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .sticky-resume {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.65rem;
+            }
+        }
     </style>
 </head>
 
 <body class="relative transition-colors duration-300 min-h-screen flex flex-col justify-between">
-    <canvas id="fluid-paths" class="absolute inset-0 z-0 pointer-events-none opacity-40"></canvas>
+    <canvas id="fluid-paths" class="absolute inset-0 z-0 pointer-events-none opacity-70"></canvas>
 
     <main class="relative z-10 max-w-5xl mx-auto px-4 py-28 md:py-20 w-full grow">
 
         <header class="border-b border-cream-border dark:border-tactile-border pb-8 mb-12">
             <h1 id="theme-toggle"
-                class="text-6xl md:text-7xl font-black tracking-tighter cursor-pointer select-none hover:text-cream-accent dark:hover:text-tactile-accent active:scale-[0.99] transition-all duration-200">
+                class="text-6xl md:text-7xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200">
                 KUNAL JANGID
             </h1>
             <p
@@ -267,10 +334,10 @@
                 <span>Software Engineer // Gurugram, IN</span>
                 <span class="opacity-50 text-[10px] lowercase tracking-normal normal-case flex items-center gap-2">
                     <span class="hidden md:inline">[ click my name to toggle theme! ]</span>
-                    <span class="md:hidden">[ tap my name to toggle theme ]</span>
-                    <span class="mx-2 opacity-20">|</span>
-                    <span id="bg-toggle-fluid" class="cursor-pointer hover:text-brand-accent transition-colors">[ FLUID ]</span>
-                    <span id="bg-toggle-mesh" class="cursor-pointer hover:text-brand-accent transition-colors">[ MESH ]</span>
+                    <span id="bg-toggle-mesh" class="hidden"></span>
+                    <button id="bg-mode-toggle" class="relative z-50 pointer-events-auto w-10 h-5 rounded-full border border-brand-border/30 hover:border-brand-accent transition-colors flex items-center px-0.5 overflow-hidden group/toggle" title="Toggle Background Engine">
+                        <div id="bg-toggle-indicator" class="w-3.5 h-3.5 rounded-full bg-brand-accent shadow-[0_0_8px_var(--accent-color)] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
+                    </button>
                 </span>
             </p>
         </header>
@@ -286,7 +353,7 @@
 
             <div class="reveal-target hidden md:flex justify-end overflow-visible h-[21rem] relative -mb-20">
                 <img src="title-selfie.png" alt="Kunal Jangid : coolest person alive rn"
-                    class="h-full w-auto object-contain select-none filter grayscale contrast-115 mix-blend-multiply dark:mix-blend-normal dark:grayscale-0 dark:brightness-105 dark:contrast-100 transition-all duration-500 ease-out transform origin-bottom hover:scale-150 relative hover:z-30 cursor-zoom-in">
+                    class="h-full w-auto object-contain select-none filter grayscale contrast-115 mix-blend-multiply dark:mix-blend-normal dark:grayscale-0 dark:brightness-105 dark:contrast-100 transition-all duration-500 ease-out transform origin-bottom scale-100 relative z-30 cursor-zoom-in">
             </div>
         </section>
 
@@ -1025,6 +1092,17 @@
             }
         });
     </script>
+    <!-- Sticky Resume Action -->
+    <a href="resume.pdf" download="Kunal_Jangid_Resume.pdf" class="sticky-resume">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Download My Resume</span>
+    </a>
+
     <!-- Premium Motion Engine -->
     <script src="v2-motion.js"></script>
 </body>

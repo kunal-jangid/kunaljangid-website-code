@@ -193,6 +193,12 @@
 </head>
 <body>
     <div class="noise"></div>
+    <!-- Navigation Overlay -->
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
+        <a href="index.html" class="px-4 py-2 text-xs font-mono uppercase tracking-widest border border-current rounded shadow-sm bg-transparent transition-all duration-300 hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] flex items-center gap-2" style="color: var(--text-color); border-color: var(--text-color); text-decoration: none;">
+            ← Go Back
+        </a>
+    </div>
     <canvas id="canvas-bg"></canvas>
     <div id="viewport" style="width: 100vw; height: 100vh; overflow: hidden; position: relative; touch-action: none;">
         <div id="node-container"></div>

@@ -142,10 +142,10 @@ class MeshEngine {
         this.animationId = null;
         this.mouse = { x: 0, y: 0, active: false };
 
-        this.gridSize = 15;
-        this.springStrength = 0.05;
-        this.damping = 0.9;
-        this.influenceRadius = 250;
+        this.gridSize = 100;
+        this.springStrength = 0.003;
+        this.damping = 0.98;
+        this.influenceRadius = 10000;
 
         this.handlers = {
             resize: () => {
@@ -337,8 +337,8 @@ const BackgroundController = {
     init(v2Motion) {
         this.v2Motion = v2Motion;
         this.mode = localStorage.getItem('background-mode') || 'fluid';
-        this.startEngine();
         this.updateToggleUI();
+        this.startEngine();
         this.bindEvents();
 
         // Watch for content height changes to resize canvas
@@ -351,14 +351,11 @@ const BackgroundController = {
     },
 
     bindEvents() {
-        const fluidToggle = document.getElementById('bg-toggle-fluid');
-        const meshToggle = document.getElementById('bg-toggle-mesh');
-
-        if (fluidToggle) {
-            fluidToggle.addEventListener('click', () => this.setMode('fluid'));
-        }
-        if (meshToggle) {
-            meshToggle.addEventListener('click', () => this.setMode('mesh'));
+        const toggleBtn = document.getElementById('bg-mode-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                this.setMode(this.mode === 'fluid' ? 'mesh' : 'fluid');
+            });
         }
     },
 
@@ -371,17 +368,12 @@ const BackgroundController = {
     },
 
     updateToggleUI() {
-        const fluidToggle = document.getElementById('bg-toggle-fluid');
-        const meshToggle = document.getElementById('bg-toggle-mesh');
-
-        if (fluidToggle && meshToggle) {
-            if (this.mode === 'fluid') {
-                fluidToggle.style.opacity = '1';
-                meshToggle.style.opacity = '0.3';
-            } else {
-                fluidToggle.style.opacity = '0.3';
-                meshToggle.style.opacity = '1';
-            }
+        const indicator = document.getElementById('bg-toggle-indicator');
+        if (indicator) {
+            // Fluid = Left (0), Mesh = Right (20px approx)
+            indicator.style.transform = this.mode === 'fluid' 
+                ? 'translateX(0)' 
+                : 'translateX(20px)';
         }
     },
 
@@ -429,6 +421,7 @@ const v2Motion = {
         if (typeof originalRender === 'function') {
             window.renderThemePipeline = (index) => {
                 const updateTheme = () => {
+                    document.documentElement.classList.add('no-transitions');
                     originalRender(index);
                     // Update cached accent color after theme change
                     this.accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
@@ -440,9 +433,13 @@ const v2Motion = {
                 };
 
                 if (document.startViewTransition) {
-                    document.startViewTransition(updateTheme);
+                    const transition = document.startViewTransition(updateTheme);
+                    transition.finished.finally(() => {
+                        document.documentElement.classList.remove('no-transitions');
+                    });
                 } else {
                     updateTheme();
+                    document.documentElement.classList.remove('no-transitions');
                 }
             };
         }
@@ -468,19 +465,12 @@ const v2Motion = {
             cursorX = lerp(cursorX, mouseX, 0.15);
             cursorY = lerp(cursorY, mouseY, 0.15);
             
-            const offset = cursor.classList.contains('active') ? 40 : 10;
+            const offset = 15;
             cursor.style.transform = `translate3d(${cursorX - offset}px, ${cursorY - offset}px, 0)`;
             
             requestAnimationFrame(animate);
         };
         animate();
-
-        // Magnetic interaction
-        const interactiveElements = document.querySelectorAll('#theme-toggle, .group, a, button');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-        });
     },
 
     initRevealAnimations() {
