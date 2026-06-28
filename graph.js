@@ -16,39 +16,67 @@ const CLUSTER_COLORS = {
 
 const projects = [
     {
+        id: 'p_award',
+        title: 'Q1 2026 Highflyer Award',
+        category: 'OSTTRA // Award & Recognition',
+        desc: 'Recognized across OSTTRA for outstanding execution speed, technical consistency, and platform delivery. Currently active as a technical mentor and onboarding lead for the 2026 new grad engineering cohort.',
+        tags: ['OSTTRA', 'Award', 'Mentorship']
+    },
+    {
+        id: 'p0',
+        title: 'ETD Position Transfer Application',
+        category: '00 // Enterprise System // Regulation Compliance',
+        desc: 'Acted as the primary UI owner using React Hook Form to orchestrate conditional real-time data validation, mapping Java Spring services to the new schema to eliminate invalid parameter combinations and drop transaction rejection rates under DMIST compliance.',
+        tags: ['React', 'React Hook Form', 'Java Spring', 'Data Validation']
+    },
+    {
         id: 'p1',
-        title: 'Metadata-Driven Configuration Platform',
-        category: 'Enterprise System // Core Architecture',
-        desc: 'Co-architected a dynamic rendering layout using React 19 that dynamically compiles modular UI configurations from structured JSON/Metadata schemas.',
-        tags: ['React 19', 'TypeScript', 'Dynamic Schema Layouts']
+        title: 'Legacy Enterprise UI Modernization (Equities)',
+        category: '01 // Enterprise System // UI Modernization',
+        desc: 'Led a 20-generation architectural leap from Angular.js 1.3 directly to Angular 20. Leveraged AI-assisted workflows to map undocumented dependencies, maintain strict 1:1 feature parity, clear a decade of technical debt, and reduce browser memory footprint.',
+        tags: ['Angular 20', 'AI-Assisted Development', 'Architecture Refactoring', 'CI/CD Pipelines']
     },
     {
         id: 'p2',
-        title: 'Distributed Platform Modernization',
-        category: 'Enterprise System // UI Modernization',
-        desc: 'Led end-to-end framework modernization sprints to upgrade legacy frontend instances up to Angular 21, abstracting UI components.',
-        tags: ['Angular 21', 'Architecture Refactoring', 'AI Driven Development']
+        title: 'High-Throughput Archival & CSP Security Remediation',
+        category: '02 // Enterprise System // Data Infrastructure',
+        desc: 'Engineered a performant, multi-threaded Java 8 archival process directly within the core monolith to cleanly archive 500M+ historical records. Simultaneously refactored legacy JSP/JS files to eliminate cross-origin script vulnerabilities and inline script injections.',
+        tags: ['Java 8', 'Monolithic Architecture', 'Security (CSP)', 'PL/SQL']
     },
     {
         id: 'p3',
-        title: 'High-Throughput Archival Processing Engine',
-        category: 'Enterprise System // Data Infrastructure',
-        desc: 'Engineered a performant asynchronous database archival pipeline to process and offload 500M+ inactive historical table records.',
-        tags: ['Java', 'Spring Boot', 'PL/SQL Optimization']
+        title: 'Proprietary Blotter Migration to AG-Grid',
+        category: '03 // Enterprise System // UI Modernization',
+        desc: 'Led the complete decommissioning of the legacy smart-blotter library, migrating 5-7 major trade screens to a standardized AG-Grid architecture with custom cell renderers, unlocking multi-sort and fuzzy-search features.',
+        tags: ['AG-Grid', 'Custom Cell Renderers', 'State Management', 'Performance Optimization']
     },
     {
         id: 'p4',
         title: 'Autonomous Quantitative Analysis Dashboard',
-        category: 'Personal Project // Systems & Automation',
-        desc: 'Modular quantitative Python data pipeline cross-referencing real-time prediction odds with news API data using localized LLM nodes.',
+        category: '04 // Personal Project // Systems & Automation',
+        desc: 'Engineered a modular quantitative Python data pipeline cross-referencing real-time prediction odds with news API data, executing sentiment analysis using localized LLM nodes and TradingView indicator streams to find actionable trading alpha.',
         tags: ['Python', 'Ollama', 'Gemma 3', 'TradingView API']
     },
     {
         id: 'p5',
         title: 'Second Guesser // Intention Dissector',
-        category: 'Personal Project',
-        desc: 'Lightweight desktop utility that grabs a swift screen region capture and loops it directly into Gemini models for conversational evaluation.',
+        category: '05 // Personal Project // AI & Productivity',
+        desc: 'Built a lightweight desktop utility that grabs a swift screen region capture, holds pixel data strictly in-memory for security, and loops it directly into Gemini models for conversational tone evaluation so you don\'t misread the room.',
         tags: ['Python', 'Gemini API', 'Region Capture']
+    },
+    {
+        id: 'p6',
+        title: '3D Geospatial Remote Sensing Computing Study',
+        category: '06 // Academic Research Manuscript // Geospatial Computing',
+        desc: 'Co-authored an analytical research paper linking Copernicus digital elevation models with multi-spectral Sentinel-2 satellite data streams to compute localized vegetation patterns and biomass density changes from orbit.',
+        tags: ['Geographic Information System (GiS)', 'QGiS', 'Copernicus Datasource', 'Remote Sensing']
+    },
+    {
+        id: 'p7',
+        title: 'Live Option Chain Pipeline (LOCA)',
+        category: '07 // Personal Project // FinTech & Data Pipelines',
+        desc: 'Assembled an internal real-time NSE options data parser to scrape structural index arrays straight from NSE India feeds and pipe them through Pandas dataframes to condense scattered open interest volume trends into a clean visual dashboard.',
+        tags: ['Flask', 'Pandas', 'Matplotlib', 'NSE India API']
     }
 ];
 
