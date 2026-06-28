@@ -15,37 +15,37 @@ const CLUSTER_COLORS = {
 };
 
 const projects = [
-    { 
-        id: 'p1', 
-        title: 'Metadata-Driven Configuration Platform', 
+    {
+        id: 'p1',
+        title: 'Metadata-Driven Configuration Platform',
         category: 'Enterprise System // Core Architecture',
         desc: 'Co-architected a dynamic rendering layout using React 19 that dynamically compiles modular UI configurations from structured JSON/Metadata schemas.',
         tags: ['React 19', 'TypeScript', 'Dynamic Schema Layouts']
     },
-    { 
-        id: 'p2', 
-        title: 'Distributed Platform Modernization', 
+    {
+        id: 'p2',
+        title: 'Distributed Platform Modernization',
         category: 'Enterprise System // UI Modernization',
         desc: 'Led end-to-end framework modernization sprints to upgrade legacy frontend instances up to Angular 21, abstracting UI components.',
         tags: ['Angular 21', 'Architecture Refactoring', 'AI Driven Development']
     },
-    { 
-        id: 'p3', 
-        title: 'High-Throughput Archival Processing Engine', 
+    {
+        id: 'p3',
+        title: 'High-Throughput Archival Processing Engine',
         category: 'Enterprise System // Data Infrastructure',
         desc: 'Engineered a performant asynchronous database archival pipeline to process and offload 500M+ inactive historical table records.',
         tags: ['Java', 'Spring Boot', 'PL/SQL Optimization']
     },
-    { 
-        id: 'p4', 
-        title: 'Autonomous Quantitative Analysis Dashboard', 
+    {
+        id: 'p4',
+        title: 'Autonomous Quantitative Analysis Dashboard',
         category: 'Personal Project // Systems & Automation',
         desc: 'Modular quantitative Python data pipeline cross-referencing real-time prediction odds with news API data using localized LLM nodes.',
         tags: ['Python', 'Ollama', 'Gemma 3', 'TradingView API']
     },
-    { 
-        id: 'p5', 
-        title: 'Second Guesser // Intention Dissector', 
+    {
+        id: 'p5',
+        title: 'Second Guesser // Intention Dissector',
         category: 'Personal Project',
         desc: 'Lightweight desktop utility that grabs a swift screen region capture and loops it directly into Gemini models for conversational evaluation.',
         tags: ['Python', 'Gemini API', 'Region Capture']
@@ -68,7 +68,7 @@ async function spawnNodes() {
     spawnProjectNodes();
     spawnPhotoNodes();
     spawnDecorativeNodes();
-    
+
     // Initial center view
     centerViewport();
 
@@ -79,15 +79,15 @@ async function spawnNodes() {
 function centerViewport() {
     const worldCenterX = 2833;
     const worldCenterY = 2833;
-    
+
     const padding = window.innerWidth < 768 ? 100 : 600;
     const availableWidth = window.innerWidth - padding;
     const availableHeight = window.innerHeight - padding;
-    
+
     // More zoomed out on mobile initially to show scale
     const baseZoom = window.innerWidth < 768 ? 0.25 : 0.8;
     const desiredZoom = Math.min(availableWidth / 3500, availableHeight / 3500, baseZoom);
-    
+
     graphState.zoom = Math.max(0.1, desiredZoom);
     graphState.offset.x = window.innerWidth / 2 - worldCenterX * graphState.zoom;
     graphState.offset.y = window.innerHeight / 2 - worldCenterY * graphState.zoom;
@@ -116,13 +116,13 @@ function spawnProjectNodes() {
         const y = 2500 + (Math.random() - 0.5) * 800;
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
-        
+
         container.appendChild(node);
-        graphState.nodes.push({ 
-            id: p.id, 
+        graphState.nodes.push({
+            id: p.id,
             cluster: 'project',
-            element: node, 
-            x, y, 
+            element: node,
+            x, y,
             vx: 0, vy: 0,
             lastX: x, lastY: y
         });
@@ -132,14 +132,14 @@ function spawnProjectNodes() {
 async function spawnMusicNodes() {
     const container = document.getElementById('node-container');
     const workerEndpoint = 'https://spotify-telemetry.kunaljangid2k3.workers.dev';
-    
+
     try {
         const response = await fetch(workerEndpoint);
         if (!response.ok) throw new Error();
         const data = await response.json();
-        
+
         let tracksToRender = data.tracks && data.tracks.length > 0 ? data.tracks : [data];
-        
+
         // Deduplicate tracks by songUrl to prevent identical vinyls
         const uniqueTracks = [];
         const seenUrls = new Set();
@@ -149,10 +149,10 @@ async function spawnMusicNodes() {
                 uniqueTracks.push(track);
             }
         }
-        
+
         // Limit to 5 unique tracks to prevent the cluster from becoming too dense
         tracksToRender = uniqueTracks.slice(0, 9);
-        
+
         tracksToRender.forEach((trackData, i) => {
             // Ensure a fallback cover exists
             const cover = trackData.coverUrl || 'https://images.unsplash.com/photo-1619983081563-430f53602796?w=400';
@@ -164,7 +164,7 @@ async function spawnMusicNodes() {
             node.className = 'node-music shadow-2xl group';
             // Use dataset to store link for mouseup handler
             node.dataset.link = link;
-            
+
             node.innerHTML = `
                 <div class="vinyl-inner" style="background-image: url('${escapeHTML(cover)}')"></div>
                 <div class="music-info-overlay">
@@ -173,25 +173,25 @@ async function spawnMusicNodes() {
                     <span class="text-[8px] opacity-60 mt-2">[ Click to Open ]</span>
                 </div>
             `;
-            
+
             // Use existing cluster coordinates (2000, 4000) with wider spread for multiple
             const spread = tracksToRender.length > 1 ? 800 : 400;
-            const x = 2000 + Math.random() * spread - (spread/2);
-            const y = 4000 + Math.random() * spread - (spread/2);
+            const x = 2000 + Math.random() * spread - (spread / 2);
+            const y = 4000 + Math.random() * spread - (spread / 2);
             node.style.left = `${x}px`;
             node.style.top = `${y}px`;
-            
+
             container.appendChild(node);
-            graphState.nodes.push({ 
-                id: `live-music-${i}`, 
-                element: node, 
-                x, y, 
-                vx: 0, vy: 0, 
-                lastX: x, lastY: y, 
-                cluster: 'music' 
+            graphState.nodes.push({
+                id: `live-music-${i}`,
+                element: node,
+                x, y,
+                vx: 0, vy: 0,
+                lastX: x, lastY: y,
+                cluster: 'music'
             });
         });
-        
+
         // Re-initialize connections to include the newly fetched nodes
         initConnections();
     } catch (e) {
@@ -208,14 +208,14 @@ function spawnPhotoNodes() {
         const node = document.createElement('div');
         node.className = 'node-photo group';
         node.innerHTML = `<img src="${escapeHTML(src)}" loading="lazy" alt="Photography ${escapeHTML(i)}">`;
-        
+
         // Cluster around 4000, 2000
         const x = 4000 + (Math.random() - 0.5) * 1200;
         const y = 2000 + (Math.random() - 0.5) * 1200;
-        
+
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
-        
+
         container.appendChild(node);
         graphState.nodes.push({
             id: `photo-${i}`,
@@ -229,15 +229,15 @@ function spawnPhotoNodes() {
 }
 
 const themeConfig = [
-    { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#C2441C' },
     { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
+    { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#356B80' },
     { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
     { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
 ];
 
 function initTheme() {
     let savedIndex = parseInt(localStorage.getItem('portfolio-theme-state')) || 0;
-    
+
     function applyTheme(index) {
         const activeTheme = themeConfig[index] || themeConfig[0];
         const root = document.documentElement;
@@ -246,13 +246,13 @@ function initTheme() {
         root.style.setProperty('--text-color', activeTheme.text);
         root.style.setProperty('--border-color', activeTheme.border);
         root.style.setProperty('--accent-color', activeTheme.accent);
-        
+
         graphState.accentColor = activeTheme.accent;
         CLUSTER_COLORS.project = activeTheme.accent;
-        
+
         // Dynamically update the UI button colors
         const toggleBtn = document.getElementById('theme-toggle');
-        if(toggleBtn) {
+        if (toggleBtn) {
             toggleBtn.style.color = activeTheme.text;
             toggleBtn.style.borderColor = activeTheme.text;
         }
@@ -328,7 +328,7 @@ document.addEventListener('mousedown', (e) => {
         const rect = card.getBoundingClientRect();
         dragOffset.x = (e.clientX - rect.left) / graphState.zoom;
         dragOffset.y = (e.clientY - rect.top) / graphState.zoom;
-        
+
         card.style.cursor = 'grabbing';
         card.style.zIndex = 1000;
         card.classList.add('dragging');
@@ -346,15 +346,15 @@ document.addEventListener('mousemove', (e) => {
         hasDragged = true;
         activeNode.x = (e.clientX - graphState.offset.x) / graphState.zoom - dragOffset.x;
         activeNode.y = (e.clientY - graphState.offset.y) / graphState.zoom - dragOffset.y;
-        
+
         activeNode.element.style.left = `${activeNode.x}px`;
         activeNode.element.style.top = `${activeNode.y}px`;
-        
+
         // Velocity-based distortion
         const vx = activeNode.x - activeNode.lastX;
         const skew = Math.min(Math.max(vx * 0.8, -25), 25);
         activeNode.element.style.transform = `scale(1.05) skewX(${skew}deg)`;
-        
+
         activeNode.lastX = activeNode.x;
         activeNode.lastY = activeNode.y;
     } else if (isPanning) {
@@ -368,17 +368,17 @@ document.addEventListener('mouseup', () => {
     if (activeNode) {
         const card = activeNode.element;
         card.style.cursor = 'grab';
-        
+
         card.style.zIndex = 10;
         card.style.transform = 'scale(1)';
         card.classList.remove('dragging');
-        
+
         // Custom click handler for vinyl nodes to prevent firing on drag
         if (!hasDragged && card.classList.contains('node-music')) {
             const link = card.dataset.link;
             if (link) window.open(link, '_blank');
         }
-        
+
         activeNode = null;
     }
     isPanning = false;
@@ -432,55 +432,55 @@ document.addEventListener('wheel', (e) => {
     }
     const delta = e.deltaY * -0.0015;
     const newZoom = Math.min(Math.max(0.1, graphState.zoom + delta), 2.5);
-    
+
     const rect = document.getElementById('viewport').getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
+
     const worldX = (mouseX - graphState.offset.x) / graphState.zoom;
     const worldY = (mouseY - graphState.offset.y) / graphState.zoom;
-    
+
     graphState.zoom = newZoom;
     graphState.offset.x = mouseX - worldX * graphState.zoom;
     graphState.offset.y = mouseY - worldY * graphState.zoom;
-    
+
     updateTransform();
 }, { passive: false });
 
 function smoothNavigate(targetX, targetY, targetZoom) {
     if (navAnimationId) cancelAnimationFrame(navAnimationId);
-    
+
     const startX = graphState.offset.x;
     const startY = graphState.offset.y;
     const startZoom = graphState.zoom;
-    
+
     // Target offset needs to center the world coordinate (targetX, targetY)
     const finalOffsetX = window.innerWidth / 2 - targetX * targetZoom;
     const finalOffsetY = window.innerHeight / 2 - targetY * targetZoom;
-    
+
     const duration = 800;
     const startTime = performance.now();
-    
+
     function animate(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // Cubic-out easing
         const ease = 1 - Math.pow(1 - progress, 3);
-        
+
         graphState.offset.x = startX + (finalOffsetX - startX) * ease;
         graphState.offset.y = startY + (finalOffsetY - startY) * ease;
         graphState.zoom = startZoom + (targetZoom - startZoom) * ease;
-        
+
         updateTransform();
-        
+
         if (progress < 1) {
             navAnimationId = requestAnimationFrame(animate);
         } else {
             navAnimationId = null;
         }
     }
-    
+
     navAnimationId = requestAnimationFrame(animate);
 }
 
@@ -524,21 +524,21 @@ function drawThreads() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     const time = Date.now() * 0.001;
     const zoom = graphState.zoom;
     const offX = graphState.offset.x;
     const offY = graphState.offset.y;
     const vw = canvas.width;
     const vh = canvas.height;
-    
+
     drawGrid(ctx, canvas, time);
 
     // Render Decorative Nodes
     decorativeNodes.forEach(dn => {
         const dx = dn.x * zoom + offX;
         const dy = dn.y * zoom + offY;
-        
+
         // Skip if off-screen
         if (dx < -50 || dx > vw + 50 || dy < -50 || dy > vh + 50) return;
 
@@ -554,7 +554,7 @@ function drawThreads() {
     graphState.connections.forEach(conn => {
         const nodeA = graphState.nodes[conn.from];
         const nodeB = graphState.nodes[conn.to];
-        
+
         if (!nodeA || !nodeB) return;
 
         // Visibility Culling
@@ -568,30 +568,30 @@ function drawThreads() {
 
         // Skip if both ends are off-screen
         const buffer = 200 * zoom;
-        if ((ax < -buffer && bx < -buffer) || 
-            (ax > vw + buffer && bx > vw + buffer) || 
-            (ay < -buffer && by < -buffer) || 
+        if ((ax < -buffer && bx < -buffer) ||
+            (ax > vw + buffer && bx > vw + buffer) ||
+            (ay < -buffer && by < -buffer) ||
             (ay > vh + buffer && by > vh + buffer)) {
             return;
         }
 
         const threadColor = CLUSTER_COLORS[nodeA.cluster];
-        
+
         const dist = Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
         const cpX = (ax + bx) / 2 + Math.sin(time + conn.from) * (dist * 0.1);
         const cpY = (ay + by) / 2 + Math.cos(time + conn.to) * (dist * 0.1) + 50 * zoom;
-        
+
         // Aura Glow
         ctx.shadowBlur = 15 * zoom;
         ctx.shadowColor = threadColor;
-        
+
         // Spectrum shift thread
         if (conn.type === 'bridge') {
             ctx.setLineDash([10 * zoom, 5 * zoom]);
             const gradient = ctx.createLinearGradient(ax, ay, bx, by);
             gradient.addColorStop(0, threadColor);
             gradient.addColorStop(1, CLUSTER_COLORS[nodeB.cluster]);
-            
+
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 2 * zoom;
         } else {
@@ -605,7 +605,7 @@ function drawThreads() {
         ctx.moveTo(ax, ay);
         ctx.quadraticCurveTo(cpX, cpY, bx, by);
         ctx.stroke();
-        
+
         // Secondary thin core line
         ctx.setLineDash([]);
         ctx.shadowBlur = 0;
@@ -615,7 +615,7 @@ function drawThreads() {
         ctx.stroke();
         ctx.globalAlpha = 1.0;
     });
-    
+
     requestAnimationFrame(drawThreads);
 }
 
