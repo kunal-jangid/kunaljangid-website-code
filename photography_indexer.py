@@ -14,6 +14,6 @@ if os.path.exists(photo_dir):
     with open(os.path.join(photo_dir, 'photos.js'), 'w') as js_file:
         js_file.write(f"window.photoAssets = {repr(photos)};")
         
-    print(f"✓ Dynamically indexed {len(photos)} images into photography/photos.js")
+    print(f"[OK] Dynamically indexed {len(photos)} images into photography/photos.js")
 else:
     print(f"Error: '{photo_dir}' folder not found in your root directory.")

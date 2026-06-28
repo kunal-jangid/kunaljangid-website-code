@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme utility opacity overrides using CSS color-mix */
+.bg-brand-text\/5 {
+    background-color: color-mix(in srgb, var(--text-color) 5%, transparent) !important;
+}
+.border-brand-border\/40 {
+    border-color: color-mix(in srgb, var(--border-color) 40%, transparent) !important;
+}
+.border-cream-border\/60 {
+    border-color: color-mix(in srgb, var(--border-color) 60%, transparent) !important;
+}
+.dark\:border-tactile-border\/40 {
+    @media (prefers-color-scheme: dark) {
+        border-color: color-mix(in srgb, var(--border-color) 40%, transparent) !important;
+    }
+}
