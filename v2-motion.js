@@ -18,11 +18,11 @@ class FluidEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = Math.max(document.body.offsetHeight, window.innerHeight);
+                this.canvas.height = window.innerHeight;
             },
             mousemove: (e) => {
                 this.mouse.x = e.clientX;
-                this.mouse.y = e.clientY + window.scrollY;
+                this.mouse.y = e.clientY;
             },
             mousedown: () => { this.mouse.active = true; },
             mouseup: () => { this.mouse.active = false; },
@@ -30,13 +30,13 @@ class FluidEngine {
                 this.mouse.active = true;
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY + window.scrollY;
+                    this.mouse.y = e.touches[0].clientY;
                 }
             },
             touchmove: (e) => {
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY + window.scrollY;
+                    this.mouse.y = e.touches[0].clientY;
                 }
             },
             touchend: () => { this.mouse.active = false; }
@@ -150,12 +150,12 @@ class MeshEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = Math.max(document.body.offsetHeight, window.innerHeight);
+                this.canvas.height = window.innerHeight;
                 this.initGrid();
             },
             mousemove: (e) => {
                 this.mouse.x = e.clientX;
-                this.mouse.y = e.clientY + window.scrollY;
+                this.mouse.y = e.clientY;
             },
             mousedown: () => { this.mouse.active = true; },
             mouseup: () => { this.mouse.active = false; },
@@ -163,13 +163,13 @@ class MeshEngine {
                 this.mouse.active = true;
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY + window.scrollY;
+                    this.mouse.y = e.touches[0].clientY;
                 }
             },
             touchmove: (e) => {
                 if (e.touches[0]) {
                     this.mouse.x = e.touches[0].clientX;
-                    this.mouse.y = e.touches[0].clientY + window.scrollY;
+                    this.mouse.y = e.touches[0].clientY;
                 }
             },
             touchend: () => { this.mouse.active = false; }
@@ -340,14 +340,6 @@ const BackgroundController = {
         this.updateToggleUI();
         this.startEngine();
         this.bindEvents();
-
-        // Watch for content height changes to resize canvas
-        const resizeObserver = new ResizeObserver(() => {
-            if (this.activeEngine && this.activeEngine.handlers && this.activeEngine.handlers.resize) {
-                this.activeEngine.handlers.resize();
-            }
-        });
-        resizeObserver.observe(document.body);
     },
 
     bindEvents() {
