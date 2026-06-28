@@ -18,7 +18,7 @@ class FluidEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+                this.canvas.height = Math.max(document.body.offsetHeight, window.innerHeight);
             },
             mousemove: (e) => {
                 this.mouse.x = e.clientX;
@@ -150,7 +150,7 @@ class MeshEngine {
         this.handlers = {
             resize: () => {
                 this.canvas.width = window.innerWidth;
-                this.canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+                this.canvas.height = Math.max(document.body.offsetHeight, window.innerHeight);
                 this.initGrid();
             },
             mousemove: (e) => {
@@ -397,7 +397,6 @@ const v2Motion = {
     init() {
         console.log('✨ v2-motion.js: Initializing Premium Motion Engine');
         this.initThemeEngine();
-        this.initMagneticCursor();
         this.initRevealAnimations();
         BackgroundController.init(this);
     },
@@ -444,37 +443,6 @@ const v2Motion = {
                 }
             };
         }
-    },
-
-    initMagneticCursor() {
-        if (window.innerWidth < 768) return; // Disable on mobile
-        const cursor = document.createElement('div');
-        cursor.className = 'custom-cursor';
-        document.body.appendChild(cursor);
-
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        const lerp = (a, b, n) => (1 - n) * a + n * b;
-
-        const animate = () => {
-            cursorX = lerp(cursorX, mouseX, 0.15);
-            cursorY = lerp(cursorY, mouseY, 0.15);
-            
-            // Failsafe: Ensure active class is never present
-            if (cursor.classList.contains('active')) cursor.classList.remove('active');
-            
-            const offset = 15;
-            cursor.style.transform = `translate3d(${cursorX - offset}px, ${cursorY - offset}px, 0)`;
-            
-            requestAnimationFrame(animate);
-        };
-        animate();
     },
 
     initRevealAnimations() {
