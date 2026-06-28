@@ -13,48 +13,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <script>
-        console.warn = (function (oldWarn) {
-            return function (msg) {
-                if (typeof msg === 'string' && msg.includes('cdn.tailwindcss.com')) return;
-                oldWarn.apply(console, arguments);
-            };
-        })(console.warn);
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    // THEME MATRIX CONFIGURATION 
-                    // To add a new theme: simply drop a new object inside this array.
-                    themes: [
-                        { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
-                        { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#356B80' },
-                        { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
-                        { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
-                    ],
-                    colors: {
-                        // Tailwind dynamically maps these utility tokens to the active CSS variables
-                        brand: {
-                            bg: 'var(--bg-color)',
-                            text: 'var(--text-color)',
-                            border: 'var(--border-color)',
-                            accent: 'var(--accent-color)'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Lexend"', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
-    <script src="photography/photos.js"></script>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap">
+    </noscript>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="photography/photos.js" defer></script>
     <style>
         /* Global Dynamic Theme Variable Mapper Overrides */
         :root,
@@ -763,7 +729,12 @@
 
     <script>
         // Dynamic Autonomous Theme Engine Matrix
-        const themeConfig = tailwind.config.theme.extend.themes;
+        const themeConfig = [
+            { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
+            { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#356B80' },
+            { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
+            { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
+        ];
         let activeThemeIndex = localStorage.getItem('portfolio-theme-state')
             ? parseInt(localStorage.getItem('portfolio-theme-state'))
             : 0;
@@ -788,10 +759,11 @@
         // Initial Paint Execution
         renderThemePipeline(activeThemeIndex);
 
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
-            renderThemePipeline(activeThemeIndex);
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
+                renderThemePipeline(activeThemeIndex);
+            });
 
         // Upgraded Layout Drawer Click Module
         const loadMoreBtn = document.getElementById('load-more-btn');
@@ -1118,6 +1090,7 @@
                 formSubmitBtn.innerText = 'Transmit Message';
                 alert('Transmission failed. Please reach out directly via email.');
             }
+        });
         });
     </script>
     <!-- Sticky Resume Action -->
