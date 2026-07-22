@@ -1,0 +1,262 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand-bg: var(--bg-color);
+  --color-brand-text: var(--text-color);
+  --color-brand-border: var(--border-color);
+  --color-brand-accent: var(--accent-color);
+  --font-sans: "Lexend", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Theme utility opacity overrides using CSS color-mix */
+.bg-brand-text\/5 {
+    background-color: color-mix(in srgb, var(--text-color) 5%, transparent) !important;
+}
+.border-brand-border\/40 {
+    border-color: color-mix(in srgb, var(--border-color) 40%, transparent) !important;
+}
+.border-cream-border\/60 {
+    border-color: color-mix(in srgb, var(--border-color) 60%, transparent) !important;
+}
+.dark\:border-tactile-border\/40 {
+    border-color: color-mix(in srgb, var(--border-color) 40%, transparent) !important;
+}
+
+/* Global Dynamic Theme Variable Mapper Overrides */
+:root,
+body,
+.bg-cream-bg,
+.dark\:bg-tactile-bg {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Enforce text color on passive elements while allowing interactive bypasses */
+h2,
+h3,
+h4,
+p,
+span,
+label,
+strong {
+    color: var(--text-color) !important;
+}
+
+#theme-toggle {
+    color: var(--accent-color) !important;
+}
+
+/* Target Company Accent Highlight */
+.theme-accent-highlight {
+    color: var(--accent-color) !important;
+    font-weight: 600 !important;
+}
+
+/* Re-dim subtext details dynamically to preserve design hierarchy */
+.opacity-50,
+.opacity-60,
+label,
+p.text-xs {
+    opacity: 0.65 !important;
+}
+
+/* Prevent form input placeholders from copying the heavy text color variable */
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-color) !important;
+    opacity: 0.4 !important;
+}
+
+/* Dynamically re-route structural borders and list dividers */
+.border-cream-border,
+.dark\:border-tactile-border,
+.border-t,
+.border-b,
+.border,
+.divide-y>* {
+    border-color: var(--border-color) !important;
+}
+
+/* Dynamic focus states for form fields */
+input:focus,
+textarea:focus {
+    border-color: var(--accent-color) !important;
+}
+
+/* Map dynamic interactive highlight accents */
+.hover\:text-cream-accent:hover,
+.dark\:hover\:text-tactile-accent:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Native Theme Inversion Engine for Buttons and Hover Cards */
+button,
+.group>div[class*="absolute"],
+.group>a[class*="absolute"] {
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+button:hover,
+.group:hover>div[class*="absolute"],
+.group:hover>a[class*="absolute"],
+.group:hover>a[class*="absolute"] span {
+    background-color: var(--text-color) !important;
+    color: var(--bg-color) !important;
+}
+
+/* Handle code-tag translucent badge variations & Dynamic Tech Pill Tag Optimization Engine */
+.bg-cream-border\/10,
+.dark\:bg-tactile-border\/40,
+.flex-wrap span {
+    background-color: var(--text-color) !important;
+    color: var(--bg-color) !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em;
+}
+
+body {
+    font-family: "Lexend", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+/* Dynamic Theme-Aware Frame Overlays */
+#desk-modal,
+#gallery-modal {
+    background-color: var(--bg-color) !important;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Enforce high-contrast borders around the active layout asset */
+#zoom-desk-img,
+#zoom-gallery-img {
+    border: 1px solid var(--border-color) !important;
+    background-color: var(--bg-color) !important;
+}
+
+/* Invert modal system control strings nicely */
+#close-desk,
+#close-gallery,
+#prev-photo,
+#next-photo,
+#gallery-counter {
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+    opacity: 0.8 !important;
+}
+
+/* View Transitions Ripple Effect */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 9999;
+    animation: ripple-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+    clip-path: circle(0% at var(--click-x, 50%) var(--click-y, 50%));
+}
+
+.no-transitions,
+.no-transitions *,
+.no-transitions *:before,
+.no-transitions *:after {
+    transition: none !important;
+    animation: none !important;
+}
+
+@keyframes ripple-in {
+    from {
+        clip-path: circle(0% at var(--click-x, 50%) var(--click-y, 50%));
+    }
+    to {
+        clip-path: circle(150% at var(--click-x, 50%) var(--click-y, 50%));
+    }
+}
+
+.glass-panel {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: color-mix(in srgb, var(--bg-color) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-init {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-in {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.sticky-resume {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+
+.sticky-resume:hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-resume:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .sticky-resume {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

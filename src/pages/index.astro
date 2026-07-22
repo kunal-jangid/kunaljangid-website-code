@@ -1,0 +1,184 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import titleSelfie from '../assets/title-selfie.png';
+import Layout from '../layouts/Layout.astro';
+import BentoItem from '../components/BentoItem.astro';
+import ProjectCard from '../components/ProjectCard.tsx';
+import SpotifyStatus from '../components/SpotifyStatus.tsx';
+import GadgetsCard from '../components/GadgetsCard.tsx';
+import FramesCard from '../components/FramesCard.tsx';
+
+const allProjects = await getCollection('projects');
+const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+
+// Split projects into even and odd index arrays to form two columns
+const evenProjects = projects.filter((_, idx) => idx % 2 === 0);
+const oddProjects = projects.filter((_, idx) => idx % 2 !== 0);
+
+// Fetch Spotify telemetry server-side to bypass browser CORS on localhost
+let initialSpotifyData = null;
+try {
+  const res = await fetch('https://spotify-telemetry.kunaljangid2k3.workers.dev');
+  if (res.ok) {
+    initialSpotifyData = await res.json();
+  }
+} catch (e) {
+  console.warn("Failed to fetch server-side Spotify data:", e);
+}
+---
+
+<Layout
+  title="Kunal Jangid | Software Engineer | Enterprise FinTech"
+  description="Kunal Jangid - Software Engineer based in Gurugram, IN. Building robust financial software systems and quantitative web tools."
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full auto-rows-min">
+    
+    <!-- BRAND / HERO HEADER CARD -->
+    <BentoItem span={3} row={2} class="flex flex-col justify-between reveal-target border-b border-brand-border pb-8">
+      <header class="w-full">
+        <h1
+          id="theme-toggle"
+          class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200"
+        >
+          KUNAL JANGID
+        </h1>
+        <p class="text-[10px] md:text-xs uppercase tracking-widest mt-3 opacity-60 font-mono flex flex-col sm:flex-row sm:justify-between gap-2">
+          <span>Software Engineer // Gurugram, IN</span>
+          <span class="opacity-50 text-[10px] lowercase tracking-normal normal-case">
+            <span class="hidden md:inline">[ click my name to toggle theme! ]</span>
+            <span class="md:hidden">[ tap my name to toggle theme ]</span>
+          </span>
+        </p>
+      </header>
+      
+      <div class="text-lg md:text-xl font-medium tracking-tight leading-relaxed mt-6">
+        I build high-throughput financial platforms and untangle deep legacy enterprise architectures. Currently an <span class="theme-accent-highlight">Associate Software Engineer at OSTTRA</span>, where I specialize in multi-generational framework modernizations, complex state management, and bridging strict regulatory business logic.
+      </div>
+    </BentoItem>
+
+    <!-- AVATAR OPTIMIZED ASTRO IMAGE CARD -->
+    <BentoItem span={1} row={2} class="hidden md:flex items-end justify-center !p-0 !m-0 overflow-hidden reveal-target select-none">
+      <Image
+        src={titleSelfie}
+        alt="Kunal Jangid - Associate Software Engineer"
+        format="webp"
+        quality={85}
+        loading="eager"
+        fetchpriority="high"
+        class="w-full h-full object-cover filter scale-120 blur-[0.4px] hover:blur-none hover:scale-125 transition-all duration-500 ease-out select-none origin-bottom m-0 p-0 block"
+      />
+    </BentoItem>
+
+    <!-- HIGHFLYER AWARD BANNER CARD -->
+    <BentoItem span={4} row={1} class="border-l-4 border-brand-accent flex flex-col md:flex-row gap-5 items-start md:items-center bg-brand-text/5 reveal-target">
+      <div class="text-4xl drop-shadow-md">🏆</div>
+      <div class="flex-1">
+        <h3 class="font-bold tracking-tight text-base mb-1 text-brand-accent">
+          Q1 2026 Highflyer Award | Osttra
+        </h3>
+        <p class="text-sm opacity-90 leading-relaxed">
+          Recognized across OSTTRA for outstanding execution speed, technical consistency, and platform delivery. Currently active as a technical mentor and onboarding lead for the 2026 new grad engineering cohort.
+        </p>
+      </div>
+    </BentoItem>
+
+    <!-- PROJECTS BLOCK HEADER -->
+    <div id="projects-header" class="col-span-1 md:col-span-2 lg:col-span-4 mt-6">
+      <h2 class="text-xs uppercase tracking-widest opacity-100 font-mono">Featured Work & Systems</h2>
+    </div>
+
+    <!-- PROJECTS MASONRY LAYOUT COLUMNS -->
+    <div class="col-span-1 md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+      <!-- COLUMN 1 (EVEN PROJECTS) -->
+      <div class="flex flex-col gap-4">
+        {evenProjects.map((project, idx) => (
+          <div class={idx >= 2 ? "drawer-project hidden" : ""}>
+            <ProjectCard
+              client:load
+              title={project.data.title}
+              subtitle={project.data.subtitle}
+              tags={project.data.tags}
+              friction={project.data.friction}
+              fix={project.data.fix}
+              payoff={project.data.payoff}
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- COLUMN 2 (ODD PROJECTS) -->
+      <div class="flex flex-col gap-4">
+        {oddProjects.map((project, idx) => (
+          <div class={idx >= 2 ? "drawer-project hidden" : ""}>
+            <ProjectCard
+              client:load
+              title={project.data.title}
+              subtitle={project.data.subtitle}
+              tags={project.data.tags}
+              friction={project.data.friction}
+              fix={project.data.fix}
+              payoff={project.data.payoff}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- EXPAND PROJECTS DRAWER CONTROLLER -->
+    <div class="col-span-1 md:col-span-2 lg:col-span-4 text-center mt-6 reveal-target">
+      <button
+        id="load-more-btn"
+        class="text-xs font-mono uppercase tracking-wider border border-brand-border px-8 py-3 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-200"
+      >
+        Expand Projects & Research
+      </button>
+    </div>
+
+    <!-- OUT OF OFFICE HEADER -->
+    <div class="col-span-1 md:col-span-2 lg:col-span-4 mt-12">
+      <h2 class="text-xs uppercase tracking-widest opacity-100 font-mono">Out of Office</h2>
+    </div>
+
+    <!-- GADGETS CARD -->
+    <BentoItem span={1} row={2} class="reveal-target">
+      <GadgetsCard client:load />
+    </BentoItem>
+
+    <!-- SPOTIFY STATUS CARD -->
+    <BentoItem span={2} row={2} class="reveal-target">
+      <SpotifyStatus client:load initialData={initialSpotifyData} />
+    </BentoItem>
+
+    <!-- GALLERY FRAMES CARD -->
+    <BentoItem span={1} row={2} class="reveal-target">
+      <FramesCard client:load />
+    </BentoItem>
+
+  </div>
+
+  <script is:inline>
+    // Project Drawer Expanded State Toggler (Masonry-aware)
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      const drawerProjects = document.querySelectorAll('.drawer-project');
+
+      if (loadMoreBtn && drawerProjects.length > 0) {
+        loadMoreBtn.addEventListener('click', () => {
+          let isCurrentlyHidden = false;
+          drawerProjects.forEach(el => {
+            el.classList.toggle('hidden');
+            if (el.classList.contains('hidden')) {
+              isCurrentlyHidden = true;
+            }
+          });
+          loadMoreBtn.innerText = isCurrentlyHidden ? 'Expand Projects & Research' : 'Collapse Drawer';
+
+          if (isCurrentlyHidden) {
+            document.getElementById('projects-header')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    });
+  </script>
+</Layout>
