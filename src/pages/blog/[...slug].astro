@@ -1,0 +1,57 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formattedDate = post.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={`${post.data.title} | Kunal Jangid`} description={post.data.description}>
+  <div class="max-w-3xl mx-auto px-4 py-8 relative z-10">
+    <!-- Back Navigation -->
+    <div class="mb-12">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
+      >
+        ← Go Back
+      </a>
+    </div>
+
+    <!-- Article Header -->
+    <header class="border-b border-brand-border/40 pb-8 mb-10">
+      <div class="flex flex-wrap gap-2 mb-4">
+        {post.data.tags.map((tag: string) => (
+          <span class="px-2 py-0.5 text-[10px] font-mono border border-brand-border/40 rounded opacity-75">
+            {tag}
+          </span>
+        ))}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4 text-brand-text">
+        {post.data.title}
+      </h1>
+      <p class="text-xs font-mono opacity-60">
+        Published on {formattedDate}
+      </p>
+    </header>
+
+    <!-- Article Content -->
+    <article class="prose prose-brand max-w-none leading-relaxed text-brand-text prose-headings:text-brand-text prose-a:text-brand-accent prose-strong:text-brand-text prose-code:text-brand-text prose-pre:bg-brand-text/5 prose-pre:border prose-pre:border-brand-border/40">
+      <Content />
+    </article>
+  </div>
+</Layout>

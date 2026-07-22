@@ -1,0 +1,34 @@
+---
+interface Props {
+  span?: 1 | 2 | 3 | 4;
+  row?: 1 | 2 | 3 | 4;
+  class?: string;
+  id?: string;
+}
+
+const { span = 1, row = 1, class: className = '', id } = Astro.props;
+
+const colSpanClasses = {
+  1: 'md:col-span-1 lg:col-span-1',
+  2: 'md:col-span-2 lg:col-span-2',
+  3: 'md:col-span-2 lg:col-span-3',
+  4: 'md:col-span-2 lg:col-span-4',
+};
+
+const rowSpanClasses = {
+  1: 'row-span-1',
+  2: 'row-span-2',
+  3: 'row-span-3',
+  4: 'row-span-4',
+};
+
+const colClass = colSpanClasses[span] || 'col-span-1';
+const rowClass = rowSpanClasses[row] || 'row-span-1';
+---
+
+<div
+  id={id}
+  class={`glass-panel p-6 md:p-8 rounded-2xl flex flex-col justify-between transition-all duration-300 relative overflow-hidden group ${colClass} ${rowClass} ${className}`}
+>
+  <slot />
+</div>
