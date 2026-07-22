@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
   title: string;
@@ -9,21 +9,29 @@ interface Props {
 const { title, description } = Astro.props;
 const pathname = Astro.url.pathname;
 
-const isHome = pathname === '/' || pathname === '';
-const isBlog = pathname.startsWith('/blog');
-const isContact = pathname.startsWith('/contact');
+const isHome = pathname === "/" || pathname === "";
+const isBlog = pathname.startsWith("/blog");
+const isContact = pathname.startsWith("/contact");
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="keywords" content="Kunal Jangid, Software Engineer, Gurugram, Fintech, OSTTRA, Web Developer" />
+    <meta
+      name="keywords"
+      content="Kunal Jangid, Software Engineer, Gurugram, Fintech, OSTTRA, Web Developer"
+    />
     <meta name="robots" content="index, follow" />
     <title>{title}</title>
-    <link rel="alternate" type="text/plain" href="/ai.md" title="LLM-friendly Developer Profile" />
+    <link
+      rel="alternate"
+      type="text/plain"
+      href="/ai.md"
+      title="LLM-friendly Developer Profile"
+    />
     <link rel="icon" type="image/png" href="/title-selfie.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,14 +57,66 @@ const isContact = pathname.startsWith('/contact');
     <script is:inline>
       // Synchronous Theme Engine Paint Setup to avoid flashes (FOUC)
       const themeConfig = [
-        { name: 'tactile', bg: '#090F15', text: '#F0E7D5', border: '#F0E7D5', accent: '#39FF14' },
-        { name: 'cream', bg: '#EEE9DF', text: '#2B323F', border: '#111111', accent: '#356B80' },
-        { name: 'beet_red', bg: '#7a1f3d', text: '#c7b63c', border: '#c7b63c', accent: '#f6e199' },
-        { name: 'sage_kermit', bg: '#688763', text: '#0F2E15', border: '#0F2E15', accent: '#DAE2CB' }
+        {
+          name: "midnight_cyan",
+          bg: "#05070A",
+          text: "#E2E8F0",
+          border: "#334155",
+          accent: "#00F0FF",
+        },
+        {
+          name: "cream",
+          bg: "#EEE9DF",
+          text: "#2B323F",
+          border: "#111111",
+          accent: "#356B80",
+        },
+        {
+          name: "swiss_monochrome",
+          bg: "#032021",
+          text: "#FFFFFF",
+          border: "#FFFFFF",
+          accent: "#D8D7D2",
+        },
+        {
+          name: "nordic_forest",
+          bg: "#1C2421",
+          text: "#E6EFE9",
+          border: "#52796F",
+          accent: "#A3E635",
+        },
+        {
+          name: "tokyo_night",
+          bg: "#0F172A",
+          text: "#F8FAFC",
+          border: "#38BDF8",
+          accent: "#F43F5E",
+        },
+        {
+          name: "amber_terminal",
+          bg: "#120E0C",
+          text: "#F5EBE6",
+          border: "#8C6D58",
+          accent: "#FF9F1C",
+        },
+        {
+          name: "beet_red",
+          bg: "#7a1f3d",
+          text: "#c7b63c",
+          border: "#c7b63c",
+          accent: "#f6e199",
+        },
+        {
+          name: "sage_kermit",
+          bg: "#688763",
+          text: "#0F2E15",
+          border: "#0F2E15",
+          accent: "#DAE2CB",
+        },
       ];
 
-      let activeThemeIndex = localStorage.getItem('portfolio-theme-state')
-        ? parseInt(localStorage.getItem('portfolio-theme-state'))
+      let activeThemeIndex = localStorage.getItem("portfolio-theme-state")
+        ? parseInt(localStorage.getItem("portfolio-theme-state"))
         : 0;
 
       if (activeThemeIndex >= themeConfig.length) activeThemeIndex = 0;
@@ -65,12 +125,12 @@ const isContact = pathname.startsWith('/contact');
         const activeTheme = themeConfig[index];
         const root = document.documentElement;
 
-        root.style.setProperty('--bg-color', activeTheme.bg);
-        root.style.setProperty('--text-color', activeTheme.text);
-        root.style.setProperty('--border-color', activeTheme.border);
-        root.style.setProperty('--accent-color', activeTheme.accent);
+        root.style.setProperty("--bg-color", activeTheme.bg);
+        root.style.setProperty("--text-color", activeTheme.text);
+        root.style.setProperty("--border-color", activeTheme.border);
+        root.style.setProperty("--accent-color", activeTheme.accent);
 
-        localStorage.setItem('portfolio-theme-state', index);
+        localStorage.setItem("portfolio-theme-state", index);
         window.activeThemeIndex = index;
       }
 
@@ -81,10 +141,10 @@ const isContact = pathname.startsWith('/contact');
       renderThemePipeline(activeThemeIndex);
 
       // DOM Theme click bindings
-      document.addEventListener('DOMContentLoaded', () => {
-        const toggle = document.getElementById('theme-toggle');
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById("theme-toggle");
         if (toggle) {
-          toggle.addEventListener('click', () => {
+          toggle.addEventListener("click", () => {
             activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
             renderThemePipeline(activeThemeIndex);
           });
@@ -92,21 +152,36 @@ const isContact = pathname.startsWith('/contact');
       });
     </script>
   </head>
-  <body class="relative transition-colors duration-300 min-h-screen flex flex-col justify-between pt-16">
+  <body
+    class="relative transition-colors duration-300 min-h-screen flex flex-col justify-between pt-16"
+  >
     <!-- Seamless Bottom Glass UI Navigation Bar -->
-    <nav class="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-50 glass-panel px-3 py-2 md:px-5 md:py-2.5 rounded-full flex items-center gap-1.5 md:gap-3 backdrop-blur-md shadow-2xl border border-brand-border/40 bg-brand-bg/85">
+    <nav
+      class="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-50 glass-panel px-3 py-2 md:px-5 md:py-2.5 rounded-full flex items-center gap-1.5 md:gap-3 backdrop-blur-md shadow-2xl border border-brand-border/40 bg-brand-bg/85"
+    >
       <!-- Home Link -->
       <a
         href="/"
         class={`px-3 py-1.5 md:px-4 md:py-2 rounded-full flex items-center gap-2 text-[11px] md:text-xs font-mono uppercase tracking-wider transition-all duration-300 ${
           isHome
-            ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold'
-            : 'hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent'
+            ? "bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold"
+            : "hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent"
         }`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="flex-shrink-0"
+        >
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
         <span>Home</span>
       </a>
@@ -118,14 +193,27 @@ const isContact = pathname.startsWith('/contact');
         href="/blog"
         class={`px-3 py-1.5 md:px-4 md:py-2 rounded-full flex items-center gap-2 text-[11px] md:text-xs font-mono uppercase tracking-wider transition-all duration-300 ${
           isBlog
-            ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold'
-            : 'hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent'
+            ? "bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold"
+            : "hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent"
         }`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
-          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-          <path d="M6 6h10"/>
-          <path d="M6 10h10"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="flex-shrink-0"
+        >
+          <path
+            d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+          ></path>
+          <path d="M6 6h10"></path>
+          <path d="M6 10h10"></path>
         </svg>
         <span>Writings</span>
       </a>
@@ -137,29 +225,57 @@ const isContact = pathname.startsWith('/contact');
         href="/contact"
         class={`px-3 py-1.5 md:px-4 md:py-2 rounded-full flex items-center gap-2 text-[11px] md:text-xs font-mono uppercase tracking-wider transition-all duration-300 ${
           isContact
-            ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold'
-            : 'hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent'
+            ? "bg-brand-accent/20 text-brand-accent border border-brand-accent/60 shadow-[0_0_14px_var(--accent-color)] font-bold"
+            : "hover:bg-brand-text/10 hover:text-brand-accent opacity-70 hover:opacity-100 border border-transparent"
         }`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
-          <rect width="20" height="16" x="2" y="4" rx="2"/>
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="flex-shrink-0"
+        >
+          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
         </svg>
         <span>Contact</span>
       </a>
     </nav>
 
     <!-- Interactive Canvas Layer -->
-    <canvas id="fluid-paths" class="fixed inset-0 z-0 pointer-events-none opacity-70"></canvas>
+    <canvas
+      id="fluid-paths"
+      class="fixed inset-0 z-0 pointer-events-none opacity-70"></canvas>
 
-    <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-20 pb-24 md:pb-28 w-full grow">
+    <main
+      class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-20 pb-24 md:pb-28 w-full grow"
+    >
       <slot />
     </main>
 
     <!-- Sticky Resume Action -->
-    <a href="/resume.pdf" download="Kunal_Jangid_Resume.pdf" class="sticky-resume">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <a
+      href="/resume.pdf"
+      download="Kunal_Jangid_Resume.pdf"
+      class="sticky-resume"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         <polyline points="7 10 12 15 17 10"></polyline>
         <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -169,7 +285,7 @@ const isContact = pathname.startsWith('/contact');
 
     <!-- Premium Footer Section -->
     <footer
-      class="relative z-10 max-w-4xl mx-auto px-6 pb-16 w-full text-xs font-mono flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-brand-border/20 pt-8"
+      class="relative z-10 max-w-4xl mx-auto px-6 pb-16 w-full text-xs font-mono flex flex-col sm:flex-row items-center justify-between gap-6"
     >
       <div class="opacity-50">© {new Date().getFullYear()} KUNAL JANGID.</div>
       <div class="flex flex-wrap gap-3 items-center justify-center">
@@ -192,7 +308,7 @@ const isContact = pathname.startsWith('/contact');
         >
       </div>
     </footer>
-
+    <br />
     <!-- Premium Motion Script -->
     <script src="/src/scripts/v2-motion.js"></script>
   </body>

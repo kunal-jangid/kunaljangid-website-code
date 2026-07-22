@@ -29,6 +29,51 @@ export default function ZoomableImage({ src, alt, className = '' }: ZoomableImag
     setState({ scale: 1, posX: 0, posY: 0 });
   }, [src]);
 
+  // Non-passive wheel zoom listener to allow e.preventDefault() without browser warnings
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 0.25 : -0.25;
+
+      setState((prevState) => {
+        const nextScale = Math.min(Math.max(1, prevState.scale + factor), 4);
+        let nextX = prevState.posX;
+        let nextY = prevState.posY;
+        if (nextScale === 1) {
+          nextX = 0;
+          nextY = 0;
+        }
+
+        let targetX = nextX;
+        let targetY = nextY;
+        if (nextScale > 1 && imgRef.current) {
+          const rect = imgRef.current.getBoundingClientRect();
+          const maxW = (rect.width / nextScale * (nextScale - 1)) / 2;
+          const maxH = (rect.height / nextScale * (nextScale - 1)) / 2;
+
+          if (maxW > 0) targetX = Math.min(Math.max(nextX, -maxW), maxW);
+          else targetX = 0;
+
+          if (maxH > 0) targetY = Math.min(Math.max(nextY, -maxH), maxH);
+          else targetY = 0;
+        } else {
+          targetX = 0;
+          targetY = 0;
+        }
+
+        return { scale: nextScale, posX: targetX, posY: targetY };
+      });
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   const getDistance = (t1: Touch, t2: Touch) => {
     return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
   };
@@ -39,7 +84,6 @@ export default function ZoomableImage({ src, alt, className = '' }: ZoomableImag
 
     if (scale > 1 && imgRef.current) {
       const rect = imgRef.current.getBoundingClientRect();
-      // Calculate how much the scaled image overflows the viewport
       const maxW = (rect.width / scale * (scale - 1)) / 2;
       const maxH = (rect.height / scale * (scale - 1)) / 2;
 
@@ -54,22 +98,6 @@ export default function ZoomableImage({ src, alt, className = '' }: ZoomableImag
     }
 
     setState({ scale, posX: targetX, posY: targetY });
-  };
-
-  // Desktop wheel zoom
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const factor = e.deltaY < 0 ? 0.25 : -0.25;
-    const nextScale = Math.min(Math.max(1, state.scale + factor), 4);
-
-    let nextX = state.posX;
-    let nextY = state.posY;
-    if (nextScale === 1) {
-      nextX = 0;
-      nextY = 0;
-    }
-
-    constrainAndApply(nextScale, nextX, nextY);
   };
 
   // Start drag or pinch
@@ -128,7 +156,6 @@ export default function ZoomableImage({ src, alt, className = '' }: ZoomableImag
   return (
     <div
       ref={containerRef}
-      onWheel={handleWheel}
       className="max-w-full max-h-[65vh] flex items-center justify-center overflow-hidden rounded relative"
       style={{ touchAction: 'none' }}
     >

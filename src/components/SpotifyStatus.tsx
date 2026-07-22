@@ -89,6 +89,8 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
                   <img
                     src={data.coverUrl}
                     alt="Album Artwork"
+                    loading="lazy"
+                    decoding="async"
                     className="w-14 h-14 object-cover flex-shrink-0 border border-brand-border/40 filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded shadow-sm"
                   />
                 )}
@@ -140,6 +142,8 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
                 {track.coverUrl ? (
                   <img
                     src={track.coverUrl}
+                    loading="lazy"
+                    decoding="async"
                     className="w-7 h-7 object-cover rounded filter grayscale group-hover/track:grayscale-0 transition-all"
                     alt=""
                   />
