@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import ZoomableImage from './ZoomableImage';
 
 const photoAssets = [
@@ -93,15 +94,15 @@ export default function FramesCard() {
         </div>
       </div>
 
-      {isOpen && (
+      {isOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-50 flex flex-col justify-center items-center p-4 bg-brand-bg/95 backdrop-blur-sm transition-opacity duration-200"
+          className="fixed inset-0 z-[999] flex flex-col justify-center items-center p-4 bg-brand-bg/95 backdrop-blur-sm transition-opacity duration-200"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           <button
             onClick={closeModal}
-            className="absolute top-6 right-6 text-brand-text font-mono text-xs uppercase tracking-widest border border-brand-border/20 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all"
+            className="absolute top-6 right-6 text-brand-text font-mono text-xs uppercase tracking-widest border border-brand-border/20 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all z-[1000]"
           >
             × Close (ESC)
           </button>
@@ -109,7 +110,7 @@ export default function FramesCard() {
           <div className="max-w-4xl max-h-[70vh] w-full flex items-center justify-between gap-2 md:gap-6 relative">
             <button
               onClick={prevPhoto}
-              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors"
+              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
             >
               [ Prev ]
             </button>
@@ -123,7 +124,7 @@ export default function FramesCard() {
 
             <button
               onClick={nextPhoto}
-              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors"
+              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
             >
               [ Next ]
             </button>
@@ -135,7 +136,8 @@ export default function FramesCard() {
           <div className="text-brand-text/20 text-[10px] font-mono mt-1 md:hidden text-center">
             [ Swipe horizontally to browse // Pinch to zoom ]
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

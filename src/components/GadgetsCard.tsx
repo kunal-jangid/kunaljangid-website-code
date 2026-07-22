@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import ZoomableImage from './ZoomableImage';
 
 export default function GadgetsCard() {
@@ -45,11 +46,11 @@ export default function GadgetsCard() {
         </div>
       </div>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-center items-center p-4 bg-brand-bg/95 backdrop-blur-sm transition-opacity duration-200">
+      {isOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[999] flex flex-col justify-center items-center p-4 bg-brand-bg/95 backdrop-blur-sm transition-opacity duration-200">
           <button
             onClick={closeModal}
-            className="absolute top-6 right-6 text-brand-text font-mono text-xs uppercase tracking-widest border border-brand-border/20 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all"
+            className="absolute top-6 right-6 text-brand-text font-mono text-xs uppercase tracking-widest border border-brand-border/20 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all z-[1000]"
           >
             × Close (ESC)
           </button>
@@ -58,7 +59,8 @@ export default function GadgetsCard() {
             <span className="md:hidden">[ Pinch to zoom / Drag image to pan setup layout ]</span>
             <span className="hidden md:inline">[ Use scroll wheel / trackpad to zoom view ]</span>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
