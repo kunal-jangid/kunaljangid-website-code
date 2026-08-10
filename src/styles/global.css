@@ -19,6 +19,15 @@
 .bg-brand-text\/5 {
     background-color: color-mix(in srgb, var(--text-color) 5%, transparent) !important;
 }
+.bg-brand-accent\/5 {
+    background-color: color-mix(in srgb, var(--accent-color) 5%, transparent) !important;
+}
+.bg-brand-accent\/10 {
+    background-color: color-mix(in srgb, var(--accent-color) 10%, transparent) !important;
+}
+.border-brand-accent\/30 {
+    border-color: color-mix(in srgb, var(--accent-color) 30%, transparent) !important;
+}
 .border-brand-border\/40 {
     border-color: color-mix(in srgb, var(--border-color) 40%, transparent) !important;
 }

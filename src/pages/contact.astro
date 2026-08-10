@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ContactForm from '../components/ContactForm.tsx';
+import TerminalCLI from '../components/TerminalCLI.tsx';
 ---
 
 <Layout
@@ -20,7 +20,7 @@ import ContactForm from '../components/ContactForm.tsx';
 
     <!-- Form Container -->
     <div class="w-full">
-      <ContactForm client:load alwaysOpen={true} />
+      <TerminalCLI client:load autoBootContact={true} />
     </div>
   </div>
 </Layout>

@@ -5,12 +5,19 @@ interface LogLine {
   type: 'input' | 'output' | 'error' | 'success';
 }
 
-export default function TerminalCLI() {
+interface TerminalCLIProps {
+  autoBootContact?: boolean;
+}
+
+export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProps) {
   const [history, setHistory] = useState<LogLine[]>([
     { text: 'Kunal Quant-HUD [Version 1.0.0]', type: 'output' },
     { text: 'Type "help" for a list of system commands.', type: 'output' },
   ]);
   const [inputVal, setInputVal] = useState('');
+  const [wizardStep, setWizardStep] = useState<'name' | 'email' | 'message' | null>(null);
+  const [formData, setFormData] = useState({ name: '', contact: '', message: '' });
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,15 +39,92 @@ export default function TerminalCLI() {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  const handleCommand = (cmdStr: string) => {
+  // Trigger contact wizard on boot if requested
+  useEffect(() => {
+    if (autoBootContact) {
+      setHistory([
+        { text: 'Kunal Quant-HUD [Version 1.0.0]', type: 'output' },
+        { text: 'Initializing Payload Transmission Wizard...', type: 'success' },
+        { text: 'Please enter your Identity/Name:', type: 'output' }
+      ]);
+      setWizardStep('name');
+    }
+  }, [autoBootContact]);
+
+  const handleCommand = async (cmdStr: string) => {
     const trimmed = cmdStr.trim();
     if (!trimmed) return;
 
+    // Handle wizard step flow
+    if (wizardStep !== null) {
+      const promptLabel = getPromptText();
+      const newHistory = [...history, { text: `${promptLabel} ${trimmed}`, type: 'input' as const }];
+      
+      if (wizardStep === 'name') {
+        setFormData(prev => ({ ...prev, name: trimmed }));
+        newHistory.push(
+          { text: `[SYSTEM] Identity registered: "${trimmed}"`, type: 'success' },
+          { text: 'Please enter your Contact Email/Routing Endpoint:', type: 'output' }
+        );
+        setWizardStep('email');
+        setHistory(newHistory);
+        setInputVal('');
+      } else if (wizardStep === 'email') {
+        setFormData(prev => ({ ...prev, contact: trimmed }));
+        newHistory.push(
+          { text: `[SYSTEM] Endpoint registered: "${trimmed}"`, type: 'success' },
+          { text: 'Enter message payload details:', type: 'output' }
+        );
+        setWizardStep('message');
+        setHistory(newHistory);
+        setInputVal('');
+      } else if (wizardStep === 'message') {
+        newHistory.push(
+          { text: `[SYSTEM] Payload details accepted.`, type: 'success' },
+          { text: 'Transmitting secure connection to worker endpoint...', type: 'output' }
+        );
+        
+        setHistory(newHistory);
+        setInputVal('');
+        
+        try {
+          const response = await fetch('https://spotify-telemetry.kunaljangid2k3.workers.dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: formData.name,
+              contact: formData.contact,
+              message: trimmed,
+              system_integrity_hash: ''
+            })
+          });
+
+          if (!response.ok) throw new Error();
+          
+          setHistory(prev => [
+            ...prev,
+            { text: '[SUCCESS] Connection confirmed. Payload routed successfully to Kunal.', type: 'success' },
+            { text: 'Wizard completed. Prompt listening for standard directives.', type: 'output' }
+          ]);
+        } catch (e) {
+          setHistory(prev => [
+            ...prev,
+            { text: '[ERROR] Transmission failed. Connection closed. Please try again or email thekunaljangid@gmail.com.', type: 'error' },
+            { text: 'Wizard terminated. Prompt listening for standard directives.', type: 'output' }
+          ]);
+        }
+        setWizardStep(null);
+        setFormData({ name: '', contact: '', message: '' });
+      }
+      return;
+    }
+
+    // Standard command processing
     const parts = trimmed.split(' ');
     const command = parts[0].toLowerCase();
     const args = parts.slice(1);
 
-    const newHistory = [...history, { text: `[usr@kunaljangid.com]:~$ ${trimmed}`, type: 'input' as const }];
+    const newHistory = [...history, { text: `[usr@kunal]:~$ ${trimmed}`, type: 'input' as const }];
 
     switch (command) {
       case 'help':
@@ -48,7 +132,7 @@ export default function TerminalCLI() {
           { text: 'Available system directives:', type: 'success' },
           { text: '  about      - Display systems engineer credentials.', type: 'output' },
           { text: '  projects   - Trigger expansion of project ledger.', type: 'output' },
-          { text: '  contact    - Redirect connection to Transmit Endpoint.', type: 'output' },
+          { text: '  contact    - Launch secure payload communication wizard.', type: 'output' },
           { text: '  clear      - Purge terminal console logs.', type: 'output' },
           { text: '  /tech [tag]- Filter project ledger (e.g. /tech react).', type: 'output' }
         );
@@ -68,10 +152,11 @@ export default function TerminalCLI() {
         window.dispatchEvent(new CustomEvent('terminal-command', { detail: { action: 'expand-projects' } }));
         break;
       case 'contact':
-        newHistory.push({ text: 'Rerouting routing endpoints to contact form...', type: 'success' });
-        setTimeout(() => {
-          window.location.href = '/contact';
-        }, 800);
+        newHistory.push(
+          { text: 'Initializing Payload Transmission Wizard...', type: 'success' },
+          { text: 'Please enter your Identity/Name:', type: 'output' }
+        );
+        setWizardStep('name');
         break;
       case '/tech':
         if (args.length === 0) {
@@ -96,6 +181,20 @@ export default function TerminalCLI() {
     }
   };
 
+  const getPlaceholder = () => {
+    if (wizardStep === 'name') return 'Enter your identity...';
+    if (wizardStep === 'email') return 'Enter email routing endpoint...';
+    if (wizardStep === 'message') return 'Enter message details...';
+    return "Type command (or '/' to focus)...";
+  };
+
+  const getPromptText = () => {
+    if (wizardStep === 'name') return '[usr@kunal][step-1/3]:~$';
+    if (wizardStep === 'email') return '[usr@kunal][step-2/3]:~$';
+    if (wizardStep === 'message') return '[usr@kunal][step-3/3]:~$';
+    return '[usr@kunal]:~$';
+  };
+
   return (
     <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px]">
       {/* Scrollable logs area */}
@@ -115,14 +214,14 @@ export default function TerminalCLI() {
 
       {/* Input prompt area */}
       <div className="flex items-center gap-2 border-t border-brand-border/20 pt-3">
-        <span className="text-brand-accent font-bold shrink-0">[usr@kunal]:~$</span>
+        <span className="text-brand-accent font-bold shrink-0">{getPromptText()}</span>
         <input
           ref={inputRef}
           type="text"
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type command (or '/' to focus)..."
+          placeholder={getPlaceholder()}
           className="flex-1 bg-transparent text-brand-text outline-none border-none caret-brand-accent p-0 font-mono text-xs placeholder:text-brand-text/30"
         />
       </div>
