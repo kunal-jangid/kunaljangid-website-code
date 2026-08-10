@@ -11,7 +11,7 @@ interface TerminalCLIProps {
 
 export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProps) {
   const [history, setHistory] = useState<LogLine[]>([
-    { text: 'Kunal Quant-HUD [Version 1.0.0]', type: 'output' },
+    { text: 'kamel shell [Version 1.0.0]', type: 'output' },
     { text: 'Type "help" for a list of system commands.', type: 'output' },
   ]);
   const [inputVal, setInputVal] = useState('');
@@ -43,7 +43,7 @@ export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProp
   useEffect(() => {
     if (autoBootContact) {
       setHistory([
-        { text: 'Kunal Quant-HUD [Version 1.0.0]', type: 'output' },
+        { text: 'kamel shell [Version 1.0.0]', type: 'output' },
         { text: 'Initializing Payload Transmission Wizard...', type: 'success' },
         { text: 'Please enter your Identity/Name:', type: 'output' }
       ]);

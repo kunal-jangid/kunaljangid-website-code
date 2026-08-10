@@ -99,9 +99,13 @@ const isContact = pathname.startsWith("/contact");
 
       if (activeThemeIndex >= themeConfig.length) activeThemeIndex = 0;
 
-      function renderThemePipeline(index) {
+      function renderThemePipeline(index, smooth = false) {
         const activeTheme = themeConfig[index];
         const root = document.documentElement;
+
+        if (smooth) {
+          root.classList.add("theme-transitioning");
+        }
 
         root.style.setProperty("--bg-color", activeTheme.bg);
         root.style.setProperty("--text-color", activeTheme.text);
@@ -110,6 +114,12 @@ const isContact = pathname.startsWith("/contact");
 
         localStorage.setItem("portfolio-theme-state", index);
         window.activeThemeIndex = index;
+
+        if (smooth) {
+          setTimeout(() => {
+            root.classList.remove("theme-transitioning");
+          }, 400);
+        }
       }
 
       window.themeConfig = themeConfig;
@@ -124,7 +134,7 @@ const isContact = pathname.startsWith("/contact");
         if (toggle) {
           toggle.addEventListener("click", () => {
             activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
-            renderThemePipeline(activeThemeIndex);
+            renderThemePipeline(activeThemeIndex, true);
           });
         }
 
