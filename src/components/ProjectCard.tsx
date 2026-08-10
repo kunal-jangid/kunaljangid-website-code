@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useEffect } from 'react';
 
 interface ProjectCardProps {
   title: string;
@@ -13,68 +11,101 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ title, subtitle, tags, friction, fix, payoff }: ProjectCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+
+  useEffect(() => {
+    const handleCommand = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { action, value } = customEvent.detail;
+      if (action === 'expand-projects') {
+        setIsExpanded(true);
+      } else if (action === 'filter-tech') {
+        const query = value.toLowerCase();
+        const hasTag = tags.some(t => t.toLowerCase().includes(query)) || title.toLowerCase().includes(query);
+        if (query === 'all' || query === '') {
+          setIsHidden(false);
+          setIsHighlighted(false);
+        } else if (hasTag) {
+          setIsHidden(false);
+          setIsHighlighted(true);
+          setIsExpanded(true);
+        } else {
+          setIsHidden(true);
+          setIsHighlighted(false);
+          setIsExpanded(false);
+        }
+      }
+    };
+
+    window.addEventListener('terminal-command', handleCommand);
+    return () => window.removeEventListener('terminal-command', handleCommand);
+  }, [tags, title]);
+
+  if (isHidden) return null;
 
   return (
-    <Card
-      suppressHydrationWarning
+    <div
       onClick={() => setIsExpanded(!isExpanded)}
-      className="glass-panel p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 cursor-pointer group hover:border-brand-accent/50 select-none h-fit w-full"
+      className={`border-b border-brand-border/20 py-3.5 flex flex-col cursor-pointer transition-all duration-200 select-none text-left w-full font-mono ${
+        isHighlighted ? 'bg-brand-accent/5 border-l-2 border-l-brand-accent pl-2' : ''
+      }`}
     >
-      <div className="text-left w-full">
-        <span className="text-[9px] font-mono uppercase tracking-widest opacity-50 block mb-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 w-full">
+        {/* Subtitle / Dept */}
+        <span className="text-[10px] text-brand-text/50 uppercase tracking-wider min-w-[140px] truncate">
           {subtitle}
         </span>
-        <h3 className="text-base font-bold tracking-tight mb-2 group-hover:text-brand-accent transition-colors flex items-center justify-between">
-          <span>{title}</span>
-          <span className="text-[9px] font-mono opacity-40 group-hover:opacity-100 transition-opacity ml-2 whitespace-nowrap">
-            {isExpanded ? '[ collapse ]' : '[ click to expand ]'}
-          </span>
-        </h3>
-        
-        {/* Collapsible Content Wrapper */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isExpanded
-              ? 'max-h-[500px] opacity-100 mt-3 pt-3 border-t border-brand-border/10'
-              : 'max-h-0 opacity-0 pointer-events-none'
-          }`}
-        >
-          <div className="text-xs md:text-sm opacity-90 leading-relaxed space-y-3 font-sans">
-            <div>
-              <strong className="text-brand-accent font-mono block text-[9px] uppercase tracking-wider mb-0.5">
-                The Friction:
-              </strong>
-              {friction}
-            </div>
-            <div>
-              <strong className="text-brand-accent font-mono block text-[9px] uppercase tracking-wider mb-0.5">
-                The Fix:
-              </strong>
-              {fix}
-            </div>
-            <div>
-              <strong className="text-brand-accent font-mono block text-[9px] uppercase tracking-wider mb-0.5">
-                The Payoff:
-              </strong>
-              {payoff}
-            </div>
+        {/* Title */}
+        <span className="text-sm font-bold text-brand-text flex-1 hover:text-brand-accent transition-colors">
+          {title}
+        </span>
+        {/* Badges / Tech */}
+        <div className="flex flex-wrap gap-1 shrink-0">
+          {tags.slice(0, 3).map((tag, i) => (
+            <span
+              key={i}
+              className="text-[9px] border border-brand-border/20 px-1.5 py-0.5 rounded text-brand-text/60"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+        {/* Expand / Collapse Indicator */}
+        <span className="text-[10px] text-brand-accent/70 w-[80px] text-right font-mono">
+          {isExpanded ? '[ COLLAPSE ]' : '[ DECRYPT ]'}
+        </span>
+      </div>
+
+      {/* Expandable section */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isExpanded ? 'max-h-[500px] opacity-100 mt-4 pl-4 border-l border-brand-accent/30' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="text-xs space-y-3 pt-2">
+          <div>
+            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
+              // SECTION 01 // THE FRICTION
+            </span>
+            <p className="text-brand-text/80 leading-relaxed font-sans">{friction}</p>
+          </div>
+          <div>
+            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
+              // SECTION 02 // THE FIX
+            </span>
+            <p className="text-brand-text/80 leading-relaxed font-sans">{fix}</p>
+          </div>
+          <div>
+            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
+              // SECTION 03 // THE PAYOFF
+            </span>
+            <p className="text-brand-text/80 leading-relaxed font-sans">{payoff}</p>
           </div>
         </div>
       </div>
-
-      <div className="flex flex-wrap gap-1.5 mt-4 max-w-sm">
-        {tags.map((tag, i) => (
-          <Badge
-            key={i}
-            variant="outline"
-            size="sm"
-            className="font-mono text-[9px] font-bold border-brand-border/20 opacity-80 group-hover:opacity-100 transition-opacity rounded"
-          >
-            {tag}
-          </Badge>
-        ))}
-      </div>
-    </Card>
+    </div>
   );
 }
+
 
