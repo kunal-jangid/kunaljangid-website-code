@@ -31,28 +31,6 @@ try {
 >
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 w-full auto-rows-min font-mono text-xs">
     
-    <!-- HEADER HUB BAR (FULL WIDTH) -->
-    <header class="col-span-1 lg:col-span-12 border-b border-brand-border/40 pb-6 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1
-          id="theme-toggle"
-          class="text-3xl md:text-4xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200 text-brand-accent hover:opacity-80"
-        >
-          KUNAL_JANGID // QUANT-HUD
-        </h1>
-        <p class="text-[10px] opacity-60 uppercase tracking-widest mt-1">
-          Systems Operations Dashboard // Gurugram, IN
-        </p>
-      </div>
-      <div class="flex items-center gap-4 text-[10px] text-brand-text/50">
-        <span>STATUS: <span class="text-brand-accent animate-pulse font-bold">ONLINE</span></span>
-        <span>•</span>
-        <span>LATENCY: <span id="system-latency" class="font-mono">12ms</span></span>
-        <span>•</span>
-        <span>SYS_TIME: <span id="system-clock" class="font-mono">00:00:00</span></span>
-      </div>
-    </header>
-
     <!-- COLUMN 1: SYSTEM CONTROLLER (LEFT - 3/12 SPAN) -->
     <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
       <!-- SYSTEM CREDENTIALS LOG -->
@@ -70,23 +48,10 @@ try {
         </BentoItem>
       </div>
 
-      <!-- TERMINAL CLI MODULE -->
-      <div class="flex flex-col gap-2">
+      <!-- TERMINAL CLI MODULE (Hidden on phone/tablet) -->
+      <div class="hidden lg:flex flex-col gap-2">
         <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_CMD_LINE // ACTIVE_PROMPT</h2>
         <TerminalCLI client:load />
-      </div>
-
-      <!-- AVATAR RENDER MODULE -->
-      <div class="hidden lg:block overflow-hidden rounded-xl border border-brand-border/20 aspect-square select-none max-w-sm">
-        <Image
-          src={titleSelfie}
-          alt="Kunal Jangid - Systems Engineer"
-          format="webp"
-          quality={85}
-          loading="eager"
-          fetchpriority="high"
-          class="w-full h-full object-cover filter grayscale contrast-125 dark:grayscale-0 hover:scale-105 transition-all duration-500 ease-out origin-bottom block"
-        />
       </div>
     </div>
 
@@ -123,20 +88,18 @@ try {
         </BentoItem>
       </div>
 
-      <!-- AUXILIARY FEED: GADGETS -->
-      <div class="flex flex-col gap-2">
+      <!-- AUXILIARY FEED: GADGETS (Hidden on phone/tablet) -->
+      <div class="hidden lg:flex flex-col gap-2">
         <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_AUX_01 // DESK_FEEDS</h2>
         <BentoItem span={1} row={1} class="!p-5 border border-brand-border/20 cursor-pointer">
           <GadgetsCard client:load />
         </BentoItem>
       </div>
 
-      <!-- AUXILIARY FEED: IMAGES -->
-      <div class="flex flex-col gap-2">
+      <!-- AUXILIARY FEED: IMAGES (Hidden on phone/tablet) -->
+      <div class="hidden lg:flex flex-col gap-2">
         <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_AUX_02 // ENV_FRAMES</h2>
-        <BentoItem span={1} row={1} class="!p-5 border border-brand-border/20 cursor-pointer">
-          <FramesCard client:load />
-        </BentoItem>
+        <FramesCard client:load />
       </div>
 
       <!-- Q1 2026 HIGHFLYER BANNER -->
@@ -155,28 +118,5 @@ try {
     </div>
 
   </div>
-
-  <script is:inline>
-    // Live system clock and network latency simulator
-    document.addEventListener('DOMContentLoaded', () => {
-      // Clock
-      const clockEl = document.getElementById('system-clock');
-      if (clockEl) {
-        setInterval(() => {
-          const now = new Date();
-          clockEl.innerText = now.toTimeString().split(' ')[0];
-        }, 1000);
-      }
-
-      // Latency Simulator
-      const latencyEl = document.getElementById('system-latency');
-      if (latencyEl) {
-        setInterval(() => {
-          const lat = Math.floor(Math.random() * 8) + 8;
-          latencyEl.innerText = `${lat}ms`;
-        }, 3000);
-      }
-    });
-  </script>
 </Layout>
 

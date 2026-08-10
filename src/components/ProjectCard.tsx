@@ -47,35 +47,33 @@ export default function ProjectCard({ title, subtitle, tags, friction, fix, payo
   return (
     <div
       onClick={() => setIsExpanded(!isExpanded)}
-      className={`border-b border-brand-border/20 py-3.5 flex flex-col cursor-pointer transition-all duration-200 select-none text-left w-full font-mono ${
+      className={`border-b border-brand-border/20 py-4 flex flex-col cursor-pointer transition-all duration-200 select-none text-left w-full font-mono ${
         isHighlighted ? 'bg-brand-accent/5 border-l-2 border-l-brand-accent pl-2' : ''
       }`}
     >
-      {/* Structured Ledger Row Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-[130px_1fr_auto_90px] items-start sm:items-center gap-2 sm:gap-4 w-full">
-        {/* Subtitle / Dept */}
-        <span className="text-[10px] text-brand-text/50 uppercase tracking-wider truncate">
-          {subtitle}
-        </span>
-        {/* Title */}
-        <span className="text-sm font-bold text-brand-text hover:text-brand-accent transition-colors truncate sm:pr-4">
-          {title}
-        </span>
-        {/* Badges / Tech */}
-        <div className="flex flex-wrap gap-1 sm:justify-end">
-          {tags.slice(0, 3).map((tag, i) => (
-            <span
-              key={i}
-              className="text-[9px] border border-brand-border/20 px-1.5 py-0.5 rounded text-brand-text/60 whitespace-nowrap"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        {/* Expand / Collapse Indicator */}
-        <span className="text-[10px] text-brand-accent/70 text-left sm:text-right font-mono font-bold">
+      {/* Line 1: Dept & Decrypt indicator */}
+      <div className="flex items-center justify-between w-full text-[10px] text-brand-text/50 uppercase tracking-wider mb-2">
+        <span>{subtitle}</span>
+        <span className="text-brand-accent/70 font-bold">
           {isExpanded ? '[ COLLAPSE ]' : '[ DECRYPT ]'}
         </span>
+      </div>
+
+      {/* Line 2: Project Title */}
+      <h3 className="text-base font-bold text-brand-text hover:text-brand-accent transition-colors mb-2.5 leading-snug">
+        {title}
+      </h3>
+
+      {/* Line 3: Badges */}
+      <div className="flex flex-wrap gap-1.5 w-full">
+        {tags.map((tag, i) => (
+          <span
+            key={i}
+            className="text-[9px] border border-brand-border/20 px-1.5 py-0.5 rounded text-brand-text/60 whitespace-nowrap"
+          >
+            {tag}
+          </span>
+        ))}
       </div>
 
       {/* Expandable section */}

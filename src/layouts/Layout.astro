@@ -149,6 +149,28 @@ const isContact = pathname.startsWith("/contact");
             renderThemePipeline(activeThemeIndex);
           });
         }
+
+        // Live system clock
+        const clockEl = document.getElementById('system-clock');
+        if (clockEl) {
+          const updateClock = () => {
+            const now = new Date();
+            clockEl.innerText = now.toTimeString().split(' ')[0];
+          };
+          updateClock();
+          setInterval(updateClock, 1000);
+        }
+
+        // Latency Simulator
+        const latencyEl = document.getElementById('system-latency');
+        if (latencyEl) {
+          const updateLatency = () => {
+            const lat = Math.floor(Math.random() * 8) + 8;
+            latencyEl.innerText = `${lat}ms`;
+          };
+          updateLatency();
+          setInterval(updateLatency, 3000);
+        }
       });
     </script>
   </head>
@@ -247,6 +269,28 @@ const isContact = pathname.startsWith("/contact");
         <span>Contact</span>
       </a>
     </nav>
+
+    <!-- HEADER HUB BAR (FULL WIDTH) -->
+    <header class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 border-b border-brand-border/40 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 mt-6">
+      <div>
+        <h1
+          id="theme-toggle"
+          class="text-3xl md:text-4xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200 text-brand-accent hover:opacity-80 font-mono"
+        >
+          {isHome ? 'KUNAL_JANGID // QUANT-HUD' : isBlog ? 'KUNAL_JANGID // TECHNICAL_LOG' : 'KUNAL_JANGID // TRANSMIT_ENDPOINT'}
+        </h1>
+        <p class="text-[10px] opacity-60 uppercase tracking-widest mt-1 font-mono">
+          {isHome ? 'Systems Operations Dashboard' : isBlog ? 'Architectural Breakdowns & Refactors' : 'Secure Payload Communication Routing'} // Gurugram, IN
+        </p>
+      </div>
+      <div class="flex items-center gap-4 text-[10px] text-brand-text/50 font-mono">
+        <span>STATUS: <span class="text-brand-accent animate-pulse font-bold">ONLINE</span></span>
+        <span>•</span>
+        <span>LATENCY: <span id="system-latency">12ms</span></span>
+        <span>•</span>
+        <span>SYS_TIME: <span id="system-clock">00:00:00</span></span>
+      </div>
+    </header>
 
     <main
       class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-16 md:py-20 pb-24 md:pb-28 w-full grow"

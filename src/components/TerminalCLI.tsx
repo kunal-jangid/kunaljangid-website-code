@@ -97,7 +97,7 @@ export default function TerminalCLI() {
   };
 
   return (
-    <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[280px]">
+    <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px]">
       {/* Scrollable logs area */}
       <div ref={containerRef} className="flex-1 overflow-y-auto space-y-1 mb-2 pr-1 no-scrollbar select-text">
         {history.map((line, idx) => {

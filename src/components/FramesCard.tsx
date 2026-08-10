@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTrigger,
@@ -26,6 +26,15 @@ export default function FramesCard() {
   const [touchStartX, setTouchStartX] = useState(0);
   const [open, setOpen] = useState(false);
 
+  // Auto-play closed carousel every 5 seconds
+  useEffect(() => {
+    if (open) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % photoAssets.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [open]);
+
   const nextPhoto = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setCurrentIndex((prev) => (prev + 1) % photoAssets.length);
@@ -36,7 +45,7 @@ export default function FramesCard() {
     setCurrentIndex((prev) => (prev - 1 + photoAssets.length) % photoAssets.length);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
@@ -69,16 +78,27 @@ export default function FramesCard() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={
-        <button className="w-full h-full min-h-[140px] flex flex-col justify-between cursor-pointer group/card select-none text-left" />
+        <button className="w-full h-full min-h-[160px] flex flex-col justify-between cursor-pointer group/card select-none text-left p-0 border border-brand-border/20 rounded-xl overflow-hidden relative" />
       }>
-        <div className="text-right font-mono text-[10px] opacity-40 md:hidden w-full">[ Tap to view ]</div>
-        <div>
-          <p className="text-xs opacity-70 leading-relaxed text-left">
-            Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit using my phone, which is more often than not a Samsung lol.
-          </p>
+        <div className="absolute inset-0 z-0">
+          <img
+            src={photoAssets[currentIndex]}
+            alt="Film Frame Preview"
+            className="w-full h-full object-cover transition-all duration-500 group-hover/card:scale-105 filter grayscale contrast-110 dark:grayscale-0"
+          />
+          {/* Overlay to dim image and make text readable */}
+          <div className="absolute inset-0 bg-black/50 group-hover/card:bg-black/30 transition-all duration-300" />
         </div>
-        <div className="absolute inset-0 bg-brand-text text-brand-bg hidden md:flex opacity-0 group-hover/card:opacity-100 transition-all duration-300 items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
-          Wanna see the pictures I took recently? <br /><br /> Click here
+
+        {/* Content Overlay */}
+        <div className="relative z-10 p-5 flex flex-col justify-between h-full w-full min-h-[160px] text-white">
+          <div className="text-right font-mono text-[9px] text-white/50 w-full">[ Auto-playing Feed // Click to Zoom ]</div>
+          <div className="w-full">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-white/60 block mb-1">ENV_FRAMES // ACTIVE_FEED</span>
+            <p className="text-[11px] leading-relaxed text-white/80 font-sans">
+              Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit.
+            </p>
+          </div>
         </div>
       </DialogTrigger>
 
@@ -128,4 +148,5 @@ export default function FramesCard() {
     </Dialog>
   );
 }
+
 
