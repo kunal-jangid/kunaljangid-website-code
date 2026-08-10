@@ -52,9 +52,9 @@ export default function ProjectCard({ title, subtitle, tags, friction, fix, payo
       }`}
     >
       {/* Line 1: Dept & Decrypt indicator */}
-      <div className="flex items-center justify-between w-full text-[10px] text-brand-text/50 uppercase tracking-wider mb-2">
-        <span>{subtitle}</span>
-        <span className="text-brand-accent/70 font-bold">
+      <div className="flex items-center justify-between w-full text-[10px] text-brand-text/50 uppercase tracking-wider mb-2 gap-4">
+        <span className="truncate pr-2">{subtitle}</span>
+        <span className="text-brand-accent/70 font-bold shrink-0 whitespace-nowrap">
           {isExpanded ? '[ COLLAPSE ]' : '[ DECRYPT ]'}
         </span>
       </div>
