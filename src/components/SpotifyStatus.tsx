@@ -81,7 +81,6 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
   return (
     <div className="w-full h-full flex flex-col justify-between group/card select-none text-left">
       <div className="w-full">
-        <h3 className="text-sm font-bold uppercase tracking-wider mb-3 opacity-90">The Sounds</h3>
         
         {/* Active Player Module */}
         <div className="relative group/player rounded-xl p-3 bg-brand-text/5 hover:bg-brand-text/10 transition-all duration-300 border border-brand-border/10 overflow-hidden">

@@ -17,7 +17,6 @@ export default function GadgetsCard() {
       }>
         <div className="text-right font-mono text-[10px] opacity-40 md:hidden w-full">[ Tap to view ]</div>
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Gadgets</h3>
           <p className="text-xs opacity-70 leading-relaxed text-left">
             Pretty much a certified gear enthusiast. Love having a clean custom configuration, lover of deep linear mechanical keyboard acoustics, great books, and some might say, too many diecast models.
           </p>

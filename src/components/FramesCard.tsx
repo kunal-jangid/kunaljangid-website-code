@@ -73,7 +73,6 @@ export default function FramesCard() {
       }>
         <div className="text-right font-mono text-[10px] opacity-40 md:hidden w-full">[ Tap to view ]</div>
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Frames</h3>
           <p className="text-xs opacity-70 leading-relaxed text-left">
             Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit using my phone, which is more often than not a Samsung lol.
           </p>
