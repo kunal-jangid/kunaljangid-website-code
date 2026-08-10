@@ -93,7 +93,11 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
                     alt="Album Artwork"
                     loading="lazy"
                     decoding="async"
-                    className="w-14 h-14 object-cover flex-shrink-0 border border-brand-border/40 filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded shadow-sm"
+                    className={`w-14 h-14 object-cover flex-shrink-0 border border-brand-border/40 transition-all duration-300 rounded shadow-sm ${
+                      isPlaying 
+                        ? 'filter-none contrast-100' 
+                        : 'filter grayscale contrast-110 dark:grayscale-0'
+                    }`}
                   />
                 )}
                 <div className="min-w-0 flex flex-col justify-center text-left">
