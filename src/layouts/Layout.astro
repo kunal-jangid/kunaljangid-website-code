@@ -271,19 +271,19 @@ const isContact = pathname.startsWith("/contact");
     </nav>
 
     <!-- HEADER HUB BAR (FULL WIDTH) -->
-    <header class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 border-b border-brand-border/40 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 mt-6">
+    <header class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 border-b border-brand-border/40 pb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mt-12 md:mt-16">
       <div>
         <h1
           id="theme-toggle"
-          class="text-3xl md:text-4xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200 text-brand-accent hover:opacity-80 font-mono"
+          class="text-4xl md:text-5xl font-black tracking-tighter cursor-pointer select-none active:scale-[0.99] transition-all duration-200 text-brand-accent hover:opacity-80 font-mono"
         >
           {isHome ? 'KUNAL_JANGID // QUANT-HUD' : isBlog ? 'KUNAL_JANGID // TECHNICAL_LOG' : 'KUNAL_JANGID // TRANSMIT_ENDPOINT'}
         </h1>
-        <p class="text-[10px] opacity-60 uppercase tracking-widest mt-1 font-mono">
+        <p class="text-xs md:text-sm opacity-60 uppercase tracking-widest mt-2 font-mono">
           {isHome ? 'Systems Operations Dashboard' : isBlog ? 'Architectural Breakdowns & Refactors' : 'Secure Payload Communication Routing'} // Gurugram, IN
         </p>
       </div>
-      <div class="flex items-center gap-4 text-[10px] text-brand-text/50 font-mono">
+      <div class="flex items-center gap-4 text-xs md:text-sm text-brand-text/50 font-mono">
         <span>STATUS: <span class="text-brand-accent animate-pulse font-bold">ONLINE</span></span>
         <span>•</span>
         <span>LATENCY: <span id="system-latency">12ms</span></span>
@@ -324,25 +324,25 @@ const isContact = pathname.startsWith("/contact");
 
     <!-- Premium Footer Section -->
     <footer
-      class="relative z-10 max-w-4xl mx-auto px-6 pb-16 w-full text-xs font-mono flex flex-col sm:flex-row items-center justify-between gap-6"
+      class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-16 pb-24 border-t border-brand-border/20 w-full text-sm font-mono flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 md:mt-20"
     >
-      <div class="opacity-50">© {new Date().getFullYear()} KUNAL JANGID.</div>
-      <div class="flex flex-wrap gap-3 items-center justify-center">
+      <div class="opacity-55">© {new Date().getFullYear()} KUNAL JANGID.</div>
+      <div class="flex flex-wrap gap-4 items-center justify-center">
         <a
           href="https://www.linkedin.com/in/jangidkunal"
           target="_blank"
-          class="px-4 py-2 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
+          class="px-5 py-2.5 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
           >LinkedIn</a
         >
         <a
           href="https://github.com/kunal-jangid/"
           target="_blank"
-          class="px-4 py-2 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
+          class="px-5 py-2.5 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
           >GitHub</a
         >
         <a
           href="mailto:thekunaljangid@gmail.com"
-          class="px-4 py-2 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
+          class="px-5 py-2.5 border border-brand-border/40 hover:border-brand-accent hover:text-brand-accent rounded-full transition-all duration-300 bg-brand-bg/5 hover:scale-105"
           >Email</a
         >
       </div>
