@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface ProjectCardProps {
   title: string;
@@ -13,7 +15,7 @@ export default function ProjectCard({ title, subtitle, tags, friction, fix, payo
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div
+    <Card
       suppressHydrationWarning
       onClick={() => setIsExpanded(!isExpanded)}
       className="glass-panel p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 cursor-pointer group hover:border-brand-accent/50 select-none h-fit w-full"
@@ -62,14 +64,17 @@ export default function ProjectCard({ title, subtitle, tags, friction, fix, payo
 
       <div className="flex flex-wrap gap-1.5 mt-4 max-w-sm">
         {tags.map((tag, i) => (
-          <span
+          <Badge
             key={i}
-            className="px-2 py-0.5 text-[9px] font-mono bg-brand-border/10 rounded opacity-80 group-hover:opacity-100 transition-opacity"
+            variant="outline"
+            size="sm"
+            className="font-mono text-[9px] font-bold border-brand-border/20 opacity-80 group-hover:opacity-100 transition-opacity rounded"
           >
             {tag}
-          </span>
+          </Badge>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
+

@@ -1,10 +1,14 @@
 import React, { useState, useRef } from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { ToastProvider, toastManager } from '@/components/ui/toast';
 
 interface ContactFormProps {
   alwaysOpen?: boolean;
 }
 
-export default function ContactForm({ alwaysOpen = false }: ContactFormProps) {
+function ContactFormInner({ alwaysOpen = false }: ContactFormProps) {
   const [isOpen, setIsOpen] = useState(alwaysOpen);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -45,8 +49,17 @@ export default function ContactForm({ alwaysOpen = false }: ContactFormProps) {
       if (!response.ok) throw new Error();
 
       setSuccess(true);
+      toastManager.add({
+        title: "Payload Transmitted",
+        description: "Your message has been successfully routed to Kunal.",
+        type: "success"
+      });
     } catch (err) {
-      alert('Transmission failed. Please reach out directly via email.');
+      toastManager.add({
+        title: "Transmission Failed",
+        description: "Please reach out directly via email instead.",
+        type: "error"
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -55,12 +68,13 @@ export default function ContactForm({ alwaysOpen = false }: ContactFormProps) {
   return (
     <div className="w-full flex flex-col items-center">
       {!alwaysOpen && (
-        <button
+        <Button
           onClick={toggleDrawer}
-          className="text-xs font-mono uppercase tracking-wider border border-brand-border px-8 py-3 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-200"
+          variant="outline"
+          className="text-xs font-mono uppercase tracking-wider px-8 py-3 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-200"
         >
           {isOpen ? '[ Close Terminal Drop Box ]' : '[ Want to contact me? Click here ]'}
-        </button>
+        </Button>
       )}
 
       {(isOpen || alwaysOpen) && (
@@ -83,48 +97,48 @@ export default function ContactForm({ alwaysOpen = false }: ContactFormProps) {
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1">01 // Name</label>
-                <input
+                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1.5">01 // Name</label>
+                <Input
                   type="text"
                   name="name"
                   required
                   placeholder="Your identity"
-                  className="w-full bg-transparent border-b border-brand-border/40 focus:border-brand-accent py-1 outline-none transition-colors"
+                  className="bg-transparent border-brand-border/40 focus-visible:border-brand-accent transition-colors"
                 />
               </div>
               
               <div>
-                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1">
+                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1.5">
                   02 // Email Address or Phone Number
                 </label>
-                <input
+                <Input
                   type="text"
                   name="contact"
                   required
                   placeholder="Your routing endpoint"
-                  className="w-full bg-transparent border-b border-brand-border/40 focus:border-brand-accent py-1 outline-none transition-colors"
+                  className="bg-transparent border-brand-border/40 focus-visible:border-brand-accent transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1">03 // Content</label>
-                <textarea
+                <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-1.5">03 // Content</label>
+                <Textarea
                   name="message"
                   rows={3}
                   required
                   placeholder="Type payload details here..."
-                  className="w-full bg-transparent border-b border-brand-border/40 focus:border-brand-accent py-1 outline-none resize-none transition-colors"
+                  className="bg-transparent border-brand-border/40 focus-visible:border-brand-accent transition-colors"
                 />
               </div>
 
               <div className="pt-2 flex justify-center">
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="text-xs uppercase tracking-wider border border-brand-border px-8 py-3 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-150 w-full sm:w-auto disabled:opacity-50"
+                  className="text-xs uppercase tracking-wider w-full sm:w-auto"
                 >
                   {isSubmitting ? 'Transmitting...' : 'Transmit Message'}
-                </button>
+                </Button>
               </div>
             </form>
           )}
@@ -133,3 +147,12 @@ export default function ContactForm({ alwaysOpen = false }: ContactFormProps) {
     </div>
   );
 }
+
+export default function ContactForm(props: ContactFormProps) {
+  return (
+    <ToastProvider>
+      <ContactFormInner {...props} />
+    </ToastProvider>
+  );
+}
+
