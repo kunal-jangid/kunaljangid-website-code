@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogPanel,
+} from "@/components/ui/dialog";
 import ZoomableImage from './ZoomableImage';
 
 const photoAssets = [
@@ -15,20 +22,18 @@ const photoAssets = [
 ];
 
 export default function FramesCard() {
-  const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(0);
+  const [open, setOpen] = useState(false);
 
-  const openModal = () => {
-    setCurrentIndex(0);
-    setIsOpen(true);
-    document.body.classList.add('no-scroll');
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    document.body.classList.remove('no-scroll');
-  };
+  // Auto-play closed carousel every 5 seconds
+  useEffect(() => {
+    if (open) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % photoAssets.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [open]);
 
   const nextPhoto = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -40,13 +45,10 @@ export default function FramesCard() {
     setCurrentIndex((prev) => (prev - 1 + photoAssets.length) % photoAssets.length);
   };
 
-  // Keyboard navigation
   useEffect(() => {
-    if (!isOpen) return;
+    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      } else if (e.key === 'ArrowRight') {
+      if (e.key === 'ArrowRight') {
         setCurrentIndex((prev) => (prev + 1) % photoAssets.length);
       } else if (e.key === 'ArrowLeft') {
         setCurrentIndex((prev) => (prev - 1 + photoAssets.length) % photoAssets.length);
@@ -56,9 +58,8 @@ export default function FramesCard() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [open]);
 
-  // Touch swipe detection for mobile
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -67,78 +68,85 @@ export default function FramesCard() {
     const diffX = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(diffX) > 60) {
       if (diffX > 0) {
-        // swipe right -> previous image
         prevPhoto();
       } else {
-        // swipe left -> next image
         nextPhoto();
       }
     }
   };
 
   return (
-    <>
-      <div
-        onClick={openModal}
-        className="w-full h-full min-h-[140px] flex flex-col justify-between cursor-pointer group/card select-none"
-      >
-        <div className="text-right font-mono text-[10px] opacity-40 md:hidden">[ Tap to view ]</div>
-        <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider mb-2 opacity-90">The Frames</h3>
-          <p className="text-xs opacity-70 leading-relaxed text-left">
-            Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit using my phone, which is more often than not a Samsung lol.
-          </p>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={
+        <button className="w-full h-full min-h-[160px] flex flex-col justify-between cursor-pointer group/card select-none text-left p-0 border border-brand-border/20 rounded-xl overflow-hidden relative" />
+      }>
+        <div className="absolute inset-0 z-0">
+          <img
+            src={photoAssets[currentIndex]}
+            alt="Film Frame Preview"
+            className="w-full h-full object-cover transition-all duration-500 group-hover/card:scale-105 filter grayscale contrast-110 dark:grayscale-0"
+          />
+          {/* Overlay to dim image and make text readable */}
+          <div className="absolute inset-0 bg-black/50 group-hover/card:bg-black/30 transition-all duration-300" />
         </div>
-        <div className="absolute inset-0 bg-brand-text text-brand-bg hidden md:flex opacity-0 group-hover/card:opacity-100 transition-all duration-300 items-center justify-center p-4 text-center font-bold text-sm tracking-tight select-none">
-          Wanna see the pictures I took recently? <br /><br /> Click here
-        </div>
-      </div>
 
-      {isOpen && typeof document !== 'undefined' && createPortal(
-        <div
-          className="fixed inset-0 z-[999] flex flex-col justify-center items-center p-4 bg-brand-bg/95 backdrop-blur-sm transition-opacity duration-200"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          <button
-            onClick={closeModal}
-            className="absolute top-6 right-6 text-brand-text font-mono text-xs uppercase tracking-widest border border-brand-border/20 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all z-[1000]"
+        {/* Content Overlay */}
+        <div className="relative z-10 p-5 flex flex-col justify-between h-full w-full min-h-[160px] text-white">
+          <div className="text-right font-mono text-[9px] text-white/50 w-full">[ Auto-playing Feed // Click to Zoom ]</div>
+          <div className="w-full">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-white/60 block mb-1">ENV_FRAMES // ACTIVE_FEED</span>
+            <p className="text-[11px] leading-relaxed text-white/80 font-sans">
+              Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit.
+            </p>
+          </div>
+        </div>
+      </DialogTrigger>
+
+      <DialogContent className="max-w-4xl bg-brand-bg border-brand-border/40">
+        <DialogHeader className="border-b border-brand-border/20 pb-4">
+          <DialogTitle className="text-lg font-bold font-mono">THE FRAMES</DialogTitle>
+        </DialogHeader>
+
+        <DialogPanel scrollFade={false}>
+          <div
+            className="flex flex-col justify-center items-center w-full"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
-            × Close (ESC)
-          </button>
+            <div className="max-w-4xl max-h-[70vh] w-full flex items-center justify-between gap-2 md:gap-6 relative">
+              <button
+                onClick={prevPhoto}
+                className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
+              >
+                [ Prev ]
+              </button>
 
-          <div className="max-w-4xl max-h-[70vh] w-full flex items-center justify-between gap-2 md:gap-6 relative">
-            <button
-              onClick={prevPhoto}
-              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
-            >
-              [ Prev ]
-            </button>
+              <div className="overflow-hidden rounded flex items-center justify-center grow max-h-[65vh] w-full">
+                <ZoomableImage
+                  src={photoAssets[currentIndex]}
+                  alt={`Recent Film Frame ${currentIndex + 1}`}
+                />
+              </div>
 
-            <div className="overflow-hidden rounded flex items-center justify-center grow max-h-[65vh] w-full">
-              <ZoomableImage
-                src={photoAssets[currentIndex]}
-                alt={`Recent Film Frame ${currentIndex + 1}`}
-              />
+              <button
+                onClick={nextPhoto}
+                className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
+              >
+                [ Next ]
+              </button>
             </div>
 
-            <button
-              onClick={nextPhoto}
-              className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
-            >
-              [ Next ]
-            </button>
+            <div className="text-brand-text/40 text-[11px] font-mono mt-6 text-center">
+              {String(currentIndex + 1).padStart(2, '0')} / {String(photoAssets.length).padStart(2, '0')}
+            </div>
+            <div className="text-brand-text/20 text-[10px] font-mono mt-1 md:hidden text-center">
+              [ Swipe horizontally to browse // Pinch to zoom ]
+            </div>
           </div>
-
-          <div className="text-brand-text/40 text-[11px] font-mono mt-6 text-center">
-            {String(currentIndex + 1).padStart(2, '0')} / {String(photoAssets.length).padStart(2, '0')}
-          </div>
-          <div className="text-brand-text/20 text-[10px] font-mono mt-1 md:hidden text-center">
-            [ Swipe horizontally to browse // Pinch to zoom ]
-          </div>
-        </div>,
-        document.body
-      )}
-    </>
+        </DialogPanel>
+      </DialogContent>
+    </Dialog>
   );
 }
+
+

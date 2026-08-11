@@ -1,36 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ContactForm from '../components/ContactForm.tsx';
+import TerminalCLI from '../components/TerminalCLI.tsx';
 ---
 
 <Layout
   title="Transmit Message // Routing Endpoint | Kunal Jangid"
   description="Contact Kunal Jangid, Software Engineer based in Gurugram, IN. Transmit secure messages directly to his routing endpoints."
 >
-  <div class="max-w-3xl mx-auto px-4 py-8 relative z-10">
+  <div class="max-w-2xl mx-auto px-4 py-8 relative z-10 font-mono text-xs">
     <!-- Back Navigation -->
-    <div class="mb-12">
+    <div class="mb-8">
       <a
         href="/"
-        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
+        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border/30 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
       >
-        ← Go Back
+        ← Return to Operations Dashboard
       </a>
     </div>
 
-    <!-- Header Section -->
-    <header class="border-b border-brand-border/40 pb-8 mb-12">
-      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4 text-brand-text">
-        Routing Endpoint
-      </h1>
-      <p class="text-sm opacity-70 leading-relaxed font-mono">
-        Transmit secure payloads or message details directly to my database integrations.
-      </p>
-    </header>
-
     <!-- Form Container -->
     <div class="w-full">
-      <ContactForm client:load alwaysOpen={true} />
+      <TerminalCLI client:load autoBootContact={true} />
     </div>
   </div>
 </Layout>

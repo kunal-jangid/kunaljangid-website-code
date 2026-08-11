@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Spinner } from '@/components/ui/spinner';
 
 interface Track {
   songName: string;
@@ -49,7 +52,6 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
         setData(json);
       } catch (err) {
         console.error("Failed fetching Spotify telemetry data", err);
-        // Fallback to initial server data if client fetch fails
         if (initialData) {
           setData(initialData);
         }
@@ -63,8 +65,9 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
 
   if (loading) {
     return (
-      <div className="font-mono text-xs opacity-70 leading-relaxed w-full h-full flex items-center justify-center min-h-[140px]">
-        <span className="opacity-50 animate-pulse">• Synchronizing telemetry...</span>
+      <div className="font-mono text-xs opacity-70 leading-relaxed w-full h-full flex flex-col items-center justify-center min-h-[140px] gap-2">
+        <Spinner className="size-4 opacity-50 text-brand-accent" />
+        <span className="opacity-50">• Synchronizing telemetry...</span>
       </div>
     );
   }
@@ -78,7 +81,6 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
   return (
     <div className="w-full h-full flex flex-col justify-between group/card select-none text-left">
       <div className="w-full">
-        <h3 className="text-sm font-bold uppercase tracking-wider mb-3 opacity-90">The Sounds</h3>
         
         {/* Active Player Module */}
         <div className="relative group/player rounded-xl p-3 bg-brand-text/5 hover:bg-brand-text/10 transition-all duration-300 border border-brand-border/10 overflow-hidden">
@@ -91,7 +93,11 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
                     alt="Album Artwork"
                     loading="lazy"
                     decoding="async"
-                    className="w-14 h-14 object-cover flex-shrink-0 border border-brand-border/40 filter grayscale contrast-110 dark:grayscale-0 transition-all duration-300 rounded shadow-sm"
+                    className={`w-14 h-14 object-cover flex-shrink-0 border border-brand-border/40 transition-all duration-300 rounded shadow-sm ${
+                      isPlaying 
+                        ? 'filter-none contrast-100' 
+                        : 'filter grayscale contrast-110 dark:grayscale-0'
+                    }`}
                   />
                 )}
                 <div className="min-w-0 flex flex-col justify-center text-left">
@@ -128,39 +134,42 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
 
       {/* Recommended Top Tracks Section */}
       {data?.tracks && data.tracks.length > 0 && (
-        <div className="mt-4 border-t border-brand-border/20 pt-4 w-full">
+        <div className="mt-4 border-t border-brand-border/20 pt-4 w-full flex flex-col min-h-0">
           <span className="text-[9px] font-mono uppercase tracking-widest opacity-60 block mb-2 font-bold">Top Recommendations</span>
-          <div className="space-y-1 max-h-44 overflow-y-auto pr-1 no-scrollbar">
-            {data.tracks.slice(0, 5).map((track, i) => (
-              <a
-                key={i}
-                href={track.songUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 hover:bg-brand-text/5 p-1 rounded-lg transition-colors group/track border border-transparent hover:border-brand-border/20"
-              >
-                {track.coverUrl ? (
-                  <img
-                    src={track.coverUrl}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-7 h-7 object-cover rounded filter grayscale group-hover/track:grayscale-0 transition-all"
-                    alt=""
-                  />
-                ) : (
-                  <div className="w-7 h-7 bg-brand-text/10 rounded flex items-center justify-center text-xs">🎵</div>
-                )}
-                <div className="min-w-0">
-                  <h4 className="text-xs font-bold truncate group-hover/track:text-brand-accent transition-colors text-brand-text">
-                    {track.songName}
-                  </h4>
-                  <p className="text-[9px] opacity-75 truncate text-brand-text">by {track.artistName}</p>
-                </div>
-              </a>
-            ))}
-          </div>
+          <ScrollArea className="h-44 pr-1" scrollbarGutter={true}>
+            <div className="space-y-1">
+              {data.tracks.slice(0, 5).map((track, i) => (
+                <a
+                  key={i}
+                  href={track.songUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 hover:bg-brand-text/5 p-1 rounded-lg transition-colors group/track border border-transparent hover:border-brand-border/20"
+                >
+                  {track.coverUrl ? (
+                    <img
+                      src={track.coverUrl}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-7 h-7 object-cover rounded filter grayscale group-hover/track:grayscale-0 transition-all"
+                      alt=""
+                    />
+                  ) : (
+                    <div className="w-7 h-7 bg-brand-text/10 rounded flex items-center justify-center text-xs">🎵</div>
+                  )}
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold truncate group-hover/track:text-brand-accent transition-colors text-brand-text">
+                      {track.songName}
+                    </h4>
+                    <p className="text-[9px] opacity-75 truncate text-brand-text">by {track.artistName}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>
   );
 }
+

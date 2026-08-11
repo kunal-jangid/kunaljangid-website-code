@@ -21,20 +21,20 @@ const formattedDate = post.data.date.toLocaleDateString('en-US', {
 ---
 
 <Layout title={`${post.data.title} | Kunal Jangid`} description={post.data.description}>
-  <div class="max-w-3xl mx-auto px-4 py-8 relative z-10">
+  <div class="max-w-3xl mx-auto px-4 py-8 relative z-10 font-mono text-xs">
     <!-- Back Navigation -->
-    <div class="mb-12">
+    <div class="mb-8">
       <a
         href="/blog"
-        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
+        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border/30 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
       >
-        ← Go Back
+        ← Return to Technical Log Index
       </a>
     </div>
 
     <!-- Article Header -->
     <header class="border-b border-brand-border/40 pb-8 mb-10">
-      <div class="flex flex-wrap gap-2 mb-4">
+      <div class="flex flex-wrap gap-2 mb-4 font-mono">
         {post.data.tags.map((tag: string) => (
           <span class="px-2 py-0.5 text-[10px] font-mono border border-brand-border/40 rounded opacity-75">
             {tag}

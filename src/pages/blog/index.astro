@@ -11,26 +11,16 @@ const posts = blogPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTi
   title="Writings & Technical Modernizations | Kunal Jangid"
   description="Explore technical write-ups on legacy framework refactoring, high-throughput financial architectures, and quantitative analysis tools by Kunal Jangid."
 >
-  <div class="max-w-4xl mx-auto px-4 py-8 relative z-10">
+  <div class="max-w-4xl mx-auto px-4 py-8 relative z-10 font-mono text-xs">
     <!-- Back Navigation -->
-    <div class="mb-12">
+    <div class="mb-8">
       <a
         href="/"
-        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
+        class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-brand-border/30 px-4 py-2 rounded hover:bg-brand-text hover:text-brand-bg transition-all duration-300"
       >
-        ← Go Back
+        ← Return to Operations Dashboard
       </a>
     </div>
-
-    <!-- Header Section -->
-    <header class="border-b border-brand-border/40 pb-8 mb-12">
-      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4 text-brand-text">
-        Writings & Technical Log
-      </h1>
-      <p class="text-sm opacity-70 leading-relaxed font-mono">
-        Architectural breakdowns, modernizations, and quantitative engineering insights.
-      </p>
-    </header>
 
     <!-- Articles List Grid -->
     <div class="grid grid-cols-1 gap-6">
@@ -42,7 +32,7 @@ const posts = blogPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTi
         });
 
         return (
-          <div class="glass-panel p-6 md:p-8 rounded-2xl flex flex-col justify-between hover:border-brand-accent/50 transition-all duration-300 group">
+          <div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:border-brand-accent/50 transition-all duration-300 group">
             <div>
               <div class="flex flex-wrap gap-2 mb-3">
                 {post.data.tags.map((tag: string) => (
