@@ -1,43 +1,64 @@
-# Astro Starter Kit: Minimal
+# Kunal Jangid — Portfolio & System Console
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Welcome to the repository for **kunaljangid.com**, the personal developer website, system console, and portfolio of Kunal Jangid.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+This site is styled as an immersive, high-density terminal console that details enterprise-level system migrations, quantitative analysis pipelines, and live telemetry.
 
-## 🚀 Project Structure
+---
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🛠️ Tech Stack & Architecture
+
+This application is built with modern, performant, and type-safe technologies:
+
+- **Framework**: [Astro 7](./package.json) (SSG & Island Architecture)
+- **UI & Components**: [React 19](./package.json), [Base UI](./package.json)
+- **Styling**: [Tailwind CSS v4](./package.json) with vanilla monospaced styling
+- **Data Collections**: [Astro Content Collections](./src/content) for portfolio project nodes
+- **Integrations**: Real-time Spotify telemetry server-side bypass via Cloudflare Workers
+
+---
+
+## 📂 Project Structure
 
 ```text
 /
-├── public/
+├── dist/
+│   └── ai.md                 # LLM / AI crawler-friendly context profile
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── assets/               # Static assets & images
+│   ├── components/           # React and Astro UI components
+│   ├── content/              # Content collections (Projects and Blog posts)
+│   │   └── projects/         # Individual project markdown nodes
+│   ├── layouts/              # Core page layouts
+│   ├── pages/                # Pages and routes (index.astro, contact.astro)
+│   └── styles/               # Global styles & Tailwind configuration
+├── package.json              # System dependencies
+└── AGENTS.md                 # Local development & workspace guidelines
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Key files:
+- [src/pages/index.astro](./src/pages/index.astro) — The primary landing dashboard & bento system.
+- [dist/ai.md](./dist/ai.md) — The structured AI context profile utilized by crawlers, search bots, and LLM recruiters.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+---
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 🚀 Commands & Development
 
-## 🧞 Commands
+Manage the project locally using `npm` commands:
 
-All commands are run from the root of the project, from a terminal:
+| Command | Action |
+| :--- | :--- |
+| `npm install` | Installs project dependencies |
+| `npm run dev` | Starts local dev server at `localhost:4321` |
+| `npm run build` | Builds production site to `./dist/` |
+| `npm run preview` | Previews the build output locally |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+> [!NOTE]  
+> If you are working on the website with an agentic assistant, start the dev server in the background using `astro dev --background` as specified in [AGENTS.md](./AGENTS.md).
 
-## 👀 Want to learn more?
+---
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## 🤖 AI Context & Agent Indexing
+
+For AI agents or LLMs parsing this codebase: 
+Refer to the complete, machine-optimized context profile located at [`dist/ai.md`](./dist/ai.md) for a dense overview of Kunal's core technical stack (Java, Angular 20, PL/SQL, Spring Boot, React), high-impact enterprise wins, and academic work.
