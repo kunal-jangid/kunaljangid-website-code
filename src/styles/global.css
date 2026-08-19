@@ -202,6 +202,15 @@ body {
     }
 }
 
+@keyframes eq {
+    0%, 100% { height: 3px; }
+    50% { height: 10px; }
+}
+.eq-bar-1 { animation: eq 0.8s ease-in-out infinite; }
+.eq-bar-2 { animation: eq 0.5s ease-in-out infinite; }
+.eq-bar-3 { animation: eq 0.7s ease-in-out infinite; }
+
+
 .glass-panel {
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -229,40 +238,85 @@ body {
     z-index: 40;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    justify-content: center;
+    height: 3.25rem;
+    width: 12.5rem;
     text-decoration: none;
     border: 1px solid var(--border-color);
     border-radius: 9999px;
     background-color: var(--bg-color);
     color: var(--text-color);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.15), 
+                0 0 10px color-mix(in srgb, var(--accent-color) 15%, transparent);
     backdrop-filter: blur(8px);
+    overflow: hidden;
+    white-space: nowrap;
+    transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
+                color 0.3s cubic-bezier(0.2, 0, 0, 1),
+                transform 0.3s cubic-bezier(0.2, 0, 0, 1),
+                box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1),
+                border-color 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .sticky-resume:hover {
     background-color: var(--text-color);
     color: var(--bg-color);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.25), 
+                0 0 18px color-mix(in srgb, var(--accent-color) 35%, transparent);
+    border-color: var(--accent-color);
+}
+
+.resume-text {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 1;
+    max-width: 150px;
+    margin-left: 0.5rem;
+    transition: max-width 0.3s cubic-bezier(0.2, 0, 0, 1),
+                opacity 0.2s cubic-bezier(0.2, 0, 0, 1),
+                margin-left 0.3s cubic-bezier(0.2, 0, 0, 1);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sticky-resume:hover .resume-text {
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
 }
 
 .sticky-resume:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
+}
+
+.sticky-resume:hover .download-arrow,
+.sticky-resume:hover .download-shaft {
+    animation: download-bounce 0.8s cubic-bezier(0.2, 0, 0, 1) infinite;
+}
+
+@keyframes download-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(3px);
+    }
 }
 
 @media (max-width: 768px) {
     .sticky-resume {
         bottom: 1.5rem;
         right: 1.5rem;
-        padding: 0.5rem 1rem;
+        height: 2.75rem;
+        width: 10.5rem;
+    }
+    .resume-text {
         font-size: 0.65rem;
+        max-width: 120px;
     }
 }
 
@@ -493,4 +547,22 @@ body {
               color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Backlit (Bklit) UI Glow Aesthetics */
+.bklit-glow {
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 25%, transparent),
+              inset 0 0 8px color-mix(in srgb, var(--accent-color) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--accent-color) 45%, transparent) !important;
+}
+
+.bklit-glow-hover {
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.bklit-glow-hover:hover {
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent-color) 35%, transparent),
+              inset 0 0 12px color-mix(in srgb, var(--accent-color) 15%, transparent) !important;
+  border-color: var(--accent-color) !important;
+  transform: translateY(-1px);
 }

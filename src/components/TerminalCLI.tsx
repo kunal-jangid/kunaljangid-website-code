@@ -196,7 +196,7 @@ export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProp
   };
 
   return (
-    <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px]">
+    <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px] bklit-glow">
       {/* Scrollable logs area */}
       <div ref={containerRef} className="flex-1 overflow-y-auto space-y-1 mb-2 pr-1 no-scrollbar select-text">
         {history.map((line, idx) => {

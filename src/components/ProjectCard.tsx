@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ProjectCardProps {
   title: string;
@@ -77,32 +78,39 @@ export default function ProjectCard({ title, subtitle, tags, friction, fix, payo
       </div>
 
       {/* Expandable section */}
-      <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isExpanded ? 'max-h-[500px] opacity-100 mt-4 pl-4 border-l border-brand-accent/30' : 'max-h-0 opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className="text-xs space-y-3 pt-2">
-          <div>
-            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
-              // SECTION 01 // THE FRICTION
-            </span>
-            <p className="text-brand-text/80 leading-relaxed font-sans">{friction}</p>
-          </div>
-          <div>
-            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
-              // SECTION 02 // THE FIX
-            </span>
-            <p className="text-brand-text/80 leading-relaxed font-sans">{fix}</p>
-          </div>
-          <div>
-            <span className="text-brand-accent block text-[9px] uppercase tracking-wider mb-0.5 font-bold">
-              // SECTION 03 // THE PAYOFF
-            </span>
-            <p className="text-brand-text/80 leading-relaxed font-sans">{payoff}</p>
-          </div>
-        </div>
-      </div>
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            key="project-details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
+            className="overflow-hidden mt-4 pl-4 border-l-2 border-brand-accent/40"
+          >
+            <div className="text-xs space-y-4 pt-2 font-mono">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-2 border-t border-brand-border/10 pt-3">
+                <span className="text-brand-accent font-bold text-[9px] uppercase tracking-widest block md:col-span-1">
+                  [PROBLEM]
+                </span>
+                <p className="text-brand-text/85 leading-relaxed font-sans text-xs md:col-span-3">{friction}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-2 border-t border-brand-border/10 pt-3">
+                <span className="text-brand-accent font-bold text-[9px] uppercase tracking-widest block md:col-span-1">
+                  [RESOLUTION]
+                </span>
+                <p className="text-brand-text/85 leading-relaxed font-sans text-xs md:col-span-3">{fix}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-2 border-t border-brand-border/10 pt-3">
+                <span className="text-brand-accent font-bold text-[9px] uppercase tracking-widest block md:col-span-1">
+                  [OUTCOME]
+                </span>
+                <p className="text-brand-text/85 leading-relaxed font-sans text-xs md:col-span-3">{payoff}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

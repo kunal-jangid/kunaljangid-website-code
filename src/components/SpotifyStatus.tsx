@@ -102,7 +102,14 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
                 )}
                 <div className="min-w-0 flex flex-col justify-center text-left">
                   {isPlaying ? (
-                    <span className="text-brand-accent animate-pulse font-bold text-[9px] uppercase tracking-widest block mb-0.5">• Live Now</span>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-brand-accent font-bold text-[9px] uppercase tracking-widest block">• Live Now</span>
+                      <div className="flex items-end gap-[2px] h-[10px] w-[12px] pb-[1px]">
+                        <span className="w-[2px] bg-brand-accent rounded-full eq-bar-1"></span>
+                        <span className="w-[2px] bg-brand-accent rounded-full eq-bar-2"></span>
+                        <span className="w-[2px] bg-brand-accent rounded-full eq-bar-3"></span>
+                      </div>
+                    </div>
                   ) : (
                     <span className="opacity-50 text-[9px] uppercase tracking-widest block mb-0.5">• Last Played</span>
                   )}

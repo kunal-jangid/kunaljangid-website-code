@@ -93,12 +93,6 @@ export default function FramesCard() {
         {/* Content Overlay */}
         <div className="relative z-10 p-5 flex flex-col justify-between h-full w-full min-h-[160px] text-white">
           <div className="text-right font-mono text-[9px] text-white/50 w-full">[ Auto-playing Feed // Click to Zoom ]</div>
-          <div className="w-full">
-            <span className="text-[9px] font-mono uppercase tracking-widest text-white/60 block mb-1">ENV_FRAMES // ACTIVE_FEED</span>
-            <p className="text-[11px] leading-relaxed text-white/80 font-sans">
-              Capturing industrial lines, geographic balances, and raw environmental illumination profiles found during transit.
-            </p>
-          </div>
         </div>
       </DialogTrigger>
 
