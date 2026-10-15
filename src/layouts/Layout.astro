@@ -4,9 +4,10 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  robots?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, robots = "index, follow" } = Astro.props;
 const pathname = Astro.url.pathname;
 
 const isHome = pathname === "/" || pathname === "";
@@ -22,7 +23,7 @@ const isHome = pathname === "/" || pathname === "";
       name="keywords"
       content="Kunal Jangid, Software Engineer, Gurugram, Fintech, OSTTRA, Web Developer"
     />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={robots} />
     <title>{title}</title>
     <link
       rel="alternate"

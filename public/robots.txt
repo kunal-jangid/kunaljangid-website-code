@@ -1,4 +1,5 @@
 User-agent: *
+Disallow: /upload
 Allow: /
 
 Sitemap: https://www.kunaljangid.com/sitemap.xml
