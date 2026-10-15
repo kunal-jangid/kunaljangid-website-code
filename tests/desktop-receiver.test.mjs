@@ -98,6 +98,27 @@ test('POST /receive saves file with valid auth and sanitized name', async () => 
   assert.ok(files.includes(data.savedAs));
 });
 
+test('POST /receive correctly decodes URI-encoded non-ASCII/emoji filenames', async () => {
+  const fakeImageData = Buffer.from('fake image content');
+  const nonAsciiName = 'vacation_🎉_summer.png';
+  const res = await fetch(`http://localhost:${TEST_PORT}/receive`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${TEST_SECRET}`,
+      'Content-Type': 'image/png',
+      'X-Original-Filename': encodeURIComponent(nonAsciiName),
+    },
+    body: fakeImageData,
+  });
+
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.equal(data.success, true);
+  assert.ok(data.savedAs);
+  assert.ok(data.savedAs.endsWith('.png'));
+  assert.ok(data.savedAs.includes('vacation'));
+});
+
 test('POST /receive enforces extension whitelist and defaults unrecognized extensions to .jpg', async () => {
   const fakeImageData = Buffer.from('echo hello');
   const res = await fetch(`http://localhost:${TEST_PORT}/receive`, {

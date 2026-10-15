@@ -42,7 +42,13 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
 
   // 2. Validate MIME type & Content-Length header if present
   const contentType = (request.headers.get("Content-Type") || "").toLowerCase().split(";")[0].trim();
-  const originalFilename = request.headers.get("X-Original-Filename") || "upload.jpg";
+  const rawFilename = request.headers.get("X-Original-Filename") || "upload.jpg";
+  let originalFilename = rawFilename;
+  try {
+    originalFilename = decodeURIComponent(rawFilename);
+  } catch {
+    originalFilename = rawFilename;
+  }
 
   if (!ALLOWED_MIME_TYPES.has(contentType)) {
     return new Response(
@@ -85,7 +91,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       headers: {
         "Authorization": `Bearer ${configuredSecret}`,
         "Content-Type": contentType,
-        "X-Original-Filename": originalFilename,
+        "X-Original-Filename": encodeURIComponent(originalFilename),
       },
       body: request.body,
       // @ts-ignore

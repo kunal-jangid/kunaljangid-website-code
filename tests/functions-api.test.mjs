@@ -205,6 +205,33 @@ describe('Cloudflare Pages Functions API', () => {
     assert.equal(capturedHeaders['X-Original-Filename'], 'photo.png');
   });
 
+  test('upload function safely proxies URI-encoded non-ASCII filename', async () => {
+    let capturedHeaders = null;
+
+    globalThis.fetch = async (url, options) => {
+      capturedHeaders = options.headers;
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    };
+
+    const { onRequestPost } = await import('../functions/api/upload.ts');
+    const ctx = createMockContext({
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer super_secret',
+        'Content-Type': 'image/jpeg',
+        'X-Original-Filename': encodeURIComponent('party_🎉_pic.jpg'),
+      },
+      env: { UPLOAD_SECRET: 'super_secret', RECEIVER_TUNNEL_URL: 'https://tunnel.example.com/' },
+      body: 'imagebytes',
+    });
+    const res = await onRequestPost(ctx);
+    assert.equal(res.status, 200);
+    assert.equal(capturedHeaders['X-Original-Filename'], encodeURIComponent('party_🎉_pic.jpg'));
+  });
+
   test('upload function returns 503 when receiver tunnel is unreachable', async () => {
     globalThis.fetch = async () => {
       throw new Error('Connection refused: receiver tunnel down');

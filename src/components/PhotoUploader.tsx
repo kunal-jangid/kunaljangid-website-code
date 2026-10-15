@@ -44,6 +44,19 @@ function PhotoUploaderInner() {
   const [isUploadingBatch, setIsUploadingBatch] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const stagedFilesRef = useRef<StagedFile[]>(stagedFiles);
+  stagedFilesRef.current = stagedFiles;
+
+  // Revoke object URLs on component unmount
+  useEffect(() => {
+    return () => {
+      stagedFilesRef.current.forEach((item) => {
+        if (item.previewUrl) {
+          URL.revokeObjectURL(item.previewUrl);
+        }
+      });
+    };
+  }, []);
 
   // Load saved token on mount
   useEffect(() => {
@@ -175,13 +188,13 @@ function PhotoUploaderInner() {
       );
 
       try {
-        const mime = item.file.type || (item.file.name.endsWith(".heic") ? "image/heic" : "image/jpeg");
+        const mime = item.file.type || (item.file.name.toLowerCase().endsWith(".heic") ? "image/heic" : "image/jpeg");
         const res = await fetch("/api/upload", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${authToken.trim()}`,
             "Content-Type": mime,
-            "X-Original-Filename": item.file.name,
+            "X-Original-Filename": encodeURIComponent(item.file.name),
           },
           body: item.file,
         });

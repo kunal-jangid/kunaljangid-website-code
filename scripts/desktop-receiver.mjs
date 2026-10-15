@@ -59,7 +59,13 @@ const server = http.createServer((req, res) => {
     }
 
     const rawFilename = req.headers['x-original-filename'] || 'upload.jpg';
-    const targetFilename = sanitizeFilename(String(rawFilename));
+    let decodedFilename = String(rawFilename);
+    try {
+      decodedFilename = decodeURIComponent(decodedFilename);
+    } catch {
+      decodedFilename = String(rawFilename);
+    }
+    const targetFilename = sanitizeFilename(decodedFilename);
     const targetPath = path.join(STORAGE_DIR, targetFilename);
 
     const writeStream = fs.createWriteStream(targetPath);
