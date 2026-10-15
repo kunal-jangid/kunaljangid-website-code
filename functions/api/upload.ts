@@ -81,9 +81,10 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
   }
 
   // 3. Proxy payload directly to desktop tunnel receiver
+  let timeout: any;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000); // 45s timeout for large uploads
+    timeout = setTimeout(() => controller.abort(), 45000); // 45s timeout for large uploads
 
     const targetUrl = `${tunnelUrl.replace(/\/+$/, "")}/receive`;
     const proxyResponse = await fetch(targetUrl, {
@@ -98,7 +99,6 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       duplex: "half",
       signal: controller.signal,
     });
-    clearTimeout(timeout);
 
     const responseText = await proxyResponse.text();
     return new Response(responseText, {
@@ -117,5 +117,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
         headers: { "Content-Type": "application/json" },
       }
     );
+  } finally {
+    clearTimeout(timeout);
   }
 };

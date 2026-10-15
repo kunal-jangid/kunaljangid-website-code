@@ -12,16 +12,16 @@ export const onRequestGet = async (context: { request: Request; env: Env }) => {
     });
   }
 
+  let timeout: any;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3500);
+    timeout = setTimeout(() => controller.abort(), 3500);
 
     const pingUrl = `${tunnelUrl.replace(/\/+$/, "")}/health`;
     const res = await fetch(pingUrl, {
       method: "GET",
       signal: controller.signal,
     });
-    clearTimeout(timeout);
 
     if (res.ok) {
       return new Response(JSON.stringify({ online: true }), {
@@ -39,5 +39,7 @@ export const onRequestGet = async (context: { request: Request; env: Env }) => {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+  } finally {
+    clearTimeout(timeout);
   }
 };

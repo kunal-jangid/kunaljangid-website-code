@@ -44,7 +44,7 @@ This guide walks you through setting up and running the local desktop receiver d
 
 ## Prerequisites
 
-1. **Windows 10/11 Desktop** with Node.js 18+ or 22+ installed (`node -v`).
+1. **Windows 10/11 Desktop** with Node.js 20.6+ (LTS 20 or 22 recommended) installed (`node -v`) for native `--env-file` support.
 2. **Cloudflare Account** managing your domain (`kunaljangid.com`).
 3. Destination folder on disk (e.g., `D:\Photos\Uploads`).
 
