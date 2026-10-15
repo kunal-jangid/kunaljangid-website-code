@@ -16,7 +16,7 @@ before(async () => {
     fs.rmSync(TEST_STORAGE, { recursive: true, force: true });
   }
 
-  receiverProcess = spawn('node', ['scripts/desktop-receiver.mjs'], {
+  receiverProcess = spawn(process.execPath, ['scripts/desktop-receiver.mjs'], {
     env: {
       ...process.env,
       PORT: String(TEST_PORT),
