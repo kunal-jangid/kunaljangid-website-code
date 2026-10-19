@@ -23,7 +23,7 @@ The site transitions from a dense, 3-column cyberpunk console layout into **"The
 
 ### Header & Hero Masthead
 - **Identity**: `Kunal Jangid` in Fraunces italic serif + tactile theme switcher button (cycling through the 4 Lo-Fi Zine presets).
-- **Sub-masthead**: `SYSTEMS SOFTWARE ENGINEER // GURUGRAM, IN`, live status ticker (`SIGNAL: ONLINE`, clock, ping).
+- **Sub-masthead**: `Associate Software Engineer // GURUGRAM, IN`, live status ticker (`SIGNAL: ONLINE`, clock, ping).
 - **Mission Statement**:
   > *"I architect high-throughput financial platforms and untangle multi-generational legacy architectures at OSTTRA. Focused on complex state machines, strict regulatory business logic, and low-allocation systems."*
 - **Hero Spotify Audio Player**: Clean, tactile horizontal music sleeve showing live or last played track seamlessly integrated without cluttering the page body.
