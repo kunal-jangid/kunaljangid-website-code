@@ -196,14 +196,14 @@ export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProp
   };
 
   return (
-    <div className="w-full glass-panel border border-brand-border/20 rounded-xl p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px] bklit-glow">
+    <div className="w-full bg-brand-surface border border-brand-border rounded-lg p-5 flex flex-col justify-between font-mono text-xs text-left h-[420px] transition-all">
       {/* Scrollable logs area */}
       <div ref={containerRef} className="flex-1 overflow-y-auto space-y-1 mb-2 pr-1 no-scrollbar select-text">
         {history.map((line, idx) => {
           let colorClass = 'text-brand-text';
-          if (line.type === 'input') colorClass = 'text-brand-text opacity-70';
+          if (line.type === 'input') colorClass = 'text-brand-muted';
           if (line.type === 'error') colorClass = 'text-destructive';
-          if (line.type === 'success') colorClass = 'text-brand-accent';
+          if (line.type === 'success') colorClass = 'text-brand-accent font-semibold';
           return (
             <div key={idx} className={`${colorClass} leading-relaxed whitespace-pre-wrap break-all`}>
               {line.text}
@@ -213,8 +213,8 @@ export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProp
       </div>
 
       {/* Input prompt area */}
-      <div className="flex items-center gap-2 border-t border-brand-border/20 pt-3">
-        <span className="text-brand-accent font-bold shrink-0">{getPromptText()}</span>
+      <div className="flex items-center gap-2 border-t border-brand-border/40 pt-3">
+        <span className="text-brand-accent font-semibold shrink-0">{getPromptText()}</span>
         <input
           ref={inputRef}
           type="text"
@@ -222,7 +222,7 @@ export default function TerminalCLI({ autoBootContact = false }: TerminalCLIProp
           onChange={(e) => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={getPlaceholder()}
-          className="flex-1 bg-transparent text-brand-text outline-none border-none caret-brand-accent p-0 font-mono text-xs placeholder:text-brand-text/30"
+          className="flex-1 bg-transparent text-brand-text outline-none border-none caret-brand-accent p-0 font-mono text-xs placeholder:text-brand-muted/40"
         />
       </div>
     </div>
