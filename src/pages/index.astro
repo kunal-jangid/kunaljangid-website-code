@@ -31,42 +31,56 @@ try {
 >
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 w-full auto-rows-min font-mono text-xs">
     
-    <!-- COLUMN 1: SYSTEM CONTROLLER (LEFT - 4/12 SPAN) -->
+    <!-- COLUMN 1: EDITORIAL BIO & TERMINAL (LEFT - 4/12 SPAN) -->
     <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
-      <!-- SYSTEM CREDENTIALS LOG -->
-      <div class="flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_SYS_LOG // ABOUT_ME</h2>
-        <BentoItem span={1} row={1} class="!p-5 flex flex-col gap-4 border border-brand-border/20 bklit-glow-hover">
-          <div class="text-xs leading-relaxed space-y-3 font-sans text-brand-text/80 select-text">
+      <!-- EDITORIAL BIO DISPATCH -->
+      <div class="flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">01 // ABOUT THE AUTHOR</h2>
+          <span class="text-[10px] text-brand-muted font-display italic">Desk Dispatch</span>
+        </div>
+        <BentoItem span={1} row={1} class="!p-5 flex flex-col gap-4 border border-brand-border bg-brand-surface shadow-none">
+          <div class="text-xs leading-relaxed space-y-3 font-sans text-brand-text select-text">
             <p>
               I architect high-throughput financial platforms and untangle multi-generational legacy architectures. Currently serving as an <span class="text-brand-accent font-semibold">Associate Software Engineer at OSTTRA</span>.
             </p>
-            <p>
-              Specialized in complex state machines, strict regulatory business logic, and web tooling modernization. 
+            <p class="text-brand-muted">
+              Specialized in complex state machines, strict regulatory business logic, and modern web tooling architectures.
             </p>
+          </div>
+          <div class="pt-2 border-t border-brand-border/40 flex items-center justify-between text-[10px] text-brand-muted font-mono">
+            <span>LOCATION: GURUGRAM, IN</span>
+            <span class="text-brand-accent-sub font-semibold">STATUS: ACTIVE</span>
           </div>
         </BentoItem>
       </div>
 
       <!-- TERMINAL CLI MODULE (Hidden on phone/tablet) -->
-      <div class="hidden lg:flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_CMD_LINE // ACTIVE_PROMPT</h2>
+      <div class="hidden lg:flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">02 // CONSOLE PROMPT</h2>
+          <span class="text-[10px] text-brand-muted font-mono">press '/' to focus</span>
+        </div>
         <TerminalCLI client:load />
       </div>
     </div>
 
-    <!-- COLUMN 2: QUANT PROJECT LEDGER (CENTER - 5/12 SPAN) -->
-    <div class="col-span-1 lg:col-span-5 flex flex-col gap-4 border-t lg:border-t-0 lg:border-x border-brand-border/20 lg:px-8">
-      <div class="flex items-center justify-between border-b border-brand-border/20 p-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_WORK_LEDGER // PROJECT_NODES</h2>
-        <span class="text-[9px] text-brand-text/40 font-mono">NODE_COUNT: {projects.length}</span>
+    <!-- COLUMN 2: SELECTED WORKS LEDGER (CENTER - 5/12 SPAN) -->
+    <div class="col-span-1 lg:col-span-5 flex flex-col gap-4 border-t lg:border-t-0 lg:border-x border-brand-border/40 lg:px-6">
+      <div class="flex items-center justify-between border-b border-brand-border/60 pb-2">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">03 // SELECTED WORKS</h2>
+          <span class="text-sm font-display italic text-brand-text">Index</span>
+        </div>
+        <span class="text-[10px] text-brand-muted font-mono border border-brand-border px-1.5 py-0.5 rounded bg-brand-surface">ENTRIES: {projects.length}</span>
       </div>
 
       <!-- SINGLE INTEGRATED LEDGER LIST -->
-      <div class="flex flex-col w-full">
-        {projects.map((project) => (
+      <div class="flex flex-col w-full divide-y divide-brand-border/40">
+        {projects.map((project, index) => (
           <ProjectCard
             client:load
+            index={index + 1}
             title={project.data.title}
             subtitle={project.data.subtitle}
             tags={project.data.tags}
@@ -78,39 +92,51 @@ try {
       </div>
     </div>
 
-    <!-- COLUMN 3: TELEMETRY SIGNAL FEED (RIGHT - 3/12 SPAN) -->
+    <!-- COLUMN 3: TELEMETRY SIGNAL & AUXILIARY (RIGHT - 3/12 SPAN) -->
     <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
       <!-- LIVE SPOTIFY FEED -->
-      <div class="flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_TELEMETRY // LIVE_SIGNAL</h2>
-        <BentoItem span={1} row={1} class="!p-5 border border-brand-border/20 bklit-glow">
+      <div class="flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">04 // AUDIO TELEMETRY</h2>
+          <span class="text-[10px] text-brand-muted font-display italic">Live Signals</span>
+        </div>
+        <BentoItem span={1} row={1} class="!p-4 border border-brand-border bg-brand-surface">
           <SpotifyStatus client:load initialData={initialSpotifyData} />
         </BentoItem>
       </div>
 
       <!-- AUXILIARY FEED: GADGETS (Hidden on phone/tablet) -->
-      <div class="hidden lg:flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_AUX_01 // DESK_FEEDS</h2>
-        <BentoItem span={1} row={1} class="!p-5 border border-brand-border/20 cursor-pointer bklit-glow-hover">
+      <div class="hidden lg:flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">05 // DESK & HARDWARE</h2>
+          <span class="text-[10px] text-brand-muted font-mono">setup log</span>
+        </div>
+        <BentoItem span={1} row={1} class="!p-4 border border-brand-border bg-brand-surface cursor-pointer hover:border-brand-accent transition-colors">
           <GadgetsCard client:load />
         </BentoItem>
       </div>
 
       <!-- AUXILIARY FEED: IMAGES (Hidden on phone/tablet) -->
-      <div class="hidden lg:flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_AUX_02 // ENV_FRAMES</h2>
+      <div class="hidden lg:flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">06 // ANALOG FRAMES</h2>
+          <span class="text-[10px] text-brand-muted font-display italic">35mm / Digital</span>
+        </div>
         <FramesCard client:load />
       </div>
 
       <!-- Q1 2026 HIGHFLYER BANNER -->
-      <div class="flex flex-col gap-2">
-        <h2 class="text-xs uppercase tracking-widest text-brand-accent font-bold px-1">// SEC_NOTIFY // ALERTS</h2>
-        <BentoItem span={1} row={1} class="!p-5 border border-brand-border/20 border-l-4 border-l-brand-accent bklit-glow-hover">
-          <div class="flex items-center gap-2 text-brand-accent font-bold mb-1 font-mono">
+      <div class="flex flex-col gap-2.5">
+        <div class="flex items-center justify-between px-1 border-b border-brand-border/60 pb-1.5">
+          <h2 class="text-xs uppercase tracking-widest text-brand-accent font-semibold font-mono">07 // RECOGNITION</h2>
+          <span class="text-[10px] text-brand-accent font-mono font-bold">★ OSTTRA</span>
+        </div>
+        <BentoItem span={1} row={1} class="!p-4 border border-brand-border border-l-4 border-l-brand-accent bg-brand-surface">
+          <div class="flex items-center gap-2 text-brand-accent font-semibold mb-1 font-mono text-xs">
             <span>🏆</span>
-            <span>Q1_2026 // HIGHFLYER</span>
+            <span class="tracking-wide">HIGHFLYER AWARD</span>
           </div>
-          <p class="text-[10px] leading-relaxed text-brand-text/80 font-sans mt-2">
+          <p class="text-[11px] leading-relaxed text-brand-muted font-sans mt-2">
             Recognized across OSTTRA for outstanding execution speed, technical consistency, and platform delivery. Currently onboarding the 2026 new grad cohort.
           </p>
         </BentoItem>
