@@ -11,7 +11,7 @@ if (-not (Test-Path $CloudflaredExe)) {
 }
 
 $TunnelName = "photo-receiver"
-$Hostname = "receiver.kunaljangid.com"
+$Hostname = "photos-receiver.kunaljangid.com"
 $CloudflaredDir = Join-Path $env:USERPROFILE ".cloudflared"
 $CertPath = Join-Path $CloudflaredDir "cert.pem"
 
@@ -31,19 +31,19 @@ if (-not (Test-Path $CertPath)) {
 # Step 2: Create or find tunnel 'photo-receiver'
 Write-Host "`n[2/4] Checking/Creating tunnel '$TunnelName'..." -ForegroundColor Yellow
 $existingTunnels = & $CloudflaredExe tunnel list --output json | ConvertFrom-Json
-$tunnelObj = $existingTunnels | Where-Object { $_.name -eq $TunnelName -and $null -eq $_.deleted_at } | Select-Object -First 1
+$tunnelObj = $existingTunnels | Where-Object { $_.name -eq $TunnelName -and ($null -eq $_.deleted_at -or $_.deleted_at -like '0001*') } | Select-Object -First 1
 
 if ($null -eq $tunnelObj) {
     & $CloudflaredExe tunnel create $TunnelName
     $existingTunnels = & $CloudflaredExe tunnel list --output json | ConvertFrom-Json
-    $tunnelObj = $existingTunnels | Where-Object { $_.name -eq $TunnelName -and $null -eq $_.deleted_at } | Select-Object -First 1
+    $tunnelObj = $existingTunnels | Where-Object { $_.name -eq $TunnelName -and ($null -eq $_.deleted_at -or $_.deleted_at -like '0001*') } | Select-Object -First 1
 }
 
 $TunnelId = $tunnelObj.id
 $CredFile = Join-Path $CloudflaredDir "$TunnelId.json"
 Write-Host "✅ Tunnel '$TunnelName' ready (ID: $TunnelId)" -ForegroundColor Green
 
-# Step 3: Route DNS for receiver.kunaljangid.com
+# Step 3: Route DNS for photos-receiver.kunaljangid.com
 Write-Host "`n[3/4] Routing DNS '$Hostname' to tunnel '$TunnelName'..." -ForegroundColor Yellow
 & $CloudflaredExe tunnel route dns --overwrite-dns $TunnelName $Hostname
 Write-Host "✅ DNS CNAME routed: https://$Hostname" -ForegroundColor Green

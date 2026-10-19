@@ -56,3 +56,13 @@ if (-not $portActive) {
 } else {
     Write-Host "✅ Desktop Receiver Daemon is already running on port 7432." -ForegroundColor Green
 }
+
+# 4. Start the tunnel immediately if not running
+$tunnelActive = Get-Process -Name cloudflared -ErrorAction SilentlyContinue
+if (-not $tunnelActive) {
+    Start-Process "wscript.exe" -ArgumentList "`"$TunnelVbs`""
+    Start-Sleep -Seconds 2
+    Write-Host "✅ Started Cloudflare Tunnel Daemon." -ForegroundColor Green
+} else {
+    Write-Host "✅ Cloudflare Tunnel Daemon is already running." -ForegroundColor Green
+}
