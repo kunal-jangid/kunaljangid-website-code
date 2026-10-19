@@ -38,72 +38,80 @@ const isHome = pathname === "/" || pathname === "";
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       />
     </noscript>
 
     <script is:inline>
       const themeConfig = [
         {
-          name: "cream",
-          bg: "#EEE9DF",
-          text: "#2B323F",
-          border: "#111111",
-          accent: "#356B80",
+          name: "oatmeal_light",
+          label: "Oatmeal Paper",
+          bg: "#F7F4E9",
+          surface: "#EEE9D8",
+          text: "#2B2623",
+          muted: "#6E645F",
+          accent: "#C85A32",
+          accentSub: "#5B7065",
+          border: "#D8D0BC",
+          isDark: false,
         },
         {
-          name: "nordic_crimson",
-          bg: "#1E040B",
-          text: "#F5EBEF",
-          border: "#690722",
-          accent: "#E6223A",
+          name: "oatmeal_dark",
+          label: "Late-Night Desk",
+          bg: "#181615",
+          surface: "#221F1E",
+          text: "#F4F0EA",
+          muted: "#A39B93",
+          accent: "#E07A5F",
+          accentSub: "#81B29A",
+          border: "#332E2C",
+          isDark: true,
         },
         {
-          name: "cyber_copper",
-          bg: "#072220",
-          text: "#E0ECE9",
-          border: "#004D47",
-          accent: "#B95118",
+          name: "vinyl_dark",
+          label: "Midnight Vinyl",
+          bg: "#111318",
+          surface: "#1A1D24",
+          text: "#ECEFF4",
+          muted: "#9099A8",
+          accent: "#B39DDB",
+          accentSub: "#4DB6AC",
+          border: "#2A2F3B",
+          isDark: true,
         },
         {
-          name: "midnight_sage",
-          bg: "#261732",
-          accent: "#F1EDDF",
-          border: "#463556",
-          text: "#AEA989",
-        },
-        {
-          name: "royal_sapphire",
-          bg: "#112250",
-          text: "#F5F4F0",
-          border: "#3B507D",
-          accent: "#E7E2CE",
-        },
-        {
-          name: "chinu",
-          bg: "#FFF0F5",
-          text: "#4D1D2C",
-          border: "#F5C2D1",
-          accent: "#E05688",
+          name: "vinyl_light",
+          label: "Paper & Lavender",
+          bg: "#F2F4F7",
+          surface: "#E4E8EE",
+          text: "#1E222B",
+          muted: "#5C6475",
+          accent: "#7E57C2",
+          accentSub: "#26A69A",
+          border: "#D1D7E0",
+          isDark: false,
         },
       ];
 
-      let activeThemeIndex = localStorage.getItem("portfolio-theme-state")
-        ? parseInt(localStorage.getItem("portfolio-theme-state"))
+      let activeThemeIndex = localStorage.getItem("portfolio-theme-state-v3")
+        ? parseInt(localStorage.getItem("portfolio-theme-state-v3"))
         : 0;
 
-      if (activeThemeIndex >= themeConfig.length) activeThemeIndex = 0;
+      if (isNaN(activeThemeIndex) || activeThemeIndex >= themeConfig.length || activeThemeIndex < 0) {
+        activeThemeIndex = 0;
+      }
 
       function renderThemePipeline(index, smooth = false) {
         const activeTheme = themeConfig[index];
@@ -114,11 +122,25 @@ const isHome = pathname === "/" || pathname === "";
         }
 
         root.style.setProperty("--bg-color", activeTheme.bg);
+        root.style.setProperty("--bg-surface", activeTheme.surface);
         root.style.setProperty("--text-color", activeTheme.text);
+        root.style.setProperty("--text-muted", activeTheme.muted);
         root.style.setProperty("--border-color", activeTheme.border);
         root.style.setProperty("--accent-color", activeTheme.accent);
+        root.style.setProperty("--accent-sub", activeTheme.accentSub);
 
-        localStorage.setItem("portfolio-theme-state", index);
+        if (activeTheme.isDark) {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
+
+        const labelEl = document.getElementById("theme-label");
+        if (labelEl) {
+          labelEl.innerText = activeTheme.label;
+        }
+
+        localStorage.setItem("portfolio-theme-state-v3", index);
         window.activeThemeIndex = index;
 
         if (smooth) {
@@ -138,6 +160,10 @@ const isHome = pathname === "/" || pathname === "";
       document.addEventListener("DOMContentLoaded", () => {
         const toggle = document.getElementById("theme-toggle");
         if (toggle) {
+          const labelEl = document.getElementById("theme-label");
+          if (labelEl) {
+            labelEl.innerText = themeConfig[activeThemeIndex].label;
+          }
           toggle.addEventListener("click", () => {
             activeThemeIndex = (activeThemeIndex + 1) % themeConfig.length;
             renderThemePipeline(activeThemeIndex, true);
