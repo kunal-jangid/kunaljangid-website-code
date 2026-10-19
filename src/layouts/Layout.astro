@@ -251,58 +251,57 @@ const isHome = pathname === "/" || pathname === "";
         <p
           class="text-xs md:text-sm text-brand-muted uppercase tracking-widest mt-2 font-mono"
         >
-          Systems Software Engineer <span class="opacity-40">//</span> Gurugram, IN
+          Associate Software Engineer <span class="opacity-40">//</span> Gurugram, IN
         </p>
       </div>
       <div
-        class="flex items-center gap-3 sm:gap-4 text-xs text-brand-muted font-mono"
+        class="flex items-center gap-3 sm:gap-4 text-xs text-brand-muted font-mono flex-wrap"
       >
         <span
           >SIGNAL: <span class="text-brand-accent font-semibold"
             >ONLINE</span
           ></span
         >
-        <span class="opacity-30">•</span>
-        <span>PING: <span id="system-latency">12ms</span></span>
+        <span class="opacity-30 hidden sm:inline">•</span>
+        <span class="hidden sm:inline">PING: <span id="system-latency">12ms</span></span>
         <span class="opacity-30">•</span>
         <span>CLOCK: <span id="system-clock">00:00:00</span></span>
+        <span class="opacity-30">•</span>
+        <a
+          href="/resume.pdf"
+          download="Kunal_Jangid_Resume.pdf"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 border border-brand-border bg-brand-surface hover:bg-brand-text hover:text-brand-bg text-brand-text rounded-md transition-all active:translate-x-[1px] active:translate-y-[1px]"
+          title="Download Kunal's Resume"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Resume</span>
+        </a>
       </div>
     </header>
 
     <main
-      class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-12 md:py-16 pb-24 md:pb-28 w-full grow"
+      class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-12 md:py-16 pb-16 md:pb-20 w-full grow"
     >
       <slot />
     </main>
 
-    <!-- Sticky Resume Action (Lo-Fi Zine Stamp) -->
-    <a
-      href="/resume.pdf"
-      download="Kunal_Jangid_Resume.pdf"
-      class="sticky-resume"
-      aria-label="Download Resume"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="7 10 12 15 17 10" class="download-arrow"></polyline>
-        <line x1="12" y1="15" x2="12" y2="3" class="download-shaft"></line>
-      </svg>
-      <span class="resume-text">Resume (PDF)</span>
-    </a>
-
     <!-- Lo-Fi Zine Footer Section -->
     <footer
-      class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-12 pb-20 border-t border-brand-border/40 w-full text-xs font-mono flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 md:mt-16 text-brand-muted"
+      class="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-10 pb-16 border-t border-brand-border/40 w-full text-xs font-mono flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 md:mt-16 text-brand-muted"
     >
       <div class="flex items-center gap-2">
         <span class="font-display italic text-sm text-brand-text">Kunal Jangid</span>
@@ -310,6 +309,28 @@ const isHome = pathname === "/" || pathname === "";
         <span>© {new Date().getFullYear()}</span>
       </div>
       <div class="flex flex-wrap gap-3 items-center justify-center">
+        <a
+          href="/resume.pdf"
+          download="Kunal_Jangid_Resume.pdf"
+          class="px-3.5 py-1.5 border border-brand-accent/40 bg-brand-surface text-brand-accent hover:bg-brand-accent hover:text-brand-bg rounded-md transition-all active:translate-x-[1px] active:translate-y-[1px] font-semibold flex items-center gap-1.5"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Resume (PDF)</span>
+        </a>
         <a
           href="https://www.linkedin.com/in/jangidkunal"
           target="_blank"

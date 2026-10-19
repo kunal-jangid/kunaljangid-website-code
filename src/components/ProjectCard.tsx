@@ -19,11 +19,9 @@ export default function ProjectCard({ index, title, subtitle, tags, friction, fi
   useEffect(() => {
     const handleCommand = (e: Event) => {
       const customEvent = e as CustomEvent;
-      const { action, value } = customEvent.detail;
-      if (action === 'expand-projects') {
-        setIsExpanded(true);
-      } else if (action === 'filter-tech') {
-        const query = value.toLowerCase();
+      const { action, value } = customEvent?.detail || {};
+      if (action === 'filter-tech') {
+        const query = (value || '').toLowerCase().trim();
         const hasTag = tags.some(t => t.toLowerCase().includes(query)) || title.toLowerCase().includes(query);
         if (query === 'all' || query === '') {
           setIsHidden(false);
@@ -31,11 +29,9 @@ export default function ProjectCard({ index, title, subtitle, tags, friction, fi
         } else if (hasTag) {
           setIsHidden(false);
           setIsHighlighted(true);
-          setIsExpanded(true);
         } else {
           setIsHidden(true);
           setIsHighlighted(false);
-          setIsExpanded(false);
         }
       }
     };
@@ -48,9 +44,14 @@ export default function ProjectCard({ index, title, subtitle, tags, friction, fi
 
   const formattedIndex = index ? String(index).padStart(2, '0') : '01';
 
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(prev => !prev);
+  };
+
   return (
     <div
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={toggleExpand}
       className={`py-5 flex flex-col cursor-pointer transition-all duration-200 select-none text-left w-full ${
         isHighlighted ? 'bg-brand-surface border-l-2 border-l-brand-accent pl-3' : 'hover:bg-brand-surface/40'
       }`}
