@@ -65,19 +65,9 @@ body,
     color: var(--text-color) !important;
 }
 
-/* Enforce text color on passive elements while allowing interactive bypasses */
-h2,
-h3,
-h4,
-p,
-span,
-label,
-strong {
-    color: var(--text-color) !important;
-}
-
-#theme-toggle {
-    color: var(--accent-color) !important;
+/* Dynamic body colors */
+body {
+    color: var(--text-color);
 }
 
 /* Target Company Accent Highlight */
@@ -115,40 +105,6 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
     border-color: var(--accent-color) !important;
-}
-
-/* Map dynamic interactive highlight accents */
-.hover\:text-cream-accent:hover,
-.dark\:hover\:text-tactile-accent:hover {
-    color: var(--accent-color) !important;
-}
-
-/* Native Theme Inversion Engine for Buttons and Hover Cards */
-button,
-.group>div[class*="absolute"],
-.group>a[class*="absolute"] {
-    color: var(--text-color) !important;
-    background-color: transparent !important;
-    transition: all 0.2s ease-in-out !important;
-}
-
-button:hover,
-.group:hover>div[class*="absolute"],
-.group:hover>a[class*="absolute"],
-.group:hover>a[class*="absolute"] span {
-    background-color: var(--text-color) !important;
-    color: var(--bg-color) !important;
-}
-
-/* Handle code-tag translucent badge variations & Dynamic Tech Pill Tag Optimization Engine */
-.bg-cream-border\/10,
-.dark\:bg-tactile-border\/40,
-.flex-wrap span {
-    background-color: var(--text-color) !important;
-    color: var(--bg-color) !important;
-    opacity: 1 !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.025em;
 }
 
 body {
