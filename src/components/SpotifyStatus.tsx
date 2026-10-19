@@ -21,9 +21,10 @@ interface SpotifyData {
 
 interface SpotifyStatusProps {
   initialData?: SpotifyData | null;
+  variant?: 'full' | 'hero';
 }
 
-export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps) {
+export default function SpotifyStatus({ initialData = null, variant = 'full' }: SpotifyStatusProps) {
   const [data, setData] = useState<SpotifyData | null>(initialData);
   const [loading, setLoading] = useState(!initialData);
 
@@ -65,9 +66,9 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
 
   if (loading) {
     return (
-      <div className="font-mono text-xs opacity-70 leading-relaxed w-full h-full flex flex-col items-center justify-center min-h-[140px] gap-2">
-        <Spinner className="size-4 opacity-50 text-brand-accent" />
-        <span className="opacity-50">• Synchronizing telemetry...</span>
+      <div className={`font-mono text-xs opacity-70 leading-relaxed w-full flex items-center justify-center gap-2 ${variant === 'hero' ? 'py-2 px-3' : 'min-h-[140px] flex-col'}`}>
+        <Spinner className="size-3.5 opacity-50 text-brand-accent" />
+        <span className="opacity-50 text-[11px]">• Syncing music telemetry...</span>
       </div>
     );
   }
@@ -75,8 +76,65 @@ export default function SpotifyStatus({ initialData = null }: SpotifyStatusProps
   const isPlaying = data?.isPlaying;
   const targetLink = (isPlaying && data?.songUrl) ? data.songUrl : playlistUrl;
   const hoverText = isPlaying
-    ? "Wanna listen along on Spotify?\n\nClick to open track"
-    : "Track paused. Open playlist on YouTube Music?\n\nClick here";
+    ? "Listen along on Spotify ↗"
+    : "Track paused. Open playlist ↗";
+
+  if (variant === 'hero') {
+    return (
+      <div className="relative group/hero-player flex items-center justify-between gap-3 p-2.5 sm:p-3 bg-brand-surface border border-brand-border rounded-lg text-left w-full transition-all hover:border-brand-accent/60">
+        <div className="flex items-center gap-3 min-w-0">
+          {data?.coverUrl ? (
+            <img
+              src={data.coverUrl}
+              alt="Album Artwork"
+              loading="lazy"
+              decoding="async"
+              className={`w-10 h-10 object-cover flex-shrink-0 border border-brand-border rounded transition-all ${
+                isPlaying ? 'filter-none' : 'filter grayscale'
+              }`}
+            />
+          ) : (
+            <div className="w-10 h-10 bg-brand-bg border border-brand-border rounded flex items-center justify-center text-xs flex-shrink-0">
+              🎵
+            </div>
+          )}
+          <div className="min-w-0 flex flex-col justify-center">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-brand-accent font-semibold text-[9px] uppercase tracking-widest font-mono">
+                {isPlaying ? '• LISTENING NOW' : '• RECENTLY PLAYED'}
+              </span>
+              {isPlaying && (
+                <div className="flex items-end gap-[2px] h-[9px] w-[11px] pb-[1px]">
+                  <span className="w-[2px] bg-brand-accent rounded-full eq-bar-1"></span>
+                  <span className="w-[2px] bg-brand-accent rounded-full eq-bar-2"></span>
+                  <span className="w-[2px] bg-brand-accent rounded-full eq-bar-3"></span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-baseline gap-2 truncate">
+              <h4 className="font-display font-medium text-xs sm:text-sm tracking-tight truncate text-brand-text">
+                {data?.songName || 'No track playing'}
+              </h4>
+              {data?.artistName && (
+                <span className="text-[11px] text-brand-muted truncate font-sans hidden sm:inline">
+                  — {data.artistName}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <a
+          href={targetLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 text-[10px] font-mono border border-brand-border bg-brand-bg px-2.5 py-1 rounded text-brand-text hover:bg-brand-text hover:text-brand-bg transition-colors active:translate-x-[1px] active:translate-y-[1px]"
+        >
+          {hoverText}
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full flex flex-col justify-between group/card select-none text-left">
