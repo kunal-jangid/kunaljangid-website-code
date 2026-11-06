@@ -78,7 +78,7 @@ export default function FramesCard() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={
-        <button className="w-full h-full min-h-[160px] flex flex-col justify-between cursor-pointer group/card select-none text-left p-0 border border-brand-border/20 rounded-xl overflow-hidden relative" />
+        <button className="w-full h-full min-h-[160px] flex flex-col justify-between cursor-pointer group/card select-none text-left p-0 border border-brand-border rounded-lg overflow-hidden relative shadow-none" />
       }>
         <div className="absolute inset-0 z-0">
           <img
@@ -91,14 +91,14 @@ export default function FramesCard() {
         </div>
 
         {/* Content Overlay */}
-        <div className="relative z-10 p-5 flex flex-col justify-between h-full w-full min-h-[160px] text-white">
-          <div className="text-right font-mono text-[9px] text-white/50 w-full">[ Auto-playing Feed // Click to Zoom ]</div>
+        <div className="relative z-10 p-4 flex flex-col justify-between h-full w-full min-h-[160px] text-white">
+          <div className="text-right font-mono text-[9px] text-white/70 w-full">[ Auto-playing Feed // Click to Inspect ]</div>
         </div>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl bg-brand-bg border-brand-border/40">
-        <DialogHeader className="border-b border-brand-border/20 pb-4">
-          <DialogTitle className="text-lg font-bold font-mono">THE FRAMES</DialogTitle>
+      <DialogContent className="max-w-4xl bg-brand-surface border border-brand-border rounded-lg shadow-none">
+        <DialogHeader className="border-b border-brand-border/40 pb-3">
+          <DialogTitle className="text-lg font-medium font-display italic text-brand-text">Visual Journal & Frames</DialogTitle>
         </DialogHeader>
 
         <DialogPanel scrollFade={false}>
@@ -110,12 +110,12 @@ export default function FramesCard() {
             <div className="max-w-4xl max-h-[70vh] w-full flex items-center justify-between gap-2 md:gap-6 relative">
               <button
                 onClick={prevPhoto}
-                className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
+                className="hidden md:block text-brand-muted hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000] border border-brand-border bg-brand-bg/50 rounded active:translate-x-[1px] active:translate-y-[1px]"
               >
                 [ Prev ]
               </button>
 
-              <div className="overflow-hidden rounded flex items-center justify-center grow max-h-[65vh] w-full">
+              <div className="overflow-hidden rounded flex items-center justify-center grow max-h-[65vh] w-full border border-brand-border">
                 <ZoomableImage
                   src={photoAssets[currentIndex]}
                   alt={`Recent Film Frame ${currentIndex + 1}`}
@@ -124,16 +124,16 @@ export default function FramesCard() {
 
               <button
                 onClick={nextPhoto}
-                className="hidden md:block text-brand-text/40 hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000]"
+                className="hidden md:block text-brand-muted hover:text-brand-text font-mono text-xs uppercase tracking-widest p-2 transition-colors z-[1000] border border-brand-border bg-brand-bg/50 rounded active:translate-x-[1px] active:translate-y-[1px]"
               >
                 [ Next ]
               </button>
             </div>
 
-            <div className="text-brand-text/40 text-[11px] font-mono mt-6 text-center">
-              {String(currentIndex + 1).padStart(2, '0')} / {String(photoAssets.length).padStart(2, '0')}
+            <div className="text-brand-muted text-[11px] font-mono mt-5 text-center">
+              FRAME {String(currentIndex + 1).padStart(2, '0')} / {String(photoAssets.length).padStart(2, '0')}
             </div>
-            <div className="text-brand-text/20 text-[10px] font-mono mt-1 md:hidden text-center">
+            <div className="text-brand-muted/70 text-[10px] font-mono mt-1 md:hidden text-center">
               [ Swipe horizontally to browse // Pinch to zoom ]
             </div>
           </div>
